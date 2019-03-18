@@ -4,7 +4,7 @@ for more details you may visit the corse website: https://www.cs.bgu.ac.il/~wsep
 
 this project is created by:
 
-Dvir Raviv
-Michal Lorelblom
-Ron Yitzhak
-Gal Meir
+* Dvir Raviv
+* Michal Lorelblom
+* Ron Yitzhak
+* Gal Meir

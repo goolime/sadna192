@@ -69,7 +69,7 @@ namespace sadna192
         bool Remove_User(string other_user);
 
         // RSL 7
-        //void Add_Log(string log);
+        void Add_Log(string log);
     }
     
 

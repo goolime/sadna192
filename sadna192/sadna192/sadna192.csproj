@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeliverySystem.cs" />
+    <Compile Include="PaymentSystem.cs" />
+    <Compile Include="ProductInStore.cs" />
+    <Compile Include="ServiceLayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

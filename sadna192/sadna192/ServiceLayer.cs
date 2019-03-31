@@ -70,6 +70,7 @@ namespace sadna192
 
         // RSL 7
         void Add_Log(string log);
+        ////////
     }
     
 

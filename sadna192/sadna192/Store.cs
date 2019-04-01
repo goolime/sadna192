@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace sadna192
 {
@@ -22,6 +23,11 @@ namespace sadna192
         }
 
         internal void addOwner(UserState userState, Member other_user)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal IEnumerable<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)
         {
             throw new NotImplementedException();
         }

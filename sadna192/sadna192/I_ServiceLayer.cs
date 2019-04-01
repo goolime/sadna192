@@ -44,7 +44,7 @@ namespace sadna192
         bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount);
 
         // UC 2.8.1
-        List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(int Shop_ID);
+        List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name);
         // UC 2.8.4
         List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount);
 

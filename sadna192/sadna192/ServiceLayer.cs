@@ -142,22 +142,25 @@ namespace sadna192
 
             public bool Add_To_ShopingBasket(ProductInStore p, int amount)
             {
-                throw new NotImplementedException();
+                return this.userState.Add_To_ShopingBasket(p, amount);
             }
 
             public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
             {
-                throw new NotImplementedException();
+                return this.userState.Edit_Product_In_ShopingBasket(p, amount);
             }
 
             public bool Finalize_Purchase(string address, string payment)
             {
-                throw new NotImplementedException();
+                return this.userState.Finalize_Purchase(address, payment);
             }
 
             public List<ProductInStore> GlobalSearch(string name, string Category, List<string> keywords, double price_min, double price_max, double Store_rank, double product_rank)
             {
-                throw new NotImplementedException();
+                List<ProductInStore> ans = new List<ProductInStore>();
+                foreach (Store store in this.single_ServiceLayer.store)
+                    ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
+                return ans;
             }
 
             public bool Login(string user_name, string user_pass)
@@ -199,12 +202,12 @@ namespace sadna192
 
             public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
             {
-                throw new NotImplementedException();
+                return this.userState.Purchase_product(p, amount);
             }
 
-            public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(int Shop_ID)
+            public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
             {
-                throw new NotImplementedException();
+                return this.userState.Purchase_Store_cart(store_name);
             }
 
             public bool Register(string user_name, string user_pass)
@@ -238,17 +241,17 @@ namespace sadna192
 
             public bool Remove_Product_Store(string Store_name, string product_name)
             {
-                throw new NotImplementedException();
+                return this.userState.Remove_Product_Store(Store_name, product_name);
             }
 
             public bool Remove_Store_Manager(string Store_name, string other_Manager_name)
             {
-                throw new NotImplementedException();
+                return this.userState.Remove_Store_Manager(Store_name, other_Manager_name);
             }
 
             public bool Remove_Store_Owner(string Store_name, string other_owner_name)
             {
-                throw new NotImplementedException();
+                return this.userState.Remove_Store_Owner(Store_name, other_owner_name);
             }
 
             public bool Remove_User(string other_user)
@@ -282,12 +285,12 @@ namespace sadna192
 
             public bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
             {
-                throw new NotImplementedException();
+                return this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
             }
 
             public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
             {
-                throw new NotImplementedException();
+                return this.userState.Watch_Cart();
             }
         }
     }

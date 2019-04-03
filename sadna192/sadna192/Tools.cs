@@ -44,7 +44,7 @@ namespace sadna192
         {
             if (pass.Length < 8 || pass.Length > 16) throw new Exception("passowrd must be atleast 8 chars long ans not longer than 16");
             if (!isAlfaNumeric(pass)) throw new Exception("password must contain only english letters and numbers");
-            if (containOneofEach(pass)) throw new Exception("password must contain atleast one small letter one capitol letter and one letter");
+            if (!containOneofEach(pass)) throw new Exception("password must contain atleast one small letter one capitol letter and one letter");
             return true;
         }
 
@@ -64,7 +64,7 @@ namespace sadna192
         {
             if (name.Length < 4 || name.Length > 32) throw new Exception("the shop name must be longer then 4 chars and shorter then 32");
             if (!isAlfa(name.ToCharArray()[0])) throw new Exception("store name must start with a letter");
-            if (isAlfaNumeric(name)) throw new Exception("store name must contain only english letters and numbers");
+            if (!isAlfaNumeric(name)) throw new Exception("store name must contain only english letters and numbers");
             return true;
         }
 
@@ -72,7 +72,7 @@ namespace sadna192
         {
             if (name.Length < 4 || name.Length > 32) throw new Exception("the product name must be longer then 4 chars and shorter then 32");
             if (!isAlfa(name.ToCharArray()[0])) throw new Exception("product name must start with a letter");
-            if (isAlfaNumeric(name)) throw new Exception("product name must contain only english letters and numbers");
+            if (!isAlfaNumeric(name)) throw new Exception("product name must contain only english letters and numbers");
             return true;
         }
 

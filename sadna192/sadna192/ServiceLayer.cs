@@ -103,7 +103,7 @@ namespace sadna192
                     )
                 {
                     if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
-                    Store store = ((Member)this.userState).getUserStore(Store_name);
+                    Store store = ((Member)this.userState).getUserStore(Store_name).getStore();
                     Member other_user = null;
                     foreach (User_ServiceLayer user in single_ServiceLayer.users)
                     {
@@ -135,8 +135,7 @@ namespace sadna192
             {
                 if (Tools.check_username(new_owner_name) && Tools.check_storeName(Store_name))
                 {
-                    if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
-                    Store store = ((Member)this.userState).getUserStore(Store_name);
+                    //if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
                     Member other_user = null;
                     foreach (User_ServiceLayer user in single_ServiceLayer.users)
                     {
@@ -159,20 +158,29 @@ namespace sadna192
                         }
                     }
                     if (other_user == null) throw new Exception("new Store owner was not found");
-                    store.addOwner(this.userState, other_user);
-                    return true;
+                    return this.userState.Add_Store_Owner(Store_name, other_user);
+                    //store.addOwner(this.userState, other_user);
+                    //return true;
                 }
                 return false;
             }
 
             public bool Add_To_ShopingBasket(ProductInStore p, int amount)
             {
-                return this.userState.Add_To_ShopingBasket(p, amount);
+                if (isProductInStore(p) && Tools.check_amount(amount))
+                {
+                    return this.userState.Add_To_ShopingBasket(p, amount);
+                }
+                return false;
             }
 
             public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
             {
-                return this.userState.Edit_Product_In_ShopingBasket(p, amount);
+                if (isProductInStore(p) && Tools.check_amount(amount))
+                {
+                    return this.userState.Edit_Product_In_ShopingBasket(p, amount);
+                }
+                return false;
             }
 
             public bool Finalize_Purchase(string address, string payment)
@@ -383,19 +391,19 @@ namespace sadna192
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////                                                                                           //////////
-            //////////  ///////     ///////     ///////   ///       ///    //////     ////////////  ///////////  //////////
-            //////////  ///   ///   ///   ///     ///      ///     ///    ///  ///    ////////////  ///    ///   //////////
-            //////////  ///   ///   ///   ///     ///       ///   ///    ///    ///       ////      ///...       //////////
-            //////////  ///////     ///////       ///        /// ///    ////////////      ////      ///'''       //////////
-            //////////  ///         ///  ///      ///         /////    ////      ////     ////      ///    ///   //////////
-            //////////  ///         ///   ///   ///////       ////    ////        ////    ////      /////////    //////////
+            //////////  ////////    ////////    ///////   ///       ///    //////      ///////////  ///////////  //////////
+            //////////  ///   ///   ///   ///     ///      ///     ///    ///  ///    ///////////   ///    ///   //////////
+            //////////  ///   ///   ///   ///     ///       ///   ///    ///    ///       ///       ///...       //////////
+            //////////  ///////     ///////       ///        /// ///    ////////////      ///       ///'''       //////////
+            //////////  ///         ///  ///      ///         /////    ////      ////     ///       ///     ///  //////////
+            //////////  ///         ///   ///   ///////       ////    ////        ////    ///       //////////   //////////
             //////////                                                                                           //////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             private bool isProductInStore(ProductInStore p)
             {
-                throw new NotImplementedException();
+                throw new NotImplementedException(); // TODO: depends on rons implemantation
             }
         }
     }

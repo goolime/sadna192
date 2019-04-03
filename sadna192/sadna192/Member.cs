@@ -8,8 +8,10 @@ namespace sadna192
     {
         private string name;
         private string code;
+        private List<Owner> owner;
 
-        public Member(string name, string password)
+
+        public Member(string name, string password) : base()
         {
             this.name = name;
             this.code = this.Encrypt(this.name, password);
@@ -44,9 +46,55 @@ namespace sadna192
             return (this.code == this.Encrypt(user_name, user_pass));
         }
 
-        internal Store getUserStore(string store_name)
+        internal Owner getUserStore(string store_name)
         {
-            throw new NotImplementedException();
+            foreach (Owner owner in this.owner)
+            {
+                if (owner.getStore().isMe(store_name)) return owner;
+            }
+            throw new Exception("the user is not associated with the store '" + store_name + "'");
+        }
+
+        public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.addProduct(product_name, product_category,product_price,product_amount,product_discount,product_policy);
+        }
+
+        public override bool Add_Store_Manager(string Store_name, Member new_manager, bool permision_add, bool permission_remove, bool permission_update)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.addManager(new_manager, permision_add, permission_remove, permission_update);
+        }
+
+        public override bool Add_Store_Owner(string Store_name, Member new_owner_name)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.addOwner(Store_name, new_owner_name);
+        }
+
+        public override bool Remove_Product_Store(string Store_name, string product_name)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.removeProduct(product_name);
+        }
+
+        public override bool Remove_Store_Manager(string Store_name, Member other_Manager)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.removeManager(other_Manager);
+        }
+
+        public override bool Remove_Store_Owner(string Store_name, Member other_Owner)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.removeOwner(other_Owner);
+        }
+
+        public override bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
+        {
+            Owner s = this.getUserStore(Store_name);
+            return s.updateProduct(product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace sadna192
 {
-    interface I_ServiceLayer
+    public interface I_ServiceLayer
     {
         // UC 1.1
         /// <summary>
@@ -25,7 +25,7 @@ namespace sadna192
         I_User_ServiceLayer Connect();
     }
 
-    interface I_User_ServiceLayer
+    public interface I_User_ServiceLayer
     {
         // UC 2.2
         bool Register(string user_name, string user_pass);

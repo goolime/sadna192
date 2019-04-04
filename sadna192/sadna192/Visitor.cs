@@ -84,17 +84,17 @@ namespace sadna192
             throw new Exception("User must login to remove a product from a store");
         }
 
-        public virtual bool Remove_Store_Manager(string Store_name, Member other_Manager_name)
+        public virtual bool Remove_Store_Manager(string Store_name, Member other_Manager)
         {
             throw new Exception("User must login to remove a Manager from a store");
         }
 
-        public bool Remove_Store_Owner(string Store_name, string other_owner_name)
+        public virtual bool Remove_Store_Owner(string Store_name, Member other_owner)
         {
             throw new Exception("User must login to remove a owner from a store");
         }
 
-        public bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
+        public virtual bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
         {
             throw new Exception("User must login to update a product in a store");
         }

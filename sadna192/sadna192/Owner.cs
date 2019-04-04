@@ -4,6 +4,15 @@ namespace sadna192
 {
     internal class Owner
     {
+        private Store store;
+        private UserState user;
+
+        public Owner(UserState u, Store s){
+            this.store = s;
+            this.user = u;
+            s.addOwner(this);
+        }
+
         internal Store getStore()
         {
             throw new NotImplementedException();

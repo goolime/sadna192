@@ -98,34 +98,12 @@ namespace sadna192
 
             public bool Add_Store_Manager(string Store_name, string new_manger_name, bool permision_add, bool permission_remove, bool permission_update)
             {
-                if (Tools.check_storeName(Store_name) &&
-                    Tools.check_username(new_manger_name)
-                    )
+                if (Tools.check_storeName(Store_name) && Tools.check_username(new_manger_name))
                 {
                     if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
-                    Store store = ((Member)this.userState).getUserStore(Store_name).getStore();
-                    Member other_user = null;
-                    foreach (User_ServiceLayer user in single_ServiceLayer.users)
-                    {
-                        if (user.userState.isMember())
-                        {
-                            if (((Member)user.userState).isMe(new_manger_name))
-                            {
-                                other_user = (Member)user.userState;
-                            }
-                        }
-                    }
-                    if (other_user == null) {
-                        foreach (Member member in single_ServiceLayer.members)
-                        {
-                            if (member.isMe(new_manger_name))
-                            {
-                                other_user = member;
-                            }
-                        }
-                    }
+                    Member other_user = this.GetMember(new_manger_name);
                     if (other_user == null) throw new Exception("new Store manager was not found");
-                    store.addManager(this.userState, other_user, permision_add, permission_remove, permission_update);
+                    this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
                     return true;
                 }
                 return false;
@@ -135,28 +113,7 @@ namespace sadna192
             {
                 if (Tools.check_username(new_owner_name) && Tools.check_storeName(Store_name))
                 {
-                    //if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
-                    Member other_user = null;
-                    foreach (User_ServiceLayer user in single_ServiceLayer.users)
-                    {
-                        if (user.userState.isMember())
-                        {
-                            if (((Member)user.userState).isMe(new_owner_name))
-                            {
-                                other_user = (Member)user.userState;
-                            }
-                        }
-                    }
-                    if (other_user == null)
-                    {
-                        foreach (Member member in single_ServiceLayer.members)
-                        {
-                            if (member.isMe(new_owner_name))
-                            {
-                                other_user = member;
-                            }
-                        }
-                    }
+                    Member other_user = this.GetMember(new_owner_name);
                     if (other_user == null) throw new Exception("new Store owner was not found");
                     return this.userState.Add_Store_Owner(Store_name, other_user);
                     //store.addOwner(this.userState, other_user);
@@ -404,6 +361,32 @@ namespace sadna192
             private bool isProductInStore(ProductInStore p)
             {
                 throw new NotImplementedException(); // TODO: depends on rons implemantation
+            }
+
+            private Member GetMember(string Username)
+            {
+                Member ans = null;
+                foreach (User_ServiceLayer user in single_ServiceLayer.users)
+                {
+                    if (user.userState.isMember())
+                    {
+                        if (((Member)user.userState).isMe(Username))
+                        {
+                            ans = (Member)user.userState;
+                        }
+                    }
+                }
+                if (ans == null)
+                {
+                    foreach (Member member in single_ServiceLayer.members)
+                    {
+                        if (member.isMe(Username))
+                        {
+                            ans = member;
+                        }
+                    }
+                }
+                return ans;
             }
         }
     }

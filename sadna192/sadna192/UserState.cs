@@ -15,10 +15,10 @@ namespace sadna192
         List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount);
         bool Finalize_Purchase(string address, string payment);
         bool Add_Store_Manager(string Store_name, Member new_manger_name, bool permision_add, bool permission_remove, bool permission_update);
-        bool Add_Store_Owner(string Store_name, Member new_owner_name);
+        bool Add_Store_Owner(string Store_name, Member new_owner);
         bool Remove_Product_Store(string Store_name, string product_name);
-        bool Remove_Store_Manager(string Store_name, string other_Manager_name);
-        bool Remove_Store_Owner(string Store_name, string other_owner_name);
+        bool Remove_Store_Manager(string Store_name, Member other_Manager);
+        bool Remove_Store_Owner(string Store_name, Member other_owner);
         bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy);
         bool Open_Store(Store name);
         bool isOwner(string store_name);

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace sadna192
 {
-    interface I_DeliverySystem
+    public interface I_DeliverySystem
     {
+        bool Connect();
+        bool check_address(string address);
     }
 }

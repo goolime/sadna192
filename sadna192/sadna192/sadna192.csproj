@@ -44,14 +44,21 @@
   <ItemGroup>
     <Compile Include="Admin.cs" />
     <Compile Include="DeliverySystem.cs" />
+    <Compile Include="Discount.cs" />
+    <Compile Include="Manager.cs" />
     <Compile Include="Member.cs" />
+    <Compile Include="Owner.cs" />
     <Compile Include="PaymentSystem.cs" />
+    <Compile Include="Policy.cs" />
     <Compile Include="ProductInStore.cs" />
     <Compile Include="I_ServiceLayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLayer.cs" />
+    <Compile Include="ShopingBasket.cs" />
+    <Compile Include="ShopingCart.cs" />
     <Compile Include="Store.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="UserState.cs" />
     <Compile Include="Visitor.cs" />
   </ItemGroup>

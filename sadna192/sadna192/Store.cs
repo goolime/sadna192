@@ -135,7 +135,7 @@ namespace sadna192
 
 
         //Change amount in case of purchase
-        public bool ChangeAmoutStoreInPurcahse(ProductInStore p, int amount)
+        public bool ChangeAmoutStoreInPurchase(ProductInStore p, int amount)
         {
             //checking if the amount to purcahse is available in the store
             int currentAmount = p.getAmount();

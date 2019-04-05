@@ -8,8 +8,10 @@ namespace sadna192
 {
     abstract class ProductPurchaseType
     {
-        private ProductInStore productToPurchase;
-        private int InitalPrice;
+
+        public abstract bool purchaseImplementation();
 
     }
+
+
 }

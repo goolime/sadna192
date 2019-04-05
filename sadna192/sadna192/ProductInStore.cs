@@ -42,6 +42,13 @@
             return amount;
         }
 
+        public Store getStore()
+        {
+            return store;
+        }
+
+
+
         public void setAmount(int amount)
         {
            this.amount=amount;

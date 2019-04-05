@@ -5,13 +5,18 @@ namespace sadna192
 {
     internal class ShopingBasket
     {
-        public ShopingBasket()
+        private Member member;
+        private List<ShoppingCart> shoppingCarts;
+
+
+        public ShopingBasket(List<ShoppingCart> shoppingCarts)
         {
+            this.shoppingCarts = shoppingCarts;
         }
 
         internal bool addProduct(ProductInStore p, int amount)
         {
-            throw new NotImplementedException();
+            Store store = shoppingCarts.Find(p).getStore()
         }
 
         internal bool editProduct(ProductInStore p, int amount)

@@ -2,6 +2,7 @@ namespace sadna192
 {
     public class Product
     {
+        private int id;
         private string name;
         private string category;
         private double rank;

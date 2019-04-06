@@ -38,7 +38,7 @@ namespace sadna192
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
             public List<string> log;
-            public List<Store> store;
+            public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
             {
@@ -273,7 +273,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_Manager_name))
                 {
-                    return this.userState.Remove_Store_Manager(Store_name, other_Manager_name);
+                    return this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
                 }
                 return false;
             }
@@ -282,7 +282,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_owner_name))
                 {
-                    return this.userState.Remove_Store_Owner(Store_name, other_owner_name);
+                    return this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
                 }
                 return false;
             }

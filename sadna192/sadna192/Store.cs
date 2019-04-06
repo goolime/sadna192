@@ -7,7 +7,7 @@ namespace sadna192
     public class Store
     {
         private string name;
-        private List<ProductInStore> productInStores;
+        private List<ProductInStore> productInStores= new List<ProductInStore>();
 
         public Store(string name)
         {
@@ -36,6 +36,12 @@ namespace sadna192
 
         internal void addManager(UserState userState, Member other_user, bool permision_add, bool permission_remove, bool permission_update)
         {
+            throw new NotImplementedException();
+        }
+
+        internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
+        {
+
             throw new NotImplementedException();
         }
 
@@ -74,6 +80,16 @@ namespace sadna192
             throw new SystemException("Error in input of searching options");
         }
 
+        internal void removeApointed(Owner owner)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool removeProduct(string product_name)
+        {
+            throw new NotImplementedException();
+        }
+
 
 
         //Implementation of the searching methods
@@ -102,6 +118,11 @@ namespace sadna192
             }
             return productsResult;
 
+        }
+
+        internal bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
+        {
+            throw new NotImplementedException();
         }
 
 

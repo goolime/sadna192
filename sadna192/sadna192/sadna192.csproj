@@ -60,6 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceLayer.cs" />
     <Compile Include="ShopingBasket.cs" />
+    <Compile Include="shoppingBasket.cs" />
     <Compile Include="ShoppingCart.cs" />
     <Compile Include="Store.cs" />
     <Compile Include="Tools.cs" />

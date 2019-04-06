@@ -64,7 +64,7 @@ namespace sadna192
             return true;
         }
 
-        public bool Open_Store(Store name)
+        public virtual bool Open_Store(Store name)
         {
             throw new Exception("User must login to םפקמ a store");
         }

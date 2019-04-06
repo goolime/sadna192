@@ -34,7 +34,7 @@ namespace sadna192
                 {
                     shoppingCartContent.Add(producttoadd);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw new SystemException("Fail to add product " + p.getName() + " to the cart");
                 }

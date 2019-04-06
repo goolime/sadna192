@@ -41,7 +41,7 @@ namespace sadna192
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
             public List<string> log;
-            public List<Store> store;
+            public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
             {

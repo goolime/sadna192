@@ -68,6 +68,7 @@ namespace sadna192
 
         public override bool Open_Store(Store name)
         {
+            if (this.owner == null) this.owner = new List<Owner>();
             this.owner.Add(new Owner(this, name));
             return true;
         }

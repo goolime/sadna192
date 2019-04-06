@@ -70,7 +70,7 @@ namespace sadna192
                 {
                     return apointed.findOwner(other);
                 }
-                catch (Exception e) { };
+                catch (Exception) { }
             }
             throw new Exception("the Other member was not assigned by this Owner");
         }

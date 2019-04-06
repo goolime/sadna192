@@ -5,7 +5,7 @@ namespace sadna192
 {
     internal class ShopingBasket
     {
-        private Member member;
+        //private Member member;
         private List<ShoppingCart> shoppingCarts;
 
         //Constructor

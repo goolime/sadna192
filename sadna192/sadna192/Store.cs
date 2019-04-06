@@ -7,7 +7,7 @@ namespace sadna192
     public class Store
     {
         private string name;
-        private List<ProductInStore> productInStores;
+        private List<ProductInStore> productInStores= new List<ProductInStore>();
 
         public Store(string name)
         {
@@ -36,6 +36,7 @@ namespace sadna192
 
         internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
+
             throw new NotImplementedException();
         }
 

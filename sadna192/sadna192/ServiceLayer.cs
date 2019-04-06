@@ -276,7 +276,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_Manager_name))
                 {
-                    return this.userState.Remove_Store_Manager(Store_name, other_Manager_name);
+                    return this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
                 }
                 return false;
             }
@@ -285,7 +285,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_owner_name))
                 {
-                    return this.userState.Remove_Store_Owner(Store_name, other_owner_name);
+                    return this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
                 }
                 return false;
             }

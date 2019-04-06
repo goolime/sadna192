@@ -17,6 +17,11 @@ namespace sadna192
             return this.name == name;
         }
 
+        internal void addOwner(Owner owner)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void addManager(UserState userState, Member other_user, bool permision_add, bool permission_remove, bool permission_update)
         {
             throw new NotImplementedException();

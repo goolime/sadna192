@@ -8,6 +8,7 @@ namespace sadna192
     {
         private Store store;
         private List<Pair<ProductInStore, int>> shoppingCartContent;
+        private ProductPurchaseType productPurchaseType;
 
         public ShoppingCart(Store store, List<Pair<ProductInStore, int>> shoppingCartContent)
         {
@@ -85,6 +86,7 @@ namespace sadna192
         internal bool Finalize_Purchase(ProductInStore product, string address, string payment)
         {
             //
+            productPurchaseType.purchaseImplementation
             
             
         }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace sadna192
+﻿namespace sadna192
 {
     class ImmediatePurchase : ProductPurchaseType
     {
@@ -14,6 +8,7 @@ namespace sadna192
 
         public override bool purchaseImplementation(shoppingBasket)
         {
+            
             
         }
     }

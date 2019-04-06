@@ -35,7 +35,7 @@ namespace sadna192
                 {
                     shoppingCartContent.Add(producttoadd);
                 }
-                catch (Exception ex)
+                catch
                 {
                     throw new SystemException("Fail to add product " + p.getName() + " to the cart");
                 }
@@ -85,10 +85,10 @@ namespace sadna192
 
         internal bool Finalize_Purchase(ProductInStore product, string address, string payment)
         {
-            //
-            productPurchaseType.purchaseImplementation
-            
-            
+
+            throw new SystemException("");
+
+
         }
 
        

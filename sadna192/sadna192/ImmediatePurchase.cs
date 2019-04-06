@@ -6,10 +6,10 @@
         private Store store;
         private ShopingBasket shopingBasket;
 
-        public override bool purchaseImplementation(shoppingBasket)
+        public override bool purchaseImplementation()
         {
-            
-            
+
+            return true;
         }
     }
 }

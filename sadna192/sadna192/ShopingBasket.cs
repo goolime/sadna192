@@ -14,6 +14,11 @@ namespace sadna192
             this.shoppingCarts = shoppingCarts;
         }
 
+        public ShopingBasket()
+        {
+            this.shoppingCarts = null;
+        }
+
         internal bool addProduct(ProductInStore p, int amount)
         {
             //checking if already there is a Shopping cart for this prodcut in the shopping basket

@@ -19,6 +19,11 @@ namespace sadna192
             return name;
         }
 
+        public List<ProductInStore> getProductInStore()
+        {
+            return productInStores
+        }
+
         internal bool isMe(string name)
         {
             return this.name == name;

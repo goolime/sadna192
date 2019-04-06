@@ -35,9 +35,26 @@ namespace sadna192
             
         }
 
-        internal bool editProduct(ProductInStore p, int amount)
+        internal bool editProductAmount(ProductInStore p, int amount)
         {
-            throw new NotImplementedException();
+            foreach (ShoppingCart sc in shoppingCarts)
+            {
+                //checking for the same store
+                if (sc.getStore() == p.getStore())
+                {
+                    foreach (ProductInStore pp in sc.getStore().getProductInStore())
+                    {
+                        if (pp.getName() == p.getName())
+                        {
+                            pp.setAmount(amount);
+                            return true;
+                        }
+                    }
+
+                }
+
+            }
+            throw new SystemException("There is no such product in store" + p.getStore().getName());
         }
 
         internal bool Finalize_Purchase(string address, string payment)

@@ -12,9 +12,14 @@ namespace sadna192
         private Store store;
         private ShopingBasket shopingBasket;
 
-        public override bool purchaseImplementation(shoppingBasket)
+        public bool purchaseImplementation(shoppingBasket s)
         {
-            
+            throw new NotImplementedException(); 
+        }
+
+        public override bool purchaseImplementation()
+        {
+            throw new NotImplementedException();
         }
     }
 }

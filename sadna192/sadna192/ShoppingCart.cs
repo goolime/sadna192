@@ -84,7 +84,7 @@ namespace sadna192
 
         internal bool Finalize_Purchase(ProductInStore product, string address, string payment)
         {
-            //
+            throw new NotImplementedException();
             
             
         }

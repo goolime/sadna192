@@ -34,6 +34,11 @@ namespace sadna192
             throw new NotImplementedException();
         }
 
+        internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
+        {
+            throw new NotImplementedException();
+        }
+
         internal void addOwner(UserState userState, Member other_user)
         {
             throw new NotImplementedException();
@@ -61,6 +66,16 @@ namespace sadna192
             {
                 return SearchProductByPriceRange(price_min, price_max);
             }
+            throw new NotImplementedException();
+        }
+
+        internal void removeApointed(Owner owner)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool removeProduct(string product_name)
+        {
             throw new NotImplementedException();
         }
 
@@ -92,6 +107,11 @@ namespace sadna192
             }
             return productsResult;
 
+        }
+
+        internal bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
+        {
+            throw new NotImplementedException();
         }
 
 

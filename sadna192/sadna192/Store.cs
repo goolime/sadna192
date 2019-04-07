@@ -117,9 +117,6 @@ namespace sadna192
             throw new Exception("The Product " + product_name + " wasn't found in the store " + this.getName());
         }
 
-
-
-        internal void addOwner(UserState userState, Member other_user)
         internal List<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)
         {
             List<ProductInStore> ans = new List<ProductInStore>();
@@ -188,12 +185,12 @@ namespace sadna192
             return productsResult;
         }
 
-        private List<ProductInStore> SearchProductByKeywords(List<string> keywords)
+        private List<ProductInStore> SearchProductByKeywords(List<string> keywords, List<ProductInStore> list)
         {
             List < ProductInStore > listToReturn = new List<ProductInStore>();
             foreach (String keyword in keywords)
             {
-                foreach(ProductInStore p in productInStores)
+                foreach(ProductInStore p in list)
                 {
                     if (p.getProduct().getKeywords().Contains(keyword))
                     {

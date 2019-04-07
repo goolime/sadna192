@@ -30,7 +30,7 @@ namespace sadna192
        
         public bool immidiate()
         {
-            return 
+            return true; 
         }
     }
 }

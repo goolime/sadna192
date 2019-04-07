@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Timers;
 
 namespace sadna192
 {
@@ -7,7 +8,8 @@ namespace sadna192
     {
         //private Member member;
         private List<ShoppingCart> shoppingCarts;
-        private List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> savedProducts;
+        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> savedProducts;
+        internal bool toBeRemoved;
 
 
         //Constructor
@@ -71,6 +73,7 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
         {
+            savedProducts = null; 
             if (p.getStore().FindProductInStore(p.getName()).getPolicy().immidiate())
             {
                 if (p.getAmount() - amount >= 0)
@@ -89,7 +92,25 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
         {
-
+            foreach(ShoppingCart sc in shoppingCarts)
+            {
+                if(sc.getStore().getName() == store_name)
+                {
+                    foreach(KeyValuePair<ProductInStore,int> p in sc.getCart())
+                    {
+                        if (p.Key.getAmount() - p.Value >= 0)
+                        {
+                            p.Key.setAmount(p.Key.getAmount() - p.Value);
+                            savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value - p.Key.getDiscount().calculate(p.Value, p.Key.getPrice()))));
+                        }
+                        else
+                        {
+                            this.returnProducts();
+                            throw new Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore());
+                        }
+                    }
+                }
+            }
             return this.savedProducts;
         }
 
@@ -107,7 +128,11 @@ namespace sadna192
 
         internal void returnProducts()
         {
-
+            foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> productToReturn in savedProducts)
+            {
+                productToReturn.Key.setAmount(productToReturn.Key.getAmount() + productToReturn.Value.Key);
+            }
+            savedProducts = null;
         }
     }
 }

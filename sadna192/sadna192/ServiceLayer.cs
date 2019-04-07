@@ -353,7 +353,7 @@ namespace sadna192
                     Tools.check_productNames(product_new_name) &&
                     Tools.check_productCategory(product_new_category) &&
                     Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount)
+                    Tools.check_amount(product_new_amount) 
                     ) {
                     return this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
                 }

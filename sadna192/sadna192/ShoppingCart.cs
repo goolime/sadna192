@@ -90,7 +90,15 @@ namespace sadna192
             
         }
 
-       
+        internal List<KeyValuePair<ProductInStore, int>> getCart()
+        {
+            List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                ans.Add(new KeyValuePair<ProductInStore, int>(p.First, p.Second));
+            }
+            return ans;
+        }
     }
 
     

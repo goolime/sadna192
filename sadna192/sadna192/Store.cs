@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using F23.StringSimilarity;
 
 
 
@@ -9,10 +10,14 @@ namespace sadna192
     {
         private string name;
         private List<ProductInStore> productInStores= new List<ProductInStore>();
+        private List<Owner> owners;
+        private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
 
         public Store(string name)
         {
             this.name = name;
+            this.productInStores = new List<ProductInStore>();
+            this.owners = new List<Owner>();
         }
 
         public string getName()
@@ -32,12 +37,7 @@ namespace sadna192
 
         internal void addOwner(Owner owner)
         {
-            throw new NotImplementedException();
-        }
-
-        internal void addManager(UserState userState, Member other_user, bool permision_add, bool permission_remove, bool permission_update)
-        {
-            throw new NotImplementedException();
+            this.owners.Add(owner);
         }
 
         internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -120,52 +120,54 @@ namespace sadna192
 
 
         internal void addOwner(UserState userState, Member other_user)
-        {
-            throw new NotImplementedException();
-        }
-
         internal List<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)
         {
+            List<ProductInStore> ans = new List<ProductInStore>();
+            ans.AddRange(this.productInStores.ToArray());
+
             //Searching By Name
-            if(name!=null && category==null && keywords == null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank == -1)
+            if(name!=null)
             {
-                return SearchProductByName(name);
+                ans = SearchProductByName(name,ans);
             }
             //Searching By Category
-            else if (name==null && category != null && keywords==null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank== -1)
+            if (category != null)
             {
-                return SearchProductByCategory(category);
+                ans = SearchProductByCategory(category, ans);
             }
             //Searching By Keywords
-            else if (name==null && category==null && keywords != null && price_min== -1 && price_max==0 && store_rank== -1 && product_rank== -1)
+            if (keywords != null)
             {
-                return SearchProductByKeywords(keywords);
+                ans =  SearchProductByKeywords(keywords, ans);
             }
             //Searching by price range
-            else if (name == null && category == null && keywords == null && price_min != -1 && price_max != -1 && store_rank == -1 && product_rank == -1)
+            if (price_min != -1)
             {
-                return SearchProductByPriceRange(price_min, price_max);
+                ans = SearchProductByMinPriceRange(price_min, ans);
             }
-            else if (name == null && category == null && keywords == null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank != -1)
+            if (price_max != -1)
             {
-                return SearchProductByProductRank(product_rank);
+                ans = SearchProductByMaxPriceRange(price_max, ans);
             }
-
-            throw new SystemException("Error in input of searching options");
+            if (product_rank != -1)
+            {
+                ans = SearchProductByProductRank(product_rank, ans);
+            }
+            return ans;
         }
 
         internal void removeApointed(Owner owner)
         {
-            throw new NotImplementedException();
+            this.owners.Remove(owner);
         }
 
         //Implementation of the searching methods
-        private List<ProductInStore> SearchProductByName(string name)
+        private List<ProductInStore> SearchProductByName(string name, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
-            foreach(ProductInStore p in productInStores)
+            foreach(ProductInStore p in list)
             {
-                if (p.getName() == name)
+                if (similarety.Distance(name,p.getName())<0.2)
                 {
                     productsResult.Add(p);
                 }
@@ -173,12 +175,12 @@ namespace sadna192
             return productsResult;
         }
 
-        private List<ProductInStore> SearchProductByCategory(string category)
+        private List<ProductInStore> SearchProductByCategory(string category, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
-            foreach (ProductInStore p in productInStores)
+            foreach (ProductInStore p in list)
             {
-                if (p.getCategory() == category)
+                if (similarety.Distance(category,p.getCategory())<0.2)
                 {
                     productsResult.Add(p);
                 }
@@ -202,12 +204,25 @@ namespace sadna192
             return listToReturn;
         }
 
-        private List<ProductInStore> SearchProductByPriceRange(double price_min, double price_max)
+        private List<ProductInStore> SearchProductByMinPriceRange(double price_min, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
-            foreach (ProductInStore p in productInStores)
+            foreach (ProductInStore p in list)
             {
-                if (p.getPrice() > price_min && p.getPrice() < price_max)
+                if (p.getPrice() > price_min)
+                {
+                    productsResult.Add(p);
+                }
+            }
+            return productsResult;
+        }
+
+        private List<ProductInStore> SearchProductByMaxPriceRange(double price_max, List<ProductInStore> list)
+        {
+            List<ProductInStore> productsResult = new List<ProductInStore>();
+            foreach (ProductInStore p in list)
+            {
+                if (p.getPrice() < price_max)
                 {
                     productsResult.Add(p);
                 }
@@ -216,10 +231,10 @@ namespace sadna192
         }
 
 
-        private List<ProductInStore> SearchProductByProductRank(double rank)
+        private List<ProductInStore> SearchProductByProductRank(double rank, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
-            foreach (ProductInStore p in productInStores)
+            foreach (ProductInStore p in list)
             {
                 if (p.getRank() == rank)
                 {

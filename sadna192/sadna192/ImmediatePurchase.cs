@@ -8,7 +8,6 @@
 
         public override bool purchaseImplementation()
         {
-
             return true;
         }
     }

@@ -8,13 +8,7 @@
 
         public override bool purchaseImplementation()
         {
-
             return true;
-        }
-
-        public override bool purchaseImplementation()
-        {
-            throw new NotImplementedException();
         }
     }
 }

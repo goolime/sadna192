@@ -339,7 +339,17 @@ namespace sadna192
 
             public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
             {
-                return this.userState.Watch_Cart();
+                List < KeyValuePair<ProductInStore, int> > ans = this.userState.Watch_Cart();
+                ans.Sort(new cartOrder());
+                return ans;
+            }
+
+            private class cartOrder : IComparer<KeyValuePair<ProductInStore, int>>
+            {
+                public int Compare(KeyValuePair<ProductInStore, int> x, KeyValuePair<ProductInStore, int> y)
+                {
+                    return x.Key.getStore().getName().CompareTo(y.Key.getStore().getName());
+                }
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

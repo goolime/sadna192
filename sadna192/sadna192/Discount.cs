@@ -2,11 +2,15 @@
 
 namespace sadna192
 {
-    public class Discount
+    public interface Discount
     {
-        internal bool check()
+        double calculate(int amount, double price);
+    }
+    public class noDiscount:Discount
+    {
+        public double calculate(int amount,double price)
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
 }

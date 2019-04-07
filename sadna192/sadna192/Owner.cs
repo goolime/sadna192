@@ -18,7 +18,7 @@ namespace sadna192
 
         internal Store getStore()
         {
-            return store;
+            throw new NotImplementedException();
         }
 
         internal virtual bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)

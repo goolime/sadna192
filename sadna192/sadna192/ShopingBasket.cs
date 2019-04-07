@@ -79,7 +79,14 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, int>> get_basket()
         {
-            throw new NotImplementedException();
+            List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();
+
+            foreach (ShoppingCart sc in this.shoppingCarts)
+            {
+                ans.AddRange(sc.getCart());
+            }
+            if (ans.Count == 0) throw new Exception("there are no product in the store");
+            return ans;
         }
     }
 }

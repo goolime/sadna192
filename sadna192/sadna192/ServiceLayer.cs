@@ -78,8 +78,6 @@ namespace sadna192
                 members.Add(new Admin(admin_name, admin_pass));
             }
 
-            
-
             internal I_User_ServiceLayer Connect()
             {
                 I_User_ServiceLayer ans = new User_ServiceLayer(this);
@@ -101,7 +99,7 @@ namespace sadna192
 
             public void Add_Log(string log)
             {
-                this.single_ServiceLayer.log.Add(log);
+                this.single_ServiceLayer.log.Add(this.userState.ToString() + ":" + log);
             }
 
             public bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -113,8 +111,10 @@ namespace sadna192
                     Tools.check_amount(product_amount)
                 )
                 {
+                    this.Add_Log("Added Product To Store");
                     return this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
                 }
+                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -126,8 +126,10 @@ namespace sadna192
                     Member other_user = this.GetMember(new_manger_name);
                     if (other_user == null) throw new Exception("new Store manager was not found");
                     this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
+                    this.Add_Log("Added Manager To Store");
                     return true;
                 }
+                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -137,10 +139,12 @@ namespace sadna192
                 {
                     Member other_user = this.GetMember(new_owner_name);
                     if (other_user == null) throw new Exception("new Store owner was not found");
+                    this.Add_Log("Added Owner To Store");
                     return this.userState.Add_Store_Owner(Store_name, other_user);
                     //store.addOwner(this.userState, other_user);
                     //return true;
                 }
+                this.Add_Log("Didn't Add Owner To Store");
                 return false;
             }
 
@@ -148,8 +152,10 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
+                    this.Add_Log("Added To Shopping Basket");
                     return this.userState.Add_To_ShopingBasket(p, amount);
                 }
+                this.Add_Log("Didn't Add to Shopping Basket");
                 return false;
             }
 
@@ -157,8 +163,10 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
+                    this.Add_Log("Edited Product In Shopping Basket");
                     return this.userState.Edit_Product_In_ShopingBasket(p, amount);
                 }
+                this.Add_Log("Didn't edit the Product in Shopping Basket");
                 return false;
             }
 
@@ -166,8 +174,10 @@ namespace sadna192
             {
                 if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
                 {
+                    this.Add_Log("Finish Purchased");
                     return this.userState.Finalize_Purchase(address, payment);
                 }
+                this.Add_Log("Didn't Finish Purchased");
                 return false;
             }
 
@@ -184,6 +194,7 @@ namespace sadna192
                     List<ProductInStore> ans = new List<ProductInStore>();
                     foreach (Store store in this.single_ServiceLayer.store)
                         ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
+                    this.Add_Log("Did Global Search");
                     return ans;
                 }
                 return null;
@@ -200,11 +211,13 @@ namespace sadna192
                         {
                             this.userState = member;
                             single_ServiceLayer.members.Remove(member);
+                            this.Add_Log("Logged In");
                             return true;
                         }
                     }
                     throw new Exception("user not found");
                 }
+                this.Add_Log("Didn't Log In");
                 return false;
             }
 

@@ -19,6 +19,11 @@ namespace sadna192
             return name;
         }
 
+        public List<ProductInStore> getProductInStore()
+        {
+            return productInStores;
+        }
+
         internal bool isMe(string name)
         {
             return this.name == name;
@@ -48,26 +53,31 @@ namespace sadna192
         internal List<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)
         {
             //Searching By Name
-            if(name!=null && category==null && keywords == null && price_min == null && price_max == null && store_rank == null && product_rank == null)
+            if(name!=null && category==null && keywords == null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank == -1)
             {
                 return SearchProductByName(name);
             }
             //Searching By Category
-            else if (name == null && category != null && keywords == null && price_min == null && price_max == null && store_rank == null && product_rank == null)
+            else if (name==null && category != null && keywords==null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank== -1)
             {
                 return SearchProductByCategory(category);
             }
             //Searching By Keywords
-            else if (name == null && category != null && keywords == null && price_min == null && price_max == null && store_rank == null && product_rank == null)
+            else if (name==null && category==null && keywords != null && price_min== -1 && price_max==0 && store_rank== -1 && product_rank== -1)
             {
                 return SearchProductByKeywords(keywords);
             }
             //Searching by price range
-            else if (name == null && category != null && keywords == null && price_min == null && price_max == null && store_rank == null && product_rank == null)
+            else if (name == null && category == null && keywords == null && price_min != -1 && price_max != -1 && store_rank == -1 && product_rank == -1)
             {
                 return SearchProductByPriceRange(price_min, price_max);
             }
-            throw new NotImplementedException();
+            else if (name == null && category == null && keywords == null && price_min == -1 && price_max == -1 && store_rank == -1 && product_rank != -1)
+            {
+                return SearchProductByProductRank(product_rank);
+            }
+
+            throw new SystemException("Error in input of searching options");
         }
 
         internal void removeApointed(Owner owner)

@@ -14,6 +14,11 @@ namespace sadna192
             this.shoppingCarts = shoppingCarts;
         }
 
+        public ShopingBasket()
+        {
+            this.shoppingCarts = null;
+        }
+
         internal bool addProduct(ProductInStore p, int amount)
         {
             //checking if already there is a Shopping cart for this prodcut in the shopping basket
@@ -35,9 +40,26 @@ namespace sadna192
             
         }
 
-        internal bool editProduct(ProductInStore p, int amount)
+        internal bool editProductAmount(ProductInStore p, int amount)
         {
-            throw new NotImplementedException();
+            foreach (ShoppingCart sc in shoppingCarts)
+            {
+                //checking for the same store
+                if (sc.getStore() == p.getStore())
+                {
+                    foreach (ProductInStore pp in sc.getStore().getProductInStore())
+                    {
+                        if (pp.getName() == p.getName())
+                        {
+                            pp.setAmount(amount);
+                            return true;
+                        }
+                    }
+
+                }
+
+            }
+            throw new SystemException("There is no such product in store" + p.getStore().getName());
         }
 
         internal bool Finalize_Purchase(string address, string payment)

@@ -34,7 +34,7 @@ namespace sadna192
 
         public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
         {
-            return this.shopingBasket.editProduct(p, amount);
+            return this.shopingBasket.editProductAmount(p, amount);
         }
 
         public bool Finalize_Purchase(string address, string payment)

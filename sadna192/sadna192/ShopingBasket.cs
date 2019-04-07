@@ -7,6 +7,8 @@ namespace sadna192
     {
         //private Member member;
         private List<ShoppingCart> shoppingCarts;
+        private List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> savedProducts;
+
 
         //Constructor
         public ShopingBasket(List<ShoppingCart> shoppingCarts)
@@ -69,17 +71,36 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
         {
-            throw new NotImplementedException();
+            if (p.getStore().FindProductInStore(p.getName()).getPolicy().immidiate())
+            {
+                if (p.getAmount() - amount >= 0)
+                {
+                    p.setAmount(p.getAmount() - amount);
+                    savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>> (p,new KeyValuePair<int, double>(amount, p.getPrice()*amount-p.getDiscount().calculate(amount, p.getPrice()))));
+                }
+                else
+                {
+                    this.returnProducts();
+                    throw new Exception("There are no enough pieces of " + p.getName() + "in the store " + p.getStore());
+                }
+            }
+            return this.savedProducts;
         }
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
         {
-            throw new NotImplementedException();
+
+            return this.savedProducts;
         }
 
         internal List<KeyValuePair<ProductInStore, int>> get_basket()
         {
             throw new NotImplementedException();
+        }
+
+        internal void returnProducts()
+        {
+
         }
     }
 }

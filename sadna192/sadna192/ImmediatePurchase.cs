@@ -11,10 +11,5 @@
 
             return true;
         }
-
-        public override bool purchaseImplementation()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

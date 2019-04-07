@@ -357,7 +357,15 @@ namespace sadna192
 
             private bool isProductInStore(ProductInStore p)
             {
-                throw new NotImplementedException(); // TODO: depends on rons implemantation
+                try
+                {
+                    p.getStore().FindProductInStore(p.getProduct().getName());
+                }
+                catch
+                {
+                    return false;
+                }
+                return true;
             }
 
             private Member GetMember(string Username)

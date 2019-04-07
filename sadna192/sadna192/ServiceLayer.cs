@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Collections.Generic;
 
 namespace sadna192
@@ -28,7 +29,27 @@ namespace sadna192
             else throw new Exception("the system already exist");
         }
 
-        
+        private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            if (singleton != null)
+            {
+                foreach(Member m in singleton.members)
+                {
+                    if (m.shopingBasket.toBeRemoved)
+                    {
+                        if (m.shopingBasket.savedProducts != null)
+                            m.shopingBasket.returnProducts();
+                        m.shopingBasket.toBeRemoved = false;
+                    }
+                    else
+                    {
+                        m.shopingBasket.toBeRemoved = (m.shopingBasket.savedProducts != null);
+                    }
+                }
+            }
+            
+        }
+
 
         private class single_ServiceLayer
         {
@@ -48,10 +69,16 @@ namespace sadna192
                 this.members = new List<Member>();
                 this.users = new List<I_User_ServiceLayer>();
                 this.log = new List<string>();
+                Timer t = new Timer(1000*60*10);
+                t.Elapsed += OnTimedEvent;
+                t.AutoReset = true;
+                t.Enabled = true;
 
                 if (!Tools.check_username(admin_name) && !Tools.check_password(admin_pass)) throw new Exception("invalid admin details");
                 members.Add(new Admin(admin_name, admin_pass));
             }
+
+            
 
             internal I_User_ServiceLayer Connect()
             {
@@ -83,9 +110,7 @@ namespace sadna192
                     Tools.check_productNames(product_name) &&
                     Tools.check_productCategory(product_category) &&
                     Tools.check_price(product_price) &&
-                    Tools.check_amount(product_amount) &&
-                    product_discount.check() &&
-                    product_policy.check()
+                    Tools.check_amount(product_amount)
                 )
                 {
                     return this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
@@ -328,9 +353,7 @@ namespace sadna192
                     Tools.check_productNames(product_new_name) &&
                     Tools.check_productCategory(product_new_category) &&
                     Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount) &&
-                    product_new_discount.check() &&
-                    product_new_policy.check()
+                    Tools.check_amount(product_new_amount)
                     ) {
                     return this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
                 }

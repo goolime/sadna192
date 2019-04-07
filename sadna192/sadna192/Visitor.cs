@@ -5,7 +5,7 @@ namespace sadna192
 {
     internal class Visitor : UserState
     {
-        private ShopingBasket shopingBasket;
+        internal ShopingBasket shopingBasket;
 
         public Visitor()
         {

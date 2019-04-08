@@ -4,5 +4,6 @@
     {
         bool Connect();
         bool check_payment(string payment);
+        void pay(double total, string payment);
     }
 }

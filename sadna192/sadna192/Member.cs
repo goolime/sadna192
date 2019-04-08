@@ -108,5 +108,10 @@ namespace sadna192
             Owner s = this.getUserStore(Store_name);
             return s.updateProduct(product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
         }
+
+        public override string ToString()
+        {
+            return (System.DateTime.Now.ToString() + "| " +this.name);
+        }
     }
 }

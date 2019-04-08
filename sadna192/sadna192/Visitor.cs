@@ -103,5 +103,10 @@ namespace sadna192
         {
             return this.shopingBasket.get_basket();
         }
+
+        public override string ToString()
+        {
+            return (System.DateTime.Now.ToString() + "| Visitor");
+        }
     }
 }

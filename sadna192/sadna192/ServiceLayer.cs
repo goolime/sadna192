@@ -166,7 +166,17 @@ namespace sadna192
             {
                 if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
                 {
-                    return this.userState.Finalize_Purchase(address, payment);
+                    double total = this.userState.Finalize_Purchase();
+                    string code = this.single_ServiceLayer.deliverySystem.sendPackage(address);
+                    try
+                    {
+                        this.single_ServiceLayer.paymentSystem.pay(total,payment);
+                    }
+                    catch (Exception e)
+                    {
+                        this.single_ServiceLayer.deliverySystem.canclePackage(code);
+                        throw e;
+                    }
                 }
                 return false;
             }

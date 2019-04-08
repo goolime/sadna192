@@ -13,7 +13,7 @@ namespace sadna192
         bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount);
         List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name);
         List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount);
-        bool Finalize_Purchase(string address, string payment);
+        double Finalize_Purchase();
         bool Add_Store_Manager(string Store_name, Member new_manger_name, bool permision_add, bool permission_remove, bool permission_update);
         bool Add_Store_Owner(string Store_name, Member new_owner);
         bool Remove_Product_Store(string Store_name, string product_name);

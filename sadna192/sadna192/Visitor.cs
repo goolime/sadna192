@@ -37,9 +37,9 @@ namespace sadna192
             return this.shopingBasket.editProductAmount(p, amount);
         }
 
-        public bool Finalize_Purchase(string address, string payment)
+        public double Finalize_Purchase()
         {
-            return this.shopingBasket.Finalize_Purchase(address, payment);
+            return this.shopingBasket.Finalize_Purchase();
         }
 
         //public List<KeyValuePair<ProductInStore, int>> get_ShopingBasket()
@@ -54,19 +54,19 @@ namespace sadna192
             return false;
         }
 
-        public bool isOwner(string store_name)
+        public virtual bool isOwner(string store_name)
         {
             return false;
         }
 
-        public bool isVistor()
+        public virtual bool isVistor()
         {
             return true;
         }
 
         public virtual bool Open_Store(Store name)
         {
-            throw new Exception("User must login to םפקמ a store");
+            throw new Exception("User must login to open a store");
         }
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)

@@ -20,7 +20,7 @@ namespace sadna192.Tests
             Assert.ThrowsException<Exception>(() => { Tools.check_username("abc"); }, "fail on username check when length is 3");
             Assert.ThrowsException<Exception>(() => { Tools.check_username("4abc"); }, "fail on username check when it doesn't start with a letter");
             Assert.ThrowsException<Exception>(() => { Tools.check_username("a%bc"); }, "check a char which is not exceptable - '%'");
-            Assert.ThrowsException<Exception>(() => { Tools.check_username("abc "); }, "check a char which is not exceptable - ' '");
+            Assert.ThrowsException<Exception>(() => { Tools.check_username("abcר"); }, "check a char which is not exceptable - 'ר'");
             Assert.ThrowsException<Exception>(() => { Tools.check_username("abcע"); }, "check a char which is not exceptable - 'ע'");
             Assert.ThrowsException<Exception>(() => { Tools.check_username("abc&"); }, "check a char which is not exceptable - '&'");
             Assert.ThrowsException<Exception>(() => { Tools.check_username("abc\n"); }, "check a char which is not exceptable - '\\n'");

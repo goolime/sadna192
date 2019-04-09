@@ -7,7 +7,7 @@ namespace sadna192
     {
         private static string leagalCapitalLetters = "QWERTYUIOPASDFGHJKLZXCVBNM";
         private static string leagalSmallLetters = "qwertyuiopasdfghjklzxcvbnm";
-        private static string leagalNumbers = "0123456789";
+        private static string leagalNumbers = "0123456789 ";
 
         public static bool check_username(string name)
         {
@@ -68,7 +68,8 @@ namespace sadna192
         public static bool check_productNames(string name)
         {
             if (name.Length < 4 || name.Length > 32) throw new Exception("the product name must be longer then 4 chars and shorter then 32");
-            if (!isAlfa(name.ToCharArray()[0])) throw new Exception("product name must start with a letter");
+            char c = name[0];
+            if (!isAlfa(c)) throw new Exception("product name must start with a letter");
             if (!isAlfaNumeric(name)) throw new Exception("product name must contain only english letters and numbers");
             return true;
         }

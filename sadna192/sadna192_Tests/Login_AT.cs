@@ -20,19 +20,19 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234Abcd");
             userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer1.Register("login_user", "1221");
+            userServiceLayer1.Register("loginuser", "1221Abcd");
 
             userServiceLayer2 = serviceLayer.Connect();
-            userServiceLayer2.Register("login_user2", "9876");
+            userServiceLayer2.Register("loginuser2", "9876Abcd");
         }
 
         [TestMethod()]
         public void Login_happy_test()
         {
-            Assert.IsTrue(userServiceLayer1.Login("login_user", "1221"));
-            Assert.IsTrue(userServiceLayer1.Open_Store("login_user store"));
+            Assert.IsTrue(userServiceLayer1.Login("loginuser", "1221Abcd"));
+            Assert.IsTrue(userServiceLayer1.Open_Store("loginuser store"));
             Assert.IsTrue(userServiceLayer1.Logout());
 
         }

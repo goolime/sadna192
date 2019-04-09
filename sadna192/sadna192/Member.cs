@@ -6,7 +6,7 @@ namespace sadna192
 {
     internal class Member : Visitor
     {
-        private string name;
+        internal string name;
         private string code;
         internal List<Owner> owner;
 
@@ -15,11 +15,26 @@ namespace sadna192
         {
             this.name = name;
             this.code = this.Encrypt(this.name, password);
+            this.owner = new List<Owner>();
+        }
+
+        public override bool isVistor()
+        {
+            return false;
         }
 
         public override bool isMember()
         {
             return true;
+        }
+
+        public override bool isOwner(string store_name)
+        {
+            foreach (Owner o in this.owner)
+            {
+                if (o.getStore().isMe(store_name)) return true;
+            }
+            return false;
         }
 
         public bool isMe(string other)
@@ -30,6 +45,14 @@ namespace sadna192
         // this code was taken from https://www.c-sharpcorner.com/UploadFile/f8fa6c/data-encryption-and-decryption-in-C-Sharp/
         private string Encrypt(string input, string key)
         {
+            while (key.Length < 16)
+            {
+                key += "1";
+            }
+            if (key.Length > 16)
+            {
+                key = key.Substring(0,16);
+            }
             byte[] inputArray = UTF8Encoding.UTF8.GetBytes(input);
             TripleDESCryptoServiceProvider tripleDES = new TripleDESCryptoServiceProvider();
             tripleDES.Key = UTF8Encoding.UTF8.GetBytes(key);

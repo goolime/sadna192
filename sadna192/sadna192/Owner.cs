@@ -13,12 +13,13 @@ namespace sadna192
             this.store = s;
             this.user = u;
             s.addOwner(this);
+
             this.has_Apointed = new List<Owner>(); 
         }
 
         internal Store getStore()
         {
-            throw new NotImplementedException();
+            return this.store;
         }
 
         internal virtual bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)

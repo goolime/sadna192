@@ -36,9 +36,9 @@ namespace sadna192.Tests
         [TestMethod()]
         public void Add_valid_product_to_store_tests()
         {
-            List<ProductInStore> eggSearch1 = userServiceLayer2.GlobalSearch("eggs", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> eggSearch1 = userServiceLayer2.GlobalSearch("eggs", null, null, -1, -1, -1, -1);
             Assert.IsTrue(userServiceLayer1.Add_Product_Store("the store", "eggs", "food", 13.4, 63, new noDiscount(), new regularPolicy()));   //happy 1
-            List<ProductInStore> eggSearch2 = userServiceLayer2.GlobalSearch("eggs", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> eggSearch2 = userServiceLayer2.GlobalSearch("eggs", null, null, -1, -1, -1, -1);
             Assert.AreEqual(eggSearch1.Count + 1, eggSearch2.Count);
             Assert.AreEqual(eggSearch2[0].getStore().getName(), "the store");
 
@@ -47,57 +47,29 @@ namespace sadna192.Tests
         [TestMethod()]
         public void Add_not_valid_product_to_store_tests()
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            int pre_amount = search1.Count;
-
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Product_Store("", "orange", "food", 13.4, 63, new noDiscount(), new regularPolicy()); }, "store name can not be empty");
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count);
 
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Product_Store("the store", "", "food", 13.4, 63, new noDiscount(), new regularPolicy()); }, "product name can not be empty");
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count);
-
+            
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Product_Store("the store", "orange", "", 13.4, 63, new noDiscount(), new regularPolicy()); }, "Category can not be empty");
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count);
-
+            
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Product_Store("the store", "orange", "food", -6.4, 63, new noDiscount(), new regularPolicy()); }, "price can't be negative number");
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count);
-
+            
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Product_Store("the store", "orange", "food", 5, -7, new noDiscount(), new regularPolicy()); }, "amount can't be negative number");
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count);
+            
         }
 
         [TestMethod()]
         public void Add_existing_product_tests()  //happy -3
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            int pre_amount = search1.Count;
             userServiceLayer1.Add_Product_Store("the store", "orange", "food", 13.4, 63, new noDiscount(), new regularPolicy());
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            int pre_orange_amount=0;
-            for (int i = 0; i < search1.Count; i++)
-            {
-                if (search1[i].getStore().getName().Equals("the store"))
-                    pre_orange_amount = search1[i].getAmount();
-            }
-            Assert.AreEqual(pre_amount + 1, search1.Count);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("orange", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(1, search1.Count);
 
             userServiceLayer1.Add_Product_Store("the store", "orange", "food", 13.4, 70, new noDiscount(), new regularPolicy());
-            search1 = userServiceLayer2.GlobalSearch("orange", "fruit", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount + 1, search1.Count);
-            for (int i = 0; i < search1.Count; i++)
-            {
-                if (search1[i].getStore().getName().Equals("the store"))
-                {
-                    Assert.AreNotEqual(pre_orange_amount, search1[i].getAmount());
-                    Assert.IsTrue(search1[i].getAmount() == 70);
-                    Assert.IsTrue(pre_orange_amount == 63);
-                }
-            }
+            search1 = userServiceLayer2.GlobalSearch("orange", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(1, search1.Count);
+
         }
 
         [TestMethod()]

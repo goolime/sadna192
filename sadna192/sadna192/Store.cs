@@ -43,10 +43,22 @@ namespace sadna192
         internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             //checks if the product is already exists, if not - adds it.
-            Product pr = Product.getProduct(product_name, product_category, product_price);
-            ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
-            this.productInStores.Add(P);
-            return true;
+            try
+            {
+                ProductInStore oldPr = FindProductInStore(product_name);
+                oldPr.setAmount (product_amount);
+                oldPr.setPrice(product_price);
+                oldPr.setDiscount(product_discount);
+                oldPr.setPolicy(product_policy);
+                return true;
+            }
+            catch
+            {
+                Product pr = Product.getProduct(product_name, product_category, product_price);
+                ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
+                this.productInStores.Add(P);
+                return true;
+            }
         }
 
         internal bool removeProduct(string product_name)

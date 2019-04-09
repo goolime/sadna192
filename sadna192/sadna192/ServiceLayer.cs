@@ -145,6 +145,7 @@ namespace sadna192
                 if (Tools.check_username(new_owner_name) && Tools.check_storeName(Store_name))
                 {
                     Member other_user = this.GetMember(new_owner_name);
+                    if (other_user.isOwner(Store_name)) throw new Exception(new_owner_name+"is allready owner of the store");
                     if (other_user == null) throw new Exception("new Store owner was not found");
                     bool ans= this.userState.Add_Store_Owner(Store_name, other_user);
                     if (ans) this.Add_Log("added the user " + new_owner_name +" as owner in the store " + Store_name);
@@ -199,13 +200,13 @@ namespace sadna192
 
             public List<ProductInStore> GlobalSearch(string name, string Category, List<string> keywords, double price_min, double price_max, double Store_rank, double product_rank)
             {
-                if (Tools.check_productNames(name) &&
-                    Tools.check_productCategory(Category) &&
-                    Tools.check_price(price_min) &&
+                if ((name == null || Tools.check_productNames(name)) &&
+                    (Category == null || Tools.check_productCategory(Category)) &&
+                    ((Tools.check_price(price_min) &&
                     Tools.check_price(price_max) &&
-                    price_min<=price_max &&
-                    Tools.check_price(Store_rank) &&
-                    Tools.check_price(product_rank)
+                     price_min <=price_max) || (price_min==-1 || price_max==-1)) &&
+                    (Tools.check_price(Store_rank) || Store_rank==-1) &&
+                    (Tools.check_price(product_rank) || product_rank==-1)
                     ) {
                     List<ProductInStore> ans = new List<ProductInStore>();
                     foreach (Store store in this.single_ServiceLayer.store)
@@ -216,7 +217,7 @@ namespace sadna192
                     this.Add_Log("got "+ ans.Count +" matches in Global Search with parameters: name : " +name+" ,category :"+ Category+" ,keywords :" + kw  + " ,minimum price :" +price_min +" ,maximum price :" +price_max + " ,store rank :"+ Store_rank + " ,product rank :" +product_rank);
                     return ans;
                 }
-                return null;
+                throw new Exception("one or more of the parameters is wrong");
             }
 
             public bool Login(string user_name, string user_pass)

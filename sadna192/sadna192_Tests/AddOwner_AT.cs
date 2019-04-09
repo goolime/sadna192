@@ -22,8 +22,8 @@ namespace sadna192.Tests
             serviceLayer = new ServiceLayer();
             serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
             userServiceLayer1 = serviceLayer.Connect();
-            if (userServiceLayer1.Register("addOwner_user", "1221"))
-                if (userServiceLayer1.Login("addOwner_user", "1221"))
+            if (userServiceLayer1.Register("addOwneruser", "1221Abcd"))
+                if (userServiceLayer1.Login("addOwneruser", "1221Abcd"))
                 {
                     if (userServiceLayer1.Open_Store("shopipi"))
                     {
@@ -33,8 +33,8 @@ namespace sadna192.Tests
                     }
                 }
             userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("addOwner_user2", "87654"))
-                userServiceLayer2.Login("addOwner_user2", "87654");
+            if (userServiceLayer2.Register("addOwneruser2", "87654Abcd"))
+                userServiceLayer2.Login("addOwneruser2", "87654Abcd");
      
 
         }
@@ -46,7 +46,7 @@ namespace sadna192.Tests
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("shopipi", "cake", "chocolate cake", "food", 30, 9, null, null); }, "user2 still not owner so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("shopipi", "cake"); }, "user2 still not owner so he can't remove products");
 
-            Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwner_user2"));
+            Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser2"));
 
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("cola", "drink", null, 0, 100, 0, 0);
             int pre_amount = search1.Count;
@@ -91,10 +91,10 @@ namespace sadna192.Tests
         public void add_the_same_owner_again_test()
         {
             I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
-            userServiceLayer3.Register("addOwner_user3", "9999");
+            userServiceLayer3.Register("addOwneruser3", "9999Abcd");
 
-            Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwner_user3"));
-            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "addOwner_user3"); }, "this user is already owner");
+            Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"));
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"); }, "this user is already owner");
 
         }
 
@@ -102,11 +102,11 @@ namespace sadna192.Tests
         public void not_owner_try_to_add_owner_test()  //bad
         {
             I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
-           tmp_userServiceLayer.Register("addOwner_tmp_user", "11111");
+           tmp_userServiceLayer.Register("addOwnertmpuser", "11111Abcd");
 
             I_User_ServiceLayer userServiceLayer4 = serviceLayer.Connect();
-            if (userServiceLayer4.Register("addOwner_user4", "12345"))
-                userServiceLayer4.Login("addOwner_user4", "12345");
+            if (userServiceLayer4.Register("addOwneruser4", "12345Abcd"))
+                userServiceLayer4.Login("addOwneruser4", "12345Abcd");
 
             Assert.ThrowsException<Exception>(() => { userServiceLayer4.Add_Store_Owner("shopipi", "addOwner_tmp_user");}, "only store owner can add new owner to the store");
         }

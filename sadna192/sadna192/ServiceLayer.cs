@@ -38,7 +38,10 @@ namespace sadna192
                     if (m.shopingBasket.toBeRemoved)
                     {
                         if (m.shopingBasket.savedProducts != null)
+                        {
                             m.shopingBasket.returnProducts();
+                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.name +"'" );
+                        }
                         m.shopingBasket.toBeRemoved = false;
                     }
                     else
@@ -99,7 +102,7 @@ namespace sadna192
 
             public void Add_Log(string log)
             {
-                this.single_ServiceLayer.log.Add(this.userState.ToString() + ":" + log);
+                this.single_ServiceLayer.log.Add(System.DateTime.Now.ToString() + this.userState.ToString() + ":" + log);
             }
 
             public bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -111,10 +114,10 @@ namespace sadna192
                     Tools.check_amount(product_amount)
                 )
                 {
-                    this.Add_Log("Added Product To Store");
-                    return this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
+                    bool ans = this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
+                    if (ans) this.Add_Log("in store " + Store_name + " Added Product" + product_name + " ,category - " + product_category + " ,price - " + product_price + " ,amount - " + product_amount + " ,policy - " +product_policy.ToString() + " ,discount - "+ product_discount.ToString());
+                    return ans;
                 }
-                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -125,11 +128,10 @@ namespace sadna192
                     if (!this.userState.isOwner(Store_name)) throw new Exception("you are not an owner of this store");
                     Member other_user = this.GetMember(new_manger_name);
                     if (other_user == null) throw new Exception("new Store manager was not found");
-                    this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
-                    this.Add_Log("Added Manager To Store");
-                    return true;
+                    bool ans = this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
+                    this.Add_Log("in store "+ Store_name + "Assgined " + new_manger_name + " as new Manager with the permisions: Add- " +permision_add+" ,Remove - " +permission_remove+ " ,update - "+ permission_update);
+                    return ans;
                 }
-                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -139,12 +141,10 @@ namespace sadna192
                 {
                     Member other_user = this.GetMember(new_owner_name);
                     if (other_user == null) throw new Exception("new Store owner was not found");
-                    this.Add_Log("Added Owner To Store");
-                    return this.userState.Add_Store_Owner(Store_name, other_user);
-                    //store.addOwner(this.userState, other_user);
-                    //return true;
+                    bool ans= this.userState.Add_Store_Owner(Store_name, other_user);
+                    if (ans) this.Add_Log("added the user " + new_owner_name +" as owner in the store " + Store_name);
+                    return ans;
                 }
-                this.Add_Log("Didn't Add Owner To Store");
                 return false;
             }
 
@@ -152,10 +152,10 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
-                    this.Add_Log("Added To Shopping Basket");
-                    return this.userState.Add_To_ShopingBasket(p, amount);
+                    bool ans = this.userState.Add_To_ShopingBasket(p, amount);
+                    if (ans) this.Add_Log("Added ["+amount+"]"+ p.getName() +" from the store " + p.getStore().getName() + " to his shopping basket");
+                    return ans;
                 }
-                this.Add_Log("Didn't Add to Shopping Basket");
                 return false;
             }
 
@@ -163,8 +163,9 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
-                    this.Add_Log("Edited Product In Shopping Basket");
-                    return this.userState.Edit_Product_In_ShopingBasket(p, amount);
+                    bool ans = this.userState.Edit_Product_In_ShopingBasket(p, amount);
+                    if (ans) this.Add_Log("changed th amount of " + p.getName() + " from store " + p.getStore().getName() + " to " + amount);
+                    return ans;
                 }
                 this.Add_Log("Didn't edit the Product in Shopping Basket");
                 return false;
@@ -185,7 +186,7 @@ namespace sadna192
                         this.single_ServiceLayer.deliverySystem.canclePackage(code);
                         throw e;
                     }
-                    this.Add_Log("Finish Purchased");
+                    this.Add_Log("Finish Purchased with total payment of " + total + " payed in " + payment +". package '" + code +"' was sent to address - " + address);
                     return true;
                 }
                 return false;
@@ -204,7 +205,7 @@ namespace sadna192
                     List<ProductInStore> ans = new List<ProductInStore>();
                     foreach (Store store in this.single_ServiceLayer.store)
                         ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
-                    this.Add_Log("Did Global Search");
+                    this.Add_Log("got "+ ans.Count +" matches in Global Search with parameters: name : " +name+" ,category :"+ Category+" ,keywords :" + keywords.ToString() + " ,minimum price :" +price_min +" ,maximum price :" +price_max + " ,store rank :"+ Store_rank + " ,product rank :" +product_rank);
                     return ans;
                 }
                 return null;
@@ -227,7 +228,6 @@ namespace sadna192
                     }
                     throw new Exception("user not found");
                 }
-                this.Add_Log("Didn't Log In");
                 return false;
             }
 
@@ -235,7 +235,9 @@ namespace sadna192
             {
                 if (this.userState.isMember())
                 {
+                    
                     single_ServiceLayer.members.Add((Member)this.userState);
+                    this.Add_Log("logout");
                     this.userState = new Visitor();
                 }
                 throw new Exception("you are not logedin");
@@ -251,8 +253,9 @@ namespace sadna192
                         if (store.isMe(name)) throw new Exception("name is allready in use");
                     }
                     Store newstore = new Store(name);
-                    this.userState.Open_Store(newstore);
-                    return true;
+                    bool ans = this.userState.Open_Store(newstore);
+                    if (ans) this.Add_Log("opened new store named - " +name);
+                    return ans;
                 }
                 return false;
             }
@@ -261,7 +264,9 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
-                    return this.userState.Purchase_product(p, amount);
+                    List < KeyValuePair < ProductInStore, KeyValuePair<int, double> >> ans = this.userState.Purchase_product(p, amount);
+                    this.Add_Log("saved for purching [" + amount + "]" + p.getName() + " from store " + p.getStore().getName()) ;
+                    return ans;
                 }
                 return null;
             }
@@ -270,7 +275,13 @@ namespace sadna192
             {
                 if (Tools.check_storeName(store_name))
                 {
-                    return this.userState.Purchase_Store_cart(store_name);
+                    List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> ans = this.userState.Purchase_Store_cart(store_name);
+                    string log = "in store " + store_name + " saved for purching:";
+                    foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> p in ans) {
+                        log += "[" + p.Value.Key + "]" + p.Key.getName()+", ";
+                    }
+                    this.Add_Log(log);
+                    return ans;
                 }
                 return null;
             }
@@ -301,6 +312,7 @@ namespace sadna192
                         }
                         if (ans) throw new Exception("the user name is allready in use");
                         this.single_ServiceLayer.members.Add(new Member(user_name, user_pass));
+                        this.Add_Log("Registerd new user with name '" + user_name + "'");
                         return true;
                     }
                     throw new Exception("you are allready logedin");
@@ -312,7 +324,9 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_productNames(product_name))
                 {
-                    return this.userState.Remove_Product_Store(Store_name, product_name);
+                    bool ans = this.userState.Remove_Product_Store(Store_name, product_name);
+                    if (ans) Add_Log("removed product '"+product_name+"' from store '" + Store_name +"'");
+                    return ans;
                 }
                 return false;
             }
@@ -321,7 +335,9 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_Manager_name))
                 {
-                    return this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
+                    bool ans= this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
+                    if (ans) this.Add_Log("removed the assigndment of '" +other_Manager_name+ "' as manager in store '" + Store_name + "'");
+                    return ans;
                 }
                 return false;
             }
@@ -330,7 +346,9 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_owner_name))
                 {
-                    return this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
+                    bool ans = this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
+                    if (ans) this.Add_Log("removed the assigndment of '" + other_owner_name + "' as owner in store '" + Store_name + "'");
+                    return ans;
                 }
                 return false;
             }
@@ -350,6 +368,7 @@ namespace sadna192
                                     Member tmp = (Member)user.userState;
                                     user.Logout();
                                     single_ServiceLayer.members.Remove(tmp);
+                                    this.Add_Log("removed '" + other_user + "' from the system");
                                     return true;
                                 }
                             }
@@ -359,6 +378,7 @@ namespace sadna192
                             if (member.isMe(other_user))
                             {
                                 single_ServiceLayer.members.Remove(member);
+                                this.Add_Log("removed '" + other_user + "' from the system");
                                 return true;
                             }
                         }
@@ -378,7 +398,9 @@ namespace sadna192
                     Tools.check_price(product_new_price) &&
                     Tools.check_amount(product_new_amount) 
                     ) {
-                    return this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
+                    bool ans= this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
+                    if (ans) this.Add_Log("in store '"+ Store_name + "' updated '"+ product_name + "' - new name:'"+ product_new_name + "',new category:'"+ product_new_category + "' ,new price:"+product_new_price+" ,new amount:"+product_new_amount+" , new discount:"+product_new_discount.ToString()+" ,new policy:"+product_new_policy.ToString());
+                    return ans;
                 }
                 return false;
             }
@@ -387,16 +409,24 @@ namespace sadna192
             {
                 List < KeyValuePair<ProductInStore, int> > ans = this.userState.Watch_Cart();
                 ans.Sort(new cartOrder());
+                this.Add_Log("watched his cart");
                 return ans;
             }
 
-            private class cartOrder : IComparer<KeyValuePair<ProductInStore, int>>
+            public string get_log()
             {
-                public int Compare(KeyValuePair<ProductInStore, int> x, KeyValuePair<ProductInStore, int> y)
+                if (this.userState.isAdmin())
                 {
-                    return x.Key.getStore().getName().CompareTo(y.Key.getStore().getName());
+                    string ans = "";
+                    for(int i=0; i<singleton.log.Count; i++)
+                    {
+                        ans += singleton.log[i] + "\n";
+                    }
+                    return ans;
                 }
+                throw new Exception("only admins can view the log");
             }
+
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -410,6 +440,14 @@ namespace sadna192
             //////////                                                                                           //////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            private class cartOrder : IComparer<KeyValuePair<ProductInStore, int>>
+            {
+                public int Compare(KeyValuePair<ProductInStore, int> x, KeyValuePair<ProductInStore, int> y)
+                {
+                    return x.Key.getStore().getName().CompareTo(y.Key.getStore().getName());
+                }
+            }
 
             private bool isProductInStore(ProductInStore p)
             {
@@ -449,6 +487,8 @@ namespace sadna192
                 }
                 return ans;
             }
+
+            
         }
     }
 }

@@ -6,7 +6,7 @@ namespace sadna192
 {
     internal class Member : Visitor
     {
-        private string name;
+        internal string name;
         private string code;
         internal List<Owner> owner;
 

@@ -40,7 +40,7 @@ namespace sadna192.Tests
         [TestMethod()]
         public void Login_bad1_test()
         {
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("user34", "69375"); }, "this user is not exist in the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("user34", "69375Abcd"); }, "this user is not exist in the system");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("", "9876"); }, "user name is mandatory field");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("login_user2", ""); }, "password is mandatory field");
         }
@@ -48,7 +48,7 @@ namespace sadna192.Tests
         [TestMethod()]
         public void Login_sad_test()
         {
-            if (userServiceLayer1.Login("login_user", "1221"))
+            if (userServiceLayer1.Login("loginuser", "1221Abcd"))
                 Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
         }
     }

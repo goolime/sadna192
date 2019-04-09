@@ -202,9 +202,9 @@ namespace sadna192
             {
                 if ((name == null || Tools.check_productNames(name)) &&
                     (Category == null || Tools.check_productCategory(Category)) &&
-                    ((Tools.check_price(price_min) &&
-                    Tools.check_price(price_max) &&
-                     price_min <=price_max) || (price_min==-1 || price_max==-1)) &&
+                    (Tools.check_price(price_min) || price_min == -1) &&
+                    (Tools.check_price(price_max) || price_max == -1) &&
+                     (price_min <=price_max || (price_min>0 && price_max==-1)) &&
                     (Tools.check_price(Store_rank) || Store_rank==-1) &&
                     (Tools.check_price(product_rank) || product_rank==-1)
                     ) {
@@ -498,6 +498,7 @@ namespace sadna192
                         }
                     }
                 }
+                if (ans == null) throw new Exception("no user was found");
                 return ans;
             }
 

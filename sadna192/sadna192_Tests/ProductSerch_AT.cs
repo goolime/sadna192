@@ -43,17 +43,28 @@ namespace sadna192.Tests
         }
 
         [TestMethod()]
-        public void Product_search_happy_test()
+        public void Product_Search_by_Category()
+        {
+            List<ProductInStore> milkSearch = userServiceLayer3.GlobalSearch(null, "food", null, -1, -1, -1, -1);
+            Assert.AreEqual(milkSearch.Count, 2);
+        }
+
+        [TestMethod()]
+        public void Product_Search_by_price()
+        {
+            List<ProductInStore> milkSearch = userServiceLayer3.GlobalSearch(null, null, null, 5, -1, -1, -1);
+            Assert.AreEqual(milkSearch.Count, 1);
+            List<ProductInStore> dressSearch = userServiceLayer3.GlobalSearch(null, null, null, -1, 5, -1, -1);
+            Assert.AreEqual(dressSearch.Count, 2);
+            //Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("apple", "fruit", null, 0, 10, 0, 0); }, "searching a product that not exist in the system");
+        }
+
+        [TestMethod()]
+        public void Product_search_by_name()
         {
             List<ProductInStore> milkSearch = userServiceLayer3.GlobalSearch("milk", null, null, -1, -1, -1, -1);
             Assert.AreEqual(milkSearch.Count, 2);
-            milkSearch = userServiceLayer3.GlobalSearch(null, "foodd", null, -1, -1, -1, -1);
-            Assert.AreEqual(milkSearch.Count, 1);
-            milkSearch = userServiceLayer3.GlobalSearch(null, null, null, 0, 0, 0, 0);
-            Assert.AreEqual(milkSearch.Count, 0);
-            List<ProductInStore> dressSearch = userServiceLayer3.GlobalSearch(null, "clothes", null, 0, 70, 0, 0);
-            Assert.AreEqual(dressSearch.Count, 1);
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("apple", "fruit", null, 0, 10, 0, 0); }, "searching a product that not exist in the system");
+           
         }
 
 

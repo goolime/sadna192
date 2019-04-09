@@ -15,8 +15,6 @@ namespace sadna192.Tests
         private static I_ServiceLayer serviceLayer;
         private I_User_ServiceLayer userServiceLayer_buyer;
         private I_User_ServiceLayer userServiceLayer_seller;
-        private I_DeliverySystem deliverySystem;
-        private I_PaymentSystem paymentSystem;
 
         [TestInitialize]
         public void init()
@@ -25,7 +23,7 @@ namespace sadna192.Tests
             serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "123456Ui");
             userServiceLayer_seller = serviceLayer.Connect();
             if (userServiceLayer_seller.Register("purchaseCartUser", "1221Qwer"))
-                if (userServiceLayer_seller.Login("purchaseCart_user", "1221Qwer"))
+                if (userServiceLayer_seller.Login("purchaseCartUser", "1221Qwer"))
                     if (userServiceLayer_seller.Open_Store("Renuar") && userServiceLayer_seller.Open_Store("mike place"))
                     {
                         userServiceLayer_seller.Add_Product_Store("Renuar", "red dress", "clothes", 45, 10, new noDiscount(), new regularPolicy() );  

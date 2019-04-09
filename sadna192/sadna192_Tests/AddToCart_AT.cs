@@ -20,19 +20,19 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234DfGb");
             userServiceLayer1 = serviceLayer.Connect();
-            if (userServiceLayer1.Register("addToCart_user", "1221"))
-                if (userServiceLayer1.Login("addToCart_user", "1221"))
+            if (userServiceLayer1.Register("addToCartUser", "1221Xccv"))
+                if (userServiceLayer1.Login("addToCartUser", "1221Xccv"))
                     if (userServiceLayer1.Open_Store("Mini Grocery"))
                     {
-                        userServiceLayer1.Add_Product_Store("Mini Grocery", "apple", "food", 4, 10, null, null);
-                        userServiceLayer1.Add_Product_Store("Mini Grocery", "cheese", "food", 8.6, 2, null, null);
+                        userServiceLayer1.Add_Product_Store("Mini Grocery", "apple", "food", 4, 10, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("Mini Grocery", "cheese", "food", 8.6, 2, new noDiscount(), new regularPolicy());
                     }
 
             userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("addToCart_user2", "9876"))
-                userServiceLayer2.Login("addToCart_user2", "9876");
+            if (userServiceLayer2.Register("addToCartUser2", "9876THgb"))
+                userServiceLayer2.Login("addToCartUser2", "9876THgb");
                    
         }
 

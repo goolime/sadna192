@@ -20,19 +20,19 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234DFgh");
             userServiceLayer_seller = serviceLayer.Connect();
-            if (userServiceLayer_seller.Register("updateCart_user", "1221"))
-                if (userServiceLayer_seller.Login("updateCart_user", "1221"))              
+            if (userServiceLayer_seller.Register("updateCartUser", "1221THyu"))
+                if (userServiceLayer_seller.Login("updateCartUser", "1221THyu"))              
                     if (userServiceLayer_seller.Open_Store("MiniMarket"))
                     {
-                        userServiceLayer_seller.Add_Product_Store("MiniMarket", "red apple", "food", 4, 10, null, null);
-                        userServiceLayer_seller.Add_Product_Store("MiniMarket", "cheesecake", "food", 15, 5, null, null);
+                        userServiceLayer_seller.Add_Product_Store("MiniMarket", "red apple", "food", 4, 10, new noDiscount(), new regularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("MiniMarket", "cheesecake", "food", 15, 5, new noDiscount(), new regularPolicy());
                     }
 
             userServiceLayer_buyer = serviceLayer.Connect();
-            if (userServiceLayer_buyer.Register("updateCart_user2", "97531"))
-                if (userServiceLayer_buyer.Login("updateCart_user2", "97531"))
+            if (userServiceLayer_buyer.Register("updateCartUser2", "97531ERty"))
+                if (userServiceLayer_buyer.Login("updateCartUser2", "97531ERty"))
                 {
                     List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple", "food", null, 0.5, 15, 0, 0);
                     userServiceLayer_buyer.Add_To_ShopingBasket(appleToBuy[0], 3);

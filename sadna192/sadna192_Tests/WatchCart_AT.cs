@@ -22,7 +22,7 @@ namespace sadna192.Tests
             serviceLayer = new ServiceLayer();
             serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234Asdf");
             userServiceLayer_seller = serviceLayer.Connect();
-            if (userServiceLayer_seller.Register("'watchCartUser", "1221LoOl"))
+            if (userServiceLayer_seller.Register("watchCartUser", "1221LoOl"))
                 if (userServiceLayer_seller.Login("watchCartUser", "1221LoOl"))
                     if (userServiceLayer_seller.Open_Store("grocery store") && userServiceLayer_seller.Open_Store("zara"))
                     {
@@ -35,12 +35,10 @@ namespace sadna192.Tests
             if (userServiceLayer_buyer.Register("watchCartUser2", "3456ZxcX"))
                 if (userServiceLayer_buyer.Login("watchCartUser2", "3456ZxcX"))
                 {
-                    List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("suger", "food", null, 0.5, 100, 0, 0);
-                    List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("salt", "food", null, 0.5, 100, 0, 0);
-                    List<ProductInStore> toBuy3 = userServiceLayer_buyer.GlobalSearch("suger", "food", null, 50, 150, 0, 0);
+                    List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("suger", null, null, -1, -1, -1, -1);
+                    List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("shirt", null, null, -1, -1, -1, -1);
                     userServiceLayer_buyer.Add_To_ShopingBasket(toBuy1[0], 1);
-                    userServiceLayer_buyer.Add_To_ShopingBasket(toBuy3[0], 2);
-                    userServiceLayer_buyer.Add_To_ShopingBasket(toBuy2[0], 1);
+                    userServiceLayer_buyer.Add_To_ShopingBasket(toBuy2[0], 2);
                 }
         }
 
@@ -48,10 +46,9 @@ namespace sadna192.Tests
         public void watch_cart_of_existing_store_in_cart_test()
         {
             List<KeyValuePair<ProductInStore, int>> user_cart = userServiceLayer_buyer.Watch_Cart();
-            Assert.AreEqual(user_cart.Count, 3);
+            Assert.AreEqual(user_cart.Count, 2);
             Assert.AreEqual(user_cart[0].Key.getStore().getName(), "grocery store");
-            Assert.AreEqual(user_cart[1].Key.getStore().getName(), "grocery store");
-            Assert.AreEqual(user_cart[2].Key.getStore().getName(), "zara");
+            Assert.AreEqual(user_cart[1].Key.getStore().getName(), "zara");
         }
 
         [TestMethod()]

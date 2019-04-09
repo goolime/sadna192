@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using static sadna192_Tests.Stubs;
 
-namespace sadna192_Tests
+namespace sadna192.Tests
 {
     [TestClass()]
-    class RemoveUser_AT
+    public class RemoveUser_AT
     {
         private static I_ServiceLayer serviceLayer;
         private I_User_ServiceLayer userServiceLayer_admin;

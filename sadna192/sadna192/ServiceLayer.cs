@@ -369,6 +369,8 @@ namespace sadna192
                 {
                     if (this.userState.isAdmin())
                     {
+
+                        if (((Member)this.userState).isMe(other_user)) throw new Exception("You can't remove yourself");
                         foreach (User_ServiceLayer user in single_ServiceLayer.users)
                         {
                             if (user.userState.isMember())

@@ -21,27 +21,26 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "123456Ui");
             userServiceLayer1 = serviceLayer.Connect();
-            bool user = userServiceLayer1.Register("register_user", "1221");
+            bool user = userServiceLayer1.Register("registerUser", "1221zxcV");
 
-            userServiceLayer2 = serviceLayer.Connect();
         }
 
         [TestMethod()]
         public void Register_happy_test()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-            Assert.IsFalse(userServiceLayer2.Login("bob", "9876"));      
-            Assert.IsTrue(userServiceLayer2.Register("bob", "9876"));
-            Assert.IsTrue(userServiceLayer2.Login("bob", "9876"));
+            Assert.IsFalse(userServiceLayer2.Login("bob", "9876ASdf"));      
+            Assert.IsTrue(userServiceLayer2.Register("bob", "9876ASdf"));
+            Assert.IsTrue(userServiceLayer2.Login("bob", "9876ASdf"));
         }
 
         [TestMethod()]
         public void Register_bad1_test()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Register("register_user", "69375"); }, "this user name is not avilable");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Register("registerUser", "69375LOpo"); }, "this user name is not avilable");
 
         }
 
@@ -49,15 +48,15 @@ namespace sadna192.Tests
         public void Register_bad2_test()
         {
             I_User_ServiceLayer userServiceLayer = serviceLayer.Connect();
-            Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("", "3456"); }, "user name is mandatory field");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("", "3456Sdfg"); }, "user name is mandatory field");
             Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("Alice", ""); }, "password is mandatory field");
         }
 
         [TestMethod()]
         public void Register_sad_test()
         {
-            if (userServiceLayer1.Login("register_user", "1221"))
-                Assert.ThrowsException<Exception>(() => { userServiceLayer1.Register("Alice", "69375"); }, "trying to register when already logedin");
+            if (userServiceLayer1.Login("registerUser", "1221zxcV"))
+                Assert.ThrowsException<Exception>(() => { userServiceLayer1.Register("Alice", "3456Sdfg"); }, "trying to register when already logedin");
         }
 
     }

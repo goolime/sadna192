@@ -71,6 +71,7 @@
     <Compile Include="RemoveManager_AT.cs" />
     <Compile Include="RemoveOwner_AT.cs" />
     <Compile Include="RemoveProductFromStore_AT.cs" />
+    <Compile Include="RemoveUser_AT.cs" />
     <Compile Include="Stubs.cs" />
     <Compile Include="ToolsTests.cs" />
     <Compile Include="updateCart_AT.cs" />

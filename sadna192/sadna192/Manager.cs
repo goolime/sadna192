@@ -2,9 +2,9 @@
 {
     internal class Manager : Owner
     {
-        private bool permision_add;
-        private bool permision_remove;
-        private bool permision_update;
+        internal bool permision_add;
+        internal bool permision_remove;
+        internal bool permision_update;
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {
             this.permision_add = permision_add;

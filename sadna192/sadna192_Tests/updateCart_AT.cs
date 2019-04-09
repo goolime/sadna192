@@ -34,7 +34,7 @@ namespace sadna192.Tests
             if (userServiceLayer_buyer.Register("updateCartUser2", "97531ERty"))
                 if (userServiceLayer_buyer.Login("updateCartUser2", "97531ERty"))
                 {
-                    List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple", "food", null, 0.5, 15, 0, 0);
+                    List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple",null, null, -1, -1, -1, -1);
                     userServiceLayer_buyer.Add_To_ShopingBasket(appleToBuy[0], 3);
                 }
 
@@ -48,25 +48,25 @@ namespace sadna192.Tests
             Assert.IsTrue(userServiceLayer_buyer.Edit_Product_In_ShopingBasket(userServiceLayer_buyer.Watch_Cart()[0].Key, 1));
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart()[0].Value, 1);  // the amount has been changed - 1 
             Assert.IsTrue(userServiceLayer_buyer.Edit_Product_In_ShopingBasket(userServiceLayer_buyer.Watch_Cart()[0].Key, 0));
-            Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, 0);  //the item has been removed from the cart - 2 
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Watch_Cart(); });  //the item has been removed from the cart - 2 
 
             //Assert.IsFalse(userServiceLayer.Edit_Product_In_ShopingBasket(userServiceLayer.Watch_Cart()[0].Key, 20));
             Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Edit_Product_In_ShopingBasket(userServiceLayer_buyer.Watch_Cart()[0].Key, 20); }, "this amount is not available in stock. UC 2.7.2 happy-3");
-            Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, 0);  //tha cart has not changed. 
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Watch_Cart(); }) ;  //tha cart has not changed. 
         }
 
         [TestMethod()]
         public void update_unvalid_product_test()   //Use Case: 2.7.2 Happy-4
         {
-            List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple", "food", null, 0.5, 15, 0, 0);
+            List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple", null, null, -1, -1, -1, -1);
             bool build_cart = userServiceLayer_buyer.Add_To_ShopingBasket(appleToBuy[0], 3);
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, 1);
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart()[0].Value, 3);
 
-            if(userServiceLayer_seller.Remove_Product_Store("MiniMarket", "red apple"))
+            if (userServiceLayer_seller.Remove_Product_Store("MiniMarket", "red apple"))
             {
                 Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Edit_Product_In_ShopingBasket(userServiceLayer_buyer.Watch_Cart()[0].Key, 2); }, "this product is no longer avilable in store. UC 2.7.2 happy-4");
-                Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, 0);
+                Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Watch_Cart(); });
             } 
         }
 
@@ -74,7 +74,7 @@ namespace sadna192.Tests
         [TestMethod()]
         public void update_product_that_is_not_in_cart_test()   //Use Case: 2.7.2 Happy-4
         {
-            List<ProductInStore> cheescakeToBuy = userServiceLayer_buyer.GlobalSearch("cheescake", "food", null, 0.5, 15, 0, 0);
+            List<ProductInStore> cheescakeToBuy = userServiceLayer_buyer.GlobalSearch("cheescake", null, null, -1, -1, -1, -1);
             int cart_amount = userServiceLayer_buyer.Watch_Cart().Count;
             Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Edit_Product_In_ShopingBasket(cheescakeToBuy[0], 2); }, "tring to update producat that is not in cart.   UC 2.7.2 bad");
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, cart_amount);
@@ -83,7 +83,7 @@ namespace sadna192.Tests
         [TestMethod()]
         public void update_unvalid_amount_of_product__test()   //Use Case: 2.7.2 Happy-4
         {
-            List<ProductInStore> cheescakeToBuy = userServiceLayer_buyer.GlobalSearch("cheescake", "food", null, 0.5, 15, 0, 0);
+            List<ProductInStore> cheescakeToBuy = userServiceLayer_buyer.GlobalSearch("cheescake", null, null, -1, -1, -1, -1);
             int cart_amount = userServiceLayer_buyer.Watch_Cart().Count;
             Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Edit_Product_In_ShopingBasket(cheescakeToBuy[0], -3); }, "tring to update to nagetive amount of producat.   UC 2.7.2 sad-1");
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, cart_amount);

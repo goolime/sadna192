@@ -56,7 +56,7 @@ namespace sadna192
                 }
                 else
                 {
-                    throw new SystemException("There is no such product " + p.getName() + " in the shopping cart");
+                    throw new Exception("There is no such product " + p.getName() + " in the shopping cart");
                 }
             }
             return false;
@@ -66,7 +66,8 @@ namespace sadna192
 
         internal bool editAmount(ProductInStore p, int amount)             //editAmount
         {
-            foreach (var v in shoppingCartContent)
+            if (amount == 0) return this.DeleteProduct(p, amount);
+            foreach (Pair<ProductInStore,int> v in shoppingCartContent)
             {
 
                 if (v.First.getName() == p.getName())
@@ -74,12 +75,8 @@ namespace sadna192
                     v.Second = amount;
                     return true;
                 }
-                else
-                {
-                    throw new SystemException("There is no such product " + p.getName() + " in the shopping cart of "+store.getName());
-                }
             }
-            return false;
+            throw new Exception("There is no such product " + p.getName() + " in the shopping cart of " + store.getName());
         }
 
 

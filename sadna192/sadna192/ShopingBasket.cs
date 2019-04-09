@@ -51,15 +51,7 @@ namespace sadna192
                 //checking for the same store
                 if (sc.getStore() == p.getStore())
                 {
-                    foreach (ProductInStore pp in sc.getStore().getProductInStore())
-                    {
-                        if (pp.getName() == p.getName())
-                        {
-                            pp.setAmount(amount);
-                            return true;
-                        }
-                    }
-
+                    return sc.editAmount(p, amount);
                 }
 
             }

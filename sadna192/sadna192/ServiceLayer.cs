@@ -167,14 +167,30 @@ namespace sadna192
 
             public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
             {
-                if (isProductInStore(p) && Tools.check_amount(amount))
+                if (Tools.check_amount(amount))
                 {
-                    bool ans = this.userState.Edit_Product_In_ShopingBasket(p, amount);
-                    if (ans) this.Add_Log("changed th amount of " + p.getName() + " from store " + p.getStore().getName() + " to " + amount);
-                    return ans;
+                    try { 
+                    if (isProductInStore(p))
+                    {
+                        bool ans = this.userState.Edit_Product_In_ShopingBasket(p, amount);
+                        if (ans) this.Add_Log("changed th amount of " + p.getName() + " from store " + p.getStore().getName() + " to " + amount);
+                        return ans;
+                    }
+                    else
+                    {
+                        bool ans = this.userState.Edit_Product_In_ShopingBasket(p, 0);
+                        if (ans) this.Add_Log("changed th amount of " + p.getName() + " from store " + p.getStore().getName() + " to " + amount);
+                        return ans;
+                    }
+                    }
+                    catch
+                    {
+                        bool ans = this.userState.Edit_Product_In_ShopingBasket(p, 0);
+                        if (ans) this.Add_Log("changed th amount of " + p.getName() + " from store " + p.getStore().getName() + " to " + 0);
+                        throw new Exception("product was removed from store");
+                    }
                 }
-                this.Add_Log("Didn't edit the Product in Shopping Basket");
-                return false;
+                throw new Exception("unvalid amount");
             }
 
             public bool Finalize_Purchase(string address, string payment)

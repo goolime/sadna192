@@ -45,12 +45,11 @@ namespace sadna192.Tests
         [TestMethod()]
         public void Create_ServiceLayer_BadTest()
         {
-            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "", "1234"); }, "admin details are not valid.");
+            serviceLayer = new ServiceLayer();
+            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "", "1234SdFg"); }, "admin details are not valid.");
             Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", ""); }, "admin details are not valid.");
-            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(null, new stub_paymentSystem(), "admin", "1234"); }, "Delivary System is missing");
-            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), null, "admin", "1234"); }, "Payment System is missing");
-            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_bad_deliverySystem() , new stub_paymentSystem(), "admin", "1234"); }, "Delivary System cannot connect");
-            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_bad_paymentSystem(), "admin", "1234"); }, "Payment System cannot connect");
+            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_bad_deliverySystem() , new stub_paymentSystem(), "admin", "1234FgHj"); }, "Delivary System cannot connect");
+            Assert.ThrowsException<Exception>(() => { serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_bad_paymentSystem(), "admin", "1234GhJk"); }, "Payment System cannot connect");
         }
     }
 }

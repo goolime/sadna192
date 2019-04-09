@@ -77,7 +77,7 @@ namespace sadna192
                 t.AutoReset = true;
                 t.Enabled = true;
 
-                if (!Tools.check_username(admin_name) && !Tools.check_password(admin_pass)) throw new Exception("invalid admin details");
+                if (!Tools.check_username(admin_name) || !Tools.check_password(admin_pass)) throw new Exception("invalid admin details");
                 members.Add(new Admin(admin_name, admin_pass));
             }
 

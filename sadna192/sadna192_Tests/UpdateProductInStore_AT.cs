@@ -28,7 +28,7 @@ namespace sadna192.Tests
                     if (userServiceLayer1.Open_Store("my store"))
                     {
                         userServiceLayer1.Add_Product_Store("my store", "bread", "food", 9.9, 42, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("my store", "pie", "food", 19.9, 22, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("my store", "apple pie", "food", 19.9, 22, new noDiscount(), new regularPolicy());
                         userServiceLayer1.Add_Product_Store("my store", "brown suger", "food", 11.9, 12, new noDiscount(), new regularPolicy());
                     }
                 }
@@ -41,36 +41,36 @@ namespace sadna192.Tests
         [TestMethod()]
         public void update_valid_product_in_store_tests()
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("bread", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("bread", null, null, -1, -1, -1, -1);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", "light bread", "health food", 8.9, 90, new noDiscount(), new regularPolicy()));   //happy 1
-            search1 = userServiceLayer2.GlobalSearch("bread", "food", null, 0, 100, 0, 0);
-            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("light bread", "health food", null, 0, 100, 0, 0);
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", "light bread", "food", 8.9, 90, new noDiscount(), new regularPolicy()));   //happy 1
+            search1 = userServiceLayer2.GlobalSearch("bread", null, null, -1, -1, -1, -1);
+            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("light bread", null, null, -1, -1, -1, -1);
             Assert.AreEqual(1, search2.Count);
-            Assert.AreEqual(pre_amount, search1.Count - 1);
+            Assert.AreEqual(pre_amount-1, search1.Count);
         }
 
         [TestMethod()]
         public void update_product_that_not_exisit_test()
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("apple pie", null, null, -1, -1, -1, -1);
             int pre_amount = search1[0].getAmount(); 
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Update_Product_Store("my store", "tea", "green tea", "drink", 6.8, 900, new noDiscount(), new regularPolicy());}, "product does not exist in store");
-            search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
+            search1 = userServiceLayer2.GlobalSearch("apple pie", null, null, -1, -1, -1, -1);
             Assert.AreEqual(pre_amount , search1[0].getAmount());   //happy 2
         }
 
         [TestMethod()]
         public void update_product_amount_to_zero_test()
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("apple pie", null, null, -1, -1, -1, -1);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "pie", "pie", "food", 8.9, 0, new noDiscount(), new regularPolicy()));
-            search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
-            Assert.AreEqual(pre_amount, search1.Count-1);   //happy 2
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "apple pie", "apple pie", "food", 8.9, 0, new noDiscount(), new regularPolicy()));
+            search1 = userServiceLayer2.GlobalSearch("apple pie", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(pre_amount-1 , search1.Count);   //happy 2
             for(int i=0; i<search1.Count; i++)
             {
-                if(search1[i].getStore().getName().Equals("my store"))
+                if (search1[i].getStore().getName().Equals("my store"))
                     Assert.Fail("product is still in the store!");
             }
         }

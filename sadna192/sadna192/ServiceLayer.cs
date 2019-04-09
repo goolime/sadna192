@@ -409,10 +409,17 @@ namespace sadna192
                     Tools.check_productNames(product_new_name) &&
                     Tools.check_productCategory(product_new_category) &&
                     Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount) 
-                    ) {
-                    bool ans= this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
-                    if (ans) this.Add_Log("in store '"+ Store_name + "' updated '"+ product_name + "' - new name:'"+ product_new_name + "',new category:'"+ product_new_category + "' ,new price:"+product_new_price+" ,new amount:"+product_new_amount+" , new discount:"+product_new_discount.ToString()+" ,new policy:"+product_new_policy.ToString());
+                    Tools.check_amount(product_new_amount)
+                    )
+                {
+                    bool ans = false;
+                    if (product_new_amount > 0)
+                    {
+                        ans = this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
+                        if (ans) this.Add_Log("in store '" + Store_name + "' updated '" + product_name + "' - new name:'" + product_new_name + "',new category:'" + product_new_category + "' ,new price:" + product_new_price + " ,new amount:" + product_new_amount + " , new discount:" + product_new_discount.ToString() + " ,new policy:" + product_new_policy.ToString());
+                    }
+                    else
+                        ans = this.Remove_Product_Store(Store_name, product_name);
                     return ans;
                 }
                 return false;

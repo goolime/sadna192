@@ -29,10 +29,26 @@ namespace sadna192
 
         internal virtual bool addManager(Member new_manager, bool permision_add, bool permission_remove, bool permission_update)
         {
-            Manager nm = new Manager(new_manager,this.store, permision_add, permission_remove, permission_update);
-            new_manager.owner.Add(nm);
-            this.has_Apointed.Add(nm);
-            return true;
+            try
+            {
+                foreach (Owner o in new_manager.owner)
+                {
+                    if (o.store.isMe(this.store.getName()) && o is Manager) {
+                        ((Manager)o).permision_add = ((Manager)o).permision_add || permision_add;
+                        ((Manager)o).permision_remove = ((Manager)o).permision_remove || permission_remove;
+                        ((Manager)o).permision_update = ((Manager)o).permision_update || permission_update;
+                        return true;
+                    }
+                }
+                throw new Exception("");
+            }
+            catch
+            {
+                Manager nm = new Manager(new_manager, this.store, permision_add, permission_remove, permission_update);
+                new_manager.owner.Add(nm);
+                this.has_Apointed.Add(nm);
+                return true;
+            }
         }
 
         internal virtual bool addOwner(string store_name, Member new_owner)

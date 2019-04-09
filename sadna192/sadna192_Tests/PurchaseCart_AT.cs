@@ -76,7 +76,7 @@ namespace sadna192.Tests
 
         [TestMethod()]
         public void canceled_purchaseCart_test()
-        {
+        {/*
             int amount = userServiceLayer_buyer.Watch_Cart().Count;
             List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> buing = userServiceLayer_buyer.Purchase_Store_cart("mike place");
             double sum = 0;
@@ -94,7 +94,9 @@ namespace sadna192.Tests
             List<ProductInStore> sodaList = userServiceLayer_seller.GlobalSearch("soda", "drinks", null, 0, 150, 0, 0);
             for (int i = 0; i < sodaList.Count; i++)
                 if (sodaList[i].getStore().getName().Equals("mike place"))
-                    Assert.AreEqual(sodaList[i].getAmount(), 50);           
+                    Assert.AreEqual(sodaList[i].getAmount(), 50);   
+                    */
+            Assert.Fail("run this test alone. it takes 10 min");
         }
         /*
         [TestMethod()]

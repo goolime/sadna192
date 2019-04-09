@@ -31,9 +31,9 @@ namespace sadna192.Tests
         public void Register_happy_test()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-            Assert.IsFalse(userServiceLayer2.Login("bob", "9876ASdf"));      
-            Assert.IsTrue(userServiceLayer2.Register("bob", "9876ASdf"));
-            Assert.IsTrue(userServiceLayer2.Login("bob", "9876ASdf"));
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("bobi", "9876ASdf"); }, "try to log in with user name that not exist");
+            Assert.IsTrue(userServiceLayer2.Register("bobi", "9876ASdf"));
+            Assert.IsTrue(userServiceLayer2.Login("bobi", "9876ASdf"));
         }
 
         [TestMethod()]

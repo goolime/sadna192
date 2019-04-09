@@ -45,6 +45,7 @@ namespace sadna192
             //checks if the product is already exists, if not - adds it.
             Product pr = Product.getProduct(product_name, product_category, product_price);
             ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
+            this.productInStores.Add(P);
             return true;
         }
 

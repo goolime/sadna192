@@ -19,10 +19,10 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234Abcd");
             userServiceLayer = serviceLayer.Connect();
-            if (userServiceLayer.Register("logout_user", "1221"))
-                if (userServiceLayer.Login("logout_user", "1221"))
+            if (userServiceLayer.Register("logoutuser", "1221Abcd"))
+                if (userServiceLayer.Login("logoutuser", "1221Abcd"))
                     if (userServiceLayer.Open_Store("Grocery"))
                          userServiceLayer.Add_Product_Store("Grocery", "milk", "food", 4.5 ,10 , null, null);
         }
@@ -38,9 +38,9 @@ namespace sadna192.Tests
         public void Logout_happy_test2()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("logout_user2", "2345"))
+            if (userServiceLayer2.Register("logoutuser2", "2345Abcd"))
             { 
-                userServiceLayer2.Login("logout_user2", "2345");                
+                userServiceLayer2.Login("logoutuser2", "2345Abcd");                
                 List <ProductInStore> products = userServiceLayer2.GlobalSearch("milk", "food",null, 0, 10 , 0 , 0);
                 userServiceLayer2.Add_To_ShopingBasket(products[0] , 2);
                 List<KeyValuePair<ProductInStore, int>> user2_cart = userServiceLayer2.Watch_Cart();
@@ -48,7 +48,7 @@ namespace sadna192.Tests
                 userServiceLayer2.Logout();
                 Assert.AreNotSame(userServiceLayer2.Watch_Cart() , user2_cart);
 
-                userServiceLayer2.Login("logout_user2", "2345");
+                userServiceLayer2.Login("logoutuser2", "2345Abcd");
                 Assert.AreSame(userServiceLayer2.Watch_Cart(), user2_cart);
             }      
         }

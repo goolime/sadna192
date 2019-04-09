@@ -56,9 +56,26 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AddManager_AT.cs" />
+    <Compile Include="AddOwner_AT.cs" />
+    <Compile Include="AddProductToStore_AT.cs" />
+    <Compile Include="AddToCart_AT.cs" />
+    <Compile Include="I_ServiceLayer_AT.cs" />
+    <Compile Include="Login_AT.cs" />
+    <Compile Include="Logout_AT.cs" />
+    <Compile Include="OpenStore_AT.cs" />
+    <Compile Include="ProductSerch_AT.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StoreTests.cs" />
+    <Compile Include="PurchaseCart_AT.cs" />
+    <Compile Include="Register_AT.cs" />
+    <Compile Include="RemoveManager_AT.cs" />
+    <Compile Include="RemoveOwner_AT.cs" />
+    <Compile Include="RemoveProductFromStore_AT.cs" />
+    <Compile Include="Stubs.cs" />
     <Compile Include="ToolsTests.cs" />
+    <Compile Include="updateCart_AT.cs" />
+    <Compile Include="UpdateProductInStore_AT.cs" />
+    <Compile Include="WatchCart_AT.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

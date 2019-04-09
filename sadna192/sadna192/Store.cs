@@ -262,7 +262,7 @@ namespace sadna192
             int currentAmount = p.getAmount();
             if (currentAmount - amount < 0)
             {
-                throw new SystemException("The Amount to purchase os more tham the amount available in the store for this moment");
+                throw new Exception("The Amount to purchase os more tham the amount available in the store for this moment");
             }
             else
             {

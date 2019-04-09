@@ -25,6 +25,11 @@ namespace sadna192
         // ========== Getters ========== //
         // ============================= //
 
+        public Policy getPolicy()
+        {
+            return this.policy;
+        }
+
         public Product getProduct()
         {
             return product;
@@ -50,7 +55,7 @@ namespace sadna192
             return discount;
         }
 
-        internal Policy getPolicy()
+        internal Policy GetPolicy()
         {
             return policy;
         }

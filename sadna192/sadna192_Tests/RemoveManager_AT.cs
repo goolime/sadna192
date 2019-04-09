@@ -30,7 +30,7 @@ namespace sadna192.Tests
                 if (userServiceLayer1.Login("removeManagerUser", "1221GhHg"))
                     if (userServiceLayer1.Open_Store("shoes store"))
                     {
-                        userServiceLayer1.Add_Product_Store("shoes store", "heel shoes", "women shoes", 280, 26, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("shoes store", "heel shoes", "womenshoes", 280, 26, new noDiscount(), new regularPolicy());
                         userServiceLayer1.Add_Store_Manager("shoes store", "removeManagerUser2" , true, true, true);
                     }  
         }
@@ -38,13 +38,13 @@ namespace sadna192.Tests
         [TestMethod()]
         public void remove_shop_manager_tests()
         {
-            Assert.IsTrue(userServiceLayer2.Add_Product_Store("shoes store", "blundstone", "men shoes", 700, 100, new noDiscount(), new regularPolicy()));
+            Assert.IsTrue(userServiceLayer2.Add_Product_Store("shoes store", "blundstone", "menshoes", 700, 100, new noDiscount(), new regularPolicy()));
             Assert.IsTrue(userServiceLayer2.Update_Product_Store("shoes store", "blundstone", "blundstone", "shoes", 580, 90, new noDiscount(), new regularPolicy()));
             Assert.IsTrue(userServiceLayer2.Remove_Product_Store("shoes store", "blundstone"));
 
-            Assert.IsTrue(userServiceLayer1.Remove_Store_Owner("shoes store", "removeManagerUser2"));
+            Assert.IsTrue(userServiceLayer1.Remove_Store_Manager("shoes store", "removeManagerUser2"));
 
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("shoes store", "blundstone", "men shoes", 700, 100, new noDiscount(), new regularPolicy()); }, "removeManager_user2 is no longer a manager so he can't add product");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("shoes store", "blundstone", "menshoes", 700, 100, new noDiscount(), new regularPolicy()); }, "removeManager_user2 is no longer a manager so he can't add product");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("shoes store", "blundstone", "blundstone", "shoes", 580, 90, new noDiscount(), new regularPolicy()); }, "removeManager_user2 is no longer a manager so he can't update product");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("shoes store", "blundstone"); }, "removeManager_user2 is no longer a manager so he can't remove product");
         }
@@ -95,10 +95,7 @@ namespace sadna192.Tests
             userServiceLayer1.Add_Store_Manager("shoes store", "removeManagerUser3", true, true, true);
 
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Remove_Store_Manager("shoes store", "removeManagerUser3"); }, "only store owner can remove manager from the store");
-            Assert.IsTrue(userServiceLayer3.Update_Product_Store("shoes store", "heel shoes", "heel shoes", "evening shoes", 280, 20, new noDiscount(), new regularPolicy()));
-
-            Assert.IsTrue(userServiceLayer1.Remove_Store_Manager("shoes store", "removeManagerUser3"));
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("shoes store", "heel shoes", "heel shoes", "evening shoes", 550, 9, new noDiscount(), new regularPolicy()); }, "removeManager_user3 is no longer a manager");
+            Assert.IsTrue(userServiceLayer3.Update_Product_Store("shoes store", "heel shoes", "heel shoes", "eveningshoes", 280, 20, new noDiscount(), new regularPolicy()));
         }
     }
 }

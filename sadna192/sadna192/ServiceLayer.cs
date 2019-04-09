@@ -470,7 +470,7 @@ namespace sadna192
                 }
                 catch
                 {
-                    return false;
+                    throw new Exception("Product is not in the store");
                 }
                 return true;
             }

@@ -21,7 +21,7 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234AsDF");
             userServiceLayer1 = serviceLayer.Connect();
             if (userServiceLayer1.Register("productSearchuser", "1221Abcd"))
                 if (userServiceLayer1.Login("productSearchuser", "1221Abcd"))

@@ -39,11 +39,11 @@ namespace sadna192.Tests
         [TestMethod()]
         public void addToCart_happy_test()
         {
-            Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, 0);
-            List<ProductInStore> appleToBuy = userServiceLayer2.GlobalSearch("apple", "food",null, 0.5, 15, 0,0);
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Watch_Cart(); }, "watch list is empty");
+            List<ProductInStore> appleToBuy = userServiceLayer2.GlobalSearch("apple", null,null, -1, -1, -1,-1);
             Assert.IsTrue(userServiceLayer2.Add_To_ShopingBasket(appleToBuy[0], 1));
             Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, 1);
-            List<ProductInStore> cheeseToBuy = userServiceLayer2.GlobalSearch("cheese", "food", null, 0.5, 15, 0, 0);
+            List<ProductInStore> cheeseToBuy = userServiceLayer2.GlobalSearch("cheese", null, null, -1, -1, -1, -1);
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_To_ShopingBasket(cheeseToBuy[0], 6); }, "wanted amount of the product is bigger than the amount that the store have");
             Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, 1);    //the cart hasn't changed. 
         }
@@ -51,7 +51,17 @@ namespace sadna192.Tests
         [TestMethod()]
         public void addToCart_bad_test()
         {
-            Assert.Fail("add to cart product that not exist in the store - how to do this?"); 
+            //List<KeyValuePair<ProductInStore, int>> cart = userServiceLayer2.Watch_Cart();
+            if (userServiceLayer1.Open_Store("Mini Grocery2"))
+            {
+                userServiceLayer1.Add_Product_Store("Mini Grocery2", "tea2", "food", 4, 10, new noDiscount(), new regularPolicy());
+            }
+            List<ProductInStore> appleToBuy = userServiceLayer2.GlobalSearch("apple", null, null, -1, -1, -1, -1);
+            List<ProductInStore> teaToBuy = userServiceLayer2.GlobalSearch("tea2", null, null, -1, -1, -1, -1);
+            ProductInStore broken_product=new ProductInStore(teaToBuy[0].getProduct(), teaToBuy[0].getAmount(), teaToBuy[0].getPrice(), appleToBuy[0].getStore(), teaToBuy[0].getDiscount(), teaToBuy[0].getPolicy());
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_To_ShopingBasket(broken_product, 1); }, "trying to add to cart product that not exist in store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Watch_Cart(); });
+
         }
 
     }

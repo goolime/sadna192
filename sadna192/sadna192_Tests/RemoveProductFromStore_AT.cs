@@ -39,9 +39,9 @@ namespace sadna192.Tests
         [TestMethod()]
         public void remove_valid_product_from_store_tests()
         {
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pizza", null, null, -1, -1, -1, -1);
             Assert.IsTrue(userServiceLayer1.Remove_Product_Store("our store", "pizza"));   //happy 1
-            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("pizza", null, null, -1, -1, -1, -1);
             Assert.AreEqual(search1.Count, search2.Count+1);
             for(int i=0; i< search2.Count; i++)
             {
@@ -53,12 +53,11 @@ namespace sadna192.Tests
         [TestMethod()]
         public void remove_product_that_not_exisit_tests()
         {
-
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Remove_Product_Store("our store", "fish"); }, "product does not exist in store");
-            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pizza", null, null, -1, -1, -1, -1);
             Assert.IsTrue(userServiceLayer1.Remove_Product_Store("our store", "pizza"));   //happy 2
-            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
-            Assert.AreEqual(search1, search2);
+            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("pizza", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(search1.Count, search2.Count+1);
         }
 
         [TestMethod()]

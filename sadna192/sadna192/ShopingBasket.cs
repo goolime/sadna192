@@ -81,7 +81,7 @@ namespace sadna192
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
         {
             savedProducts = null; 
-            if (p.getStore().FindProductInStore(p.getName()).getPolicy().immidiate())
+            if (p.getStore().FindProductInStore(p.getName()).GetPolicy().immidiate())
             {
                 if (p.getAmount() - amount >= 0)
                 {

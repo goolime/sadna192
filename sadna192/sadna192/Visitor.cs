@@ -37,9 +37,9 @@ namespace sadna192
             return this.shopingBasket.editProductAmount(p, amount);
         }
 
-        public double Finalize_Purchase()
+        public bool Finalize_Purchase(string address, string payment)
         {
-            return this.shopingBasket.Finalize_Purchase();
+            return this.shopingBasket.Finalize_Purchase(address, payment);
         }
 
         //public List<KeyValuePair<ProductInStore, int>> get_ShopingBasket()

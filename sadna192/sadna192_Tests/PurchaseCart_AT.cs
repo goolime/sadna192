@@ -35,12 +35,10 @@ namespace sadna192.Tests
             if (userServiceLayer_buyer.Register("purchaseCartBuyer", "97531Tyuy"))
                 if (userServiceLayer_buyer.Login("purchaseCartBuyer", "97531Tyuy"))
                 {
-                    List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("red dress", "clothes", null, 5, 150, 0, 0);
-                    List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("pants", "clothes", null, 5, 150, 0, 0);
-                    List<ProductInStore> toBuy3 = userServiceLayer_buyer.GlobalSearch("soda", "drinks", null, 5, 150, 0, 0);
+                    List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("red dress",null, null, -1, -1, -1, -1);
+                    List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("soda", null, null, -1, -1, -1, -1);
                     userServiceLayer_buyer.Add_To_ShopingBasket(toBuy1[0], 1);
                     userServiceLayer_buyer.Add_To_ShopingBasket(toBuy2[0], 1);
-                    userServiceLayer_buyer.Add_To_ShopingBasket(toBuy3[0], 1);
                 }
 
         }
@@ -50,31 +48,26 @@ namespace sadna192.Tests
         {
             
             int amount = userServiceLayer_buyer.Watch_Cart().Count;
-            List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> buing = userServiceLayer_buyer.Purchase_Store_cart("Renuar");
+            List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> buying = userServiceLayer_buyer.Purchase_Store_cart("Renuar");
             double sum =0;
-            for (int i=0; i<buing.Count; i++)
+            for (int i=0; i< buying.Count; i++)
             {
-                sum = sum + buing[i].Value.Value;
+                sum = sum + buying[i].Value.Value;
             }
-            Assert.AreEqual(sum, 100);
+            Assert.AreEqual(sum, 45);
             Assert.IsTrue(userServiceLayer_buyer.Finalize_Purchase("address buyer 1", "paymnent 1234")); 
-            Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, amount - 2);  // the products from renuar has been removed from the cart
+            Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, amount - 1);  // the products from renuar has been removed from the cart
             Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Purchase_Store_cart("Renuar"); }, "the buyer has no item in the cart from this store");
 
-            List<ProductInStore> redDress = userServiceLayer_seller.GlobalSearch("red dress", "clothes", null, 0, 150, 0, 0);
+            List<ProductInStore> redDress = userServiceLayer_seller.GlobalSearch("red dress", null, null, -1, -1, -1, -1);
             for (int i = 0; i < redDress.Count; i++)
                 if (redDress[i].getStore().getName().Equals("Renuar"))
                     Assert.AreEqual(redDress[i].getAmount(), 9);
-
-            List<ProductInStore> pantsList = userServiceLayer_seller.GlobalSearch("pants", "clothes", null, 0, 150, 0, 0);
-            for (int i = 0; i < redDress.Count; i++)
-                if (redDress[i].getStore().getName().Equals("Renuar"))
-                    Assert.AreEqual(redDress[i].getAmount(), 4);
         }
 
         [TestMethod()]
-        public void canceled_purchaseCart_test()
-        {/*
+        public void canceled_purchaseCart_10MIN_test()
+        {
             int amount = userServiceLayer_buyer.Watch_Cart().Count;
             List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> buing = userServiceLayer_buyer.Purchase_Store_cart("mike place");
             double sum = 0;
@@ -93,8 +86,8 @@ namespace sadna192.Tests
             for (int i = 0; i < sodaList.Count; i++)
                 if (sodaList[i].getStore().getName().Equals("mike place"))
                     Assert.AreEqual(sodaList[i].getAmount(), 50);   
-                    */
-            Assert.Fail("run this test alone. it takes 10 min");
+                    
+          
         }
         /*
         [TestMethod()]

@@ -5,11 +5,11 @@ namespace sadna192
 {
     internal class Visitor : UserState
     {
-        private ShopingBasket shopingBasket;
+        internal ShopingBasket shopingBasket;
 
         public Visitor()
         {
-            this.shopingBasket = new ShopingBasket();
+            this.shopingBasket = new ShopingBasket(new List<ShoppingCart>());
         }
 
         public virtual bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -34,7 +34,7 @@ namespace sadna192
 
         public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
         {
-            return this.shopingBasket.editProduct(p, amount);
+            return this.shopingBasket.editProductAmount(p, amount);
         }
 
         public bool Finalize_Purchase(string address, string payment)
@@ -64,7 +64,7 @@ namespace sadna192
             return true;
         }
 
-        public bool Open_Store(Store name)
+        public virtual bool Open_Store(Store name)
         {
             throw new Exception("User must login to םפקמ a store");
         }
@@ -102,6 +102,11 @@ namespace sadna192
         public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
         {
             return this.shopingBasket.get_basket();
+        }
+
+        public override string ToString()
+        {
+            return (System.DateTime.Now.ToString() + "| Visitor");
         }
     }
 }

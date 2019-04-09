@@ -8,7 +8,7 @@ namespace sadna192
     {
         private string name;
         private string code;
-        private List<Owner> owner;
+        internal List<Owner> owner;
 
 
         public Member(string name, string password) : base()
@@ -61,6 +61,18 @@ namespace sadna192
             return s.addProduct(product_name, product_category,product_price,product_amount,product_discount,product_policy);
         }
 
+        internal bool isMe(Member other)
+        {
+            return this.isMe(other.name);
+        }
+
+        public override bool Open_Store(Store name)
+        {
+            if (this.owner == null) this.owner = new List<Owner>();
+            this.owner.Add(new Owner(this, name));
+            return true;
+        }
+
         public override bool Add_Store_Manager(string Store_name, Member new_manager, bool permision_add, bool permission_remove, bool permission_update)
         {
             Owner s = this.getUserStore(Store_name);
@@ -95,6 +107,11 @@ namespace sadna192
         {
             Owner s = this.getUserStore(Store_name);
             return s.updateProduct(product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
+        }
+
+        public override string ToString()
+        {
+            return (System.DateTime.Now.ToString() + "| " +this.name);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
+using System.Timers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace sadna192
 {
@@ -31,7 +29,27 @@ namespace sadna192
             else throw new Exception("the system already exist");
         }
 
-        
+        private static void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            if (singleton != null)
+            {
+                foreach(Member m in singleton.members)
+                {
+                    if (m.shopingBasket.toBeRemoved)
+                    {
+                        if (m.shopingBasket.savedProducts != null)
+                            m.shopingBasket.returnProducts();
+                        m.shopingBasket.toBeRemoved = false;
+                    }
+                    else
+                    {
+                        m.shopingBasket.toBeRemoved = (m.shopingBasket.savedProducts != null);
+                    }
+                }
+            }
+            
+        }
+
 
         private class single_ServiceLayer
         {
@@ -41,7 +59,7 @@ namespace sadna192
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
             public List<string> log;
-            public List<Store> store;
+            public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
             {
@@ -51,6 +69,10 @@ namespace sadna192
                 this.members = new List<Member>();
                 this.users = new List<I_User_ServiceLayer>();
                 this.log = new List<string>();
+                Timer t = new Timer(1000*60*10);
+                t.Elapsed += OnTimedEvent;
+                t.AutoReset = true;
+                t.Enabled = true;
 
                 if (!Tools.check_username(admin_name) && !Tools.check_password(admin_pass)) throw new Exception("invalid admin details");
                 members.Add(new Admin(admin_name, admin_pass));
@@ -77,7 +99,7 @@ namespace sadna192
 
             public void Add_Log(string log)
             {
-                this.single_ServiceLayer.log.Add(log);
+                this.single_ServiceLayer.log.Add(this.userState.ToString() + ":" + log);
             }
 
             public bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -86,13 +108,13 @@ namespace sadna192
                     Tools.check_productNames(product_name) &&
                     Tools.check_productCategory(product_category) &&
                     Tools.check_price(product_price) &&
-                    Tools.check_amount(product_amount) &&
-                    product_discount.check() &&
-                    product_policy.check()
+                    Tools.check_amount(product_amount)
                 )
                 {
+                    this.Add_Log("Added Product To Store");
                     return this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
                 }
+                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -104,8 +126,10 @@ namespace sadna192
                     Member other_user = this.GetMember(new_manger_name);
                     if (other_user == null) throw new Exception("new Store manager was not found");
                     this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
+                    this.Add_Log("Added Manager To Store");
                     return true;
                 }
+                this.Add_Log("Didn't Add Product To Store");
                 return false;
             }
 
@@ -115,10 +139,12 @@ namespace sadna192
                 {
                     Member other_user = this.GetMember(new_owner_name);
                     if (other_user == null) throw new Exception("new Store owner was not found");
+                    this.Add_Log("Added Owner To Store");
                     return this.userState.Add_Store_Owner(Store_name, other_user);
                     //store.addOwner(this.userState, other_user);
                     //return true;
                 }
+                this.Add_Log("Didn't Add Owner To Store");
                 return false;
             }
 
@@ -126,8 +152,10 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
+                    this.Add_Log("Added To Shopping Basket");
                     return this.userState.Add_To_ShopingBasket(p, amount);
                 }
+                this.Add_Log("Didn't Add to Shopping Basket");
                 return false;
             }
 
@@ -135,8 +163,10 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
+                    this.Add_Log("Edited Product In Shopping Basket");
                     return this.userState.Edit_Product_In_ShopingBasket(p, amount);
                 }
+                this.Add_Log("Didn't edit the Product in Shopping Basket");
                 return false;
             }
 
@@ -144,7 +174,19 @@ namespace sadna192
             {
                 if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
                 {
-                    return this.userState.Finalize_Purchase(address, payment);
+                    double total = this.userState.Finalize_Purchase();
+                    string code = this.single_ServiceLayer.deliverySystem.sendPackage(address);
+                    try
+                    {
+                        this.single_ServiceLayer.paymentSystem.pay(total,payment);
+                    }
+                    catch (Exception e)
+                    {
+                        this.single_ServiceLayer.deliverySystem.canclePackage(code);
+                        throw e;
+                    }
+                    this.Add_Log("Finish Purchased");
+                    return true;
                 }
                 return false;
             }
@@ -162,6 +204,7 @@ namespace sadna192
                     List<ProductInStore> ans = new List<ProductInStore>();
                     foreach (Store store in this.single_ServiceLayer.store)
                         ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
+                    this.Add_Log("Did Global Search");
                     return ans;
                 }
                 return null;
@@ -178,11 +221,13 @@ namespace sadna192
                         {
                             this.userState = member;
                             single_ServiceLayer.members.Remove(member);
+                            this.Add_Log("Logged In");
                             return true;
                         }
                     }
                     throw new Exception("user not found");
                 }
+                this.Add_Log("Didn't Log In");
                 return false;
             }
 
@@ -276,7 +321,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_Manager_name))
                 {
-                    return this.userState.Remove_Store_Manager(Store_name, other_Manager_name);
+                    return this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
                 }
                 return false;
             }
@@ -285,7 +330,7 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) && Tools.check_username(other_owner_name))
                 {
-                    return this.userState.Remove_Store_Owner(Store_name, other_owner_name);
+                    return this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
                 }
                 return false;
             }
@@ -331,9 +376,7 @@ namespace sadna192
                     Tools.check_productNames(product_new_name) &&
                     Tools.check_productCategory(product_new_category) &&
                     Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount) &&
-                    product_new_discount.check() &&
-                    product_new_policy.check()
+                    Tools.check_amount(product_new_amount) 
                     ) {
                     return this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
                 }
@@ -342,7 +385,17 @@ namespace sadna192
 
             public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
             {
-                return this.userState.Watch_Cart();
+                List < KeyValuePair<ProductInStore, int> > ans = this.userState.Watch_Cart();
+                ans.Sort(new cartOrder());
+                return ans;
+            }
+
+            private class cartOrder : IComparer<KeyValuePair<ProductInStore, int>>
+            {
+                public int Compare(KeyValuePair<ProductInStore, int> x, KeyValuePair<ProductInStore, int> y)
+                {
+                    return x.Key.getStore().getName().CompareTo(y.Key.getStore().getName());
+                }
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -360,7 +413,15 @@ namespace sadna192
 
             private bool isProductInStore(ProductInStore p)
             {
-                throw new NotImplementedException(); // TODO: depends on rons implemantation
+                try
+                {
+                    p.getStore().FindProductInStore(p.getProduct().getName());
+                }
+                catch
+                {
+                    return false;
+                }
+                return true;
             }
 
             private Member GetMember(string Username)

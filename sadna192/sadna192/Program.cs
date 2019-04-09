@@ -1,21 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using F23.StringSimilarity;
 
-namespace sadna192
+public class Program
 {
-    class Program
+    public static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
+        var l = new NormalizedLevenshtein();
 
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
-        }
+        Console.WriteLine(l.Distance("My string", "my string"));
+        Console.WriteLine(l.Distance("My string", "My dtring"));
+        Console.WriteLine(l.Distance("My string", "My stttring"));
+        Console.ReadKey();
     }
 }

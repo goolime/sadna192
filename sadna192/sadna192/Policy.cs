@@ -2,11 +2,35 @@
 
 namespace sadna192
 {
-    public class Policy
+    public interface Policy
     {
-        internal bool check()
+        bool check();
+        bool immidiate();
+    }
+
+    public class regularPolicy: Policy
+    {
+        public bool check()
         {
-            throw new NotImplementedException();
+            return true;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class immidiatePolicy: Policy
+    {
+        public bool check()
+        {
+            return true;
+        }
+       
+        public bool immidiate()
+        {
+            return true; 
         }
     }
 }

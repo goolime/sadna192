@@ -95,12 +95,14 @@ namespace sadna192
             {
                 if(sc.getStore().getName() == store_name)
                 {
+                    savedProducts = new List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>>();
                     foreach(KeyValuePair<ProductInStore,int> p in sc.getCart())
                     {
                         if (p.Key.getAmount() - p.Value >= 0)
                         {
                             p.Key.setAmount(p.Key.getAmount() - p.Value);
                             savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value - p.Key.getDiscount().calculate(p.Value, p.Key.getPrice()))));
+                            sc.DeleteProduct(p.Key,0);
                         }
                         else
                         {
@@ -108,9 +110,11 @@ namespace sadna192
                             throw new Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore());
                         }
                     }
+                    this.shoppingCarts.Remove(sc);
+                    return this.savedProducts;
                 }
             }
-            return this.savedProducts;
+            throw new Exception("no cart for the store");
         }
 
         internal List<KeyValuePair<ProductInStore, int>> get_basket()

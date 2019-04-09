@@ -37,9 +37,9 @@ namespace sadna192.Tests
         public void Create_ServiceLayer_GoodTest()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234Abcd");
             I_User_ServiceLayer userServiceLayer = serviceLayer.Connect();
-            Assert.IsTrue(userServiceLayer.Login("admin", "1234"));
+            Assert.IsTrue(userServiceLayer.Login("admin", "1234Abcd"));
         }
 
         [TestMethod()]

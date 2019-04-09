@@ -115,7 +115,12 @@ namespace sadna192
                 )
                 {
                     bool ans = this.userState.Add_Product_Store(Store_name, product_name, product_category, product_price, product_amount, product_discount, product_policy);
-                    if (ans) this.Add_Log("in store " + Store_name + " Added Product" + product_name + " ,category - " + product_category + " ,price - " + product_price + " ,amount - " + product_amount + " ,policy - " +product_policy.ToString() + " ,discount - "+ product_discount.ToString());
+                    string p, d;
+                    if (product_discount == null) d = "";
+                    else d = product_discount.ToString();
+                    if (product_policy == null) p = "";
+                    else p = product_policy.ToString();
+                    if (ans) this.Add_Log("in store " + Store_name + " Added Product" + product_name + " ,category - " + product_category + " ,price - " + product_price + " ,amount - " + product_amount + " ,policy - " + p + " ,discount - "+d);
                     return ans;
                 }
                 return false;
@@ -205,7 +210,10 @@ namespace sadna192
                     List<ProductInStore> ans = new List<ProductInStore>();
                     foreach (Store store in this.single_ServiceLayer.store)
                         ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
-                    this.Add_Log("got "+ ans.Count +" matches in Global Search with parameters: name : " +name+" ,category :"+ Category+" ,keywords :" + keywords.ToString() + " ,minimum price :" +price_min +" ,maximum price :" +price_max + " ,store rank :"+ Store_rank + " ,product rank :" +product_rank);
+                    string kw;
+                    if (keywords == null) kw = "";
+                    else kw = keywords.ToString();
+                    this.Add_Log("got "+ ans.Count +" matches in Global Search with parameters: name : " +name+" ,category :"+ Category+" ,keywords :" + kw  + " ,minimum price :" +price_min +" ,maximum price :" +price_max + " ,store rank :"+ Store_rank + " ,product rank :" +product_rank);
                     return ans;
                 }
                 return null;
@@ -254,6 +262,7 @@ namespace sadna192
                     }
                     Store newstore = new Store(name);
                     bool ans = this.userState.Open_Store(newstore);
+                    this.single_ServiceLayer.store.Add(newstore);
                     if (ans) this.Add_Log("opened new store named - " +name);
                     return ans;
                 }

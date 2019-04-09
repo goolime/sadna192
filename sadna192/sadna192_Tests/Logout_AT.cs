@@ -41,15 +41,15 @@ namespace sadna192.Tests
             if (userServiceLayer2.Register("logoutuser2", "2345Abcd"))
             { 
                 userServiceLayer2.Login("logoutuser2", "2345Abcd");                
-                List <ProductInStore> products = userServiceLayer2.GlobalSearch("milk", "food",null, 0, 10 , 0 , 0);
+                List <ProductInStore> products = userServiceLayer2.GlobalSearch("milk", null,null, -1, -1 , -1 , -1);
                 userServiceLayer2.Add_To_ShopingBasket(products[0] , 2);
                 List<KeyValuePair<ProductInStore, int>> user2_cart = userServiceLayer2.Watch_Cart();
 
                 userServiceLayer2.Logout();
-                Assert.AreNotSame(userServiceLayer2.Watch_Cart() , user2_cart);
+                Assert.ThrowsException<Exception>(()=> { userServiceLayer2.Watch_Cart(); });
 
                 userServiceLayer2.Login("logoutuser2", "2345Abcd");
-                Assert.AreSame(userServiceLayer2.Watch_Cart(), user2_cart);
+                Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, user2_cart.Count);
             }      
         }
 

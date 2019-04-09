@@ -123,7 +123,7 @@ namespace sadna192
                     if (ans) this.Add_Log("in store " + Store_name + " Added Product" + product_name + " ,category - " + product_category + " ,price - " + product_price + " ,amount - " + product_amount + " ,policy - " + p + " ,discount - "+d);
                     return ans;
                 }
-                return false;
+                throw new Exception("one of the parameters was wrong");
             }
 
             public bool Add_Store_Manager(string Store_name, string new_manger_name, bool permision_add, bool permission_remove, bool permission_update)

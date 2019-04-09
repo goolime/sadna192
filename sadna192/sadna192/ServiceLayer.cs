@@ -8,7 +8,7 @@ namespace sadna192
     {
         private static single_ServiceLayer singleton=null;
 
-        ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
+        public ServiceLayer()
         {
             // do nothing...
         }

@@ -247,6 +247,7 @@ namespace sadna192
                     single_ServiceLayer.members.Add((Member)this.userState);
                     this.Add_Log("logout");
                     this.userState = new Visitor();
+                    return true;
                 }
                 throw new Exception("you are not logedin");
             }

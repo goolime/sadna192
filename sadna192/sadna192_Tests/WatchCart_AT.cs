@@ -20,20 +20,20 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234Asdf");
             userServiceLayer_seller = serviceLayer.Connect();
-            if (userServiceLayer_seller.Register("'watchCart_user", "1221"))
-                if (userServiceLayer_seller.Login("watchCart_user", "1221"))
+            if (userServiceLayer_seller.Register("'watchCartUser", "1221LoOl"))
+                if (userServiceLayer_seller.Login("watchCartUser", "1221LoOl"))
                     if (userServiceLayer_seller.Open_Store("grocery store") && userServiceLayer_seller.Open_Store("zara"))
                     {
-                        userServiceLayer_seller.Add_Product_Store("grocery store", "suger", "food", 12, 50, null, null);
-                        userServiceLayer_seller.Add_Product_Store("grocery store", "salt", "food", 10, 25, null, null);
-                        userServiceLayer_seller.Add_Product_Store("zara", "shirt", "clothes", 75, 20, null, null);
+                        userServiceLayer_seller.Add_Product_Store("grocery store", "suger", "food", 12, 50, new noDiscount(), new regularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("grocery store", "salt", "food", 10, 25, new noDiscount(), new regularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("zara", "shirt", "clothes", 75, 20, new noDiscount(), new regularPolicy());
                     }
 
             userServiceLayer_buyer = serviceLayer.Connect();
-            if (userServiceLayer_buyer.Register("watchCart_user2", "3456"))
-                if (userServiceLayer_buyer.Login("watchCart_user2", "3456"))
+            if (userServiceLayer_buyer.Register("watchCartUser2", "3456ZxcX"))
+                if (userServiceLayer_buyer.Login("watchCartUser2", "3456ZxcX"))
                 {
                     List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("suger", "food", null, 0.5, 100, 0, 0);
                     List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("salt", "food", null, 0.5, 100, 0, 0);
@@ -58,7 +58,7 @@ namespace sadna192.Tests
         public void watch_cart_when_not_existing_store_in_cart_test()
         {
             if (userServiceLayer_seller.Open_Store("Bim Bam Bom"))
-                userServiceLayer_seller.Add_Product_Store("Bim Bam Bom", "polaroid camera", "electronic", 170, 20, null, null);
+                userServiceLayer_seller.Add_Product_Store("Bim Bam Bom", "polaroid camera", "electronic", 170, 20, new noDiscount(), new regularPolicy());
 
             List<KeyValuePair<ProductInStore, int>> user_cart = userServiceLayer_buyer.Watch_Cart();
             int cart_amount = user_cart.Count;

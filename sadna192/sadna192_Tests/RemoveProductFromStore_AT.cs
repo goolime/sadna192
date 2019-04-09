@@ -20,19 +20,19 @@ namespace sadna192.Tests
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234GfrT");
             userServiceLayer1 = serviceLayer.Connect();
-            if (userServiceLayer1.Register("removeProductFromStore_user", "1221"))
-                if (userServiceLayer1.Login("removeProductFromStore_user", "1221"))
+            if (userServiceLayer1.Register("removeProductFromStoreUser", "1221Gbbv"))
+                if (userServiceLayer1.Login("removeProductFromStoreUser", "1221Gbbv"))
                 {
                    if(userServiceLayer1.Open_Store("our store"))
                     {
-                        userServiceLayer1.Add_Product_Store("our store", "pizza", "food", 29.9, 34, null, null);
+                        userServiceLayer1.Add_Product_Store("our store", "pizza", "food", 29.9, 34, new noDiscount(), new regularPolicy());
                     }
                 }
             userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("removeProductFromStore_user2", "87654"))
-                userServiceLayer2.Login("removeProductFromStore_user2", "87654");
+            if (userServiceLayer2.Register("removeProductFromStoreUser2", "87654DFgh"))
+                userServiceLayer2.Login("removeProductFromStoreUser2", "87654DFgh");
 
         }
 

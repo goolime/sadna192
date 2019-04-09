@@ -21,10 +21,10 @@ namespace sadna192.Tests
         {
             
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234AsdF");
             userServiceLayer1 = serviceLayer.Connect();
-            if (userServiceLayer1.Register("addManageruser", "1221Abcd"))
-                if (userServiceLayer1.Login("addManageruser", "1221Abcd"))
+            if (userServiceLayer1.Register("addManagerUser", "1221Abcd"))
+                if (userServiceLayer1.Login("addManagerUser", "1221Abcd"))
                 {
                     if (userServiceLayer1.Open_Store("mamma mia"))
                     {
@@ -34,35 +34,35 @@ namespace sadna192.Tests
                     }
                 }
             userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("addManageruser2", "87654Abcd"))
-                userServiceLayer2.Login("addManageruser2", "87654Abcd");
+            if (userServiceLayer2.Register("addManagerUser2", "87654Abcd"))
+                userServiceLayer2.Login("addManagerUser2", "87654Abcd");
 
         }
 
         [TestMethod()]
         public void add_shop_manager_and_check_permissions_test()
         {
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, null, null); }, "user2 still is not manager so he can't add products");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "potato", "vegetable", 30, 5, null, null); }, "user2 still is not manager so he can't update products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't add products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "potato", "vegetable", 30, 5, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato1"); }, "user2 still is not manager so he can't remove products");
 
-            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManageruser2", true, false, false));
+            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, false, false));
 
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("seven up", "drink", null, 0, 100, 0, 0);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, null, null));
+            Assert.IsTrue(userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new regularPolicy()));
             search1 = userServiceLayer2.GlobalSearch("seven up", "drink", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount + 1, search1.Count);
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", " potato", "vegetable", 30, 9, null, null); }, "user2 has no update permissions so he can't update products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", " potato", "vegetable", 30, 9, new noDiscount(), new regularPolicy()); }, "user2 has no update permissions so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato"); }, "user2 has no remove permissions so he can't remove products");
 
-            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManageruser2", true, true, false));
+            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, true, false));
 
             search1 = userServiceLayer2.GlobalSearch("potato", "food", null, 0, 100, 0, 0);
             int pre_amount1 = search1.Count;
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("potato", "vegetable", null, 0, 100, 0, 0);
             int pre_amount2 = search2.Count;
-            Assert.IsTrue(userServiceLayer2.Update_Product_Store("mamma mia", "potato", " potato", "vegetable", 30, 9, null, null));
+            Assert.IsTrue(userServiceLayer2.Update_Product_Store("mamma mia", "potato", " potato", "vegetable", 30, 9, new noDiscount(), new regularPolicy()));
             search1 = userServiceLayer2.GlobalSearch("potato", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount1 - 1, search1.Count);
             search2 = userServiceLayer2.GlobalSearch("potato", "vegetable", null, 0, 100, 0, 0);
@@ -75,7 +75,7 @@ namespace sadna192.Tests
             }
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato"); }, "user2 has no remove permissions so he can't remove products");
 
-            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManageruser2", true, true, true));
+            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, true, true));
 
             Assert.IsTrue(userServiceLayer2.Remove_Product_Store("mamma mia", "potato"));
             search2 = userServiceLayer2.GlobalSearch("potato", "vegetable", null, 0, 100, 0, 0);
@@ -90,18 +90,18 @@ namespace sadna192.Tests
         [TestMethod()]
         public void add_shop_manager_that_not_exist_test()
         {
-            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Manager("mamma mia", "user_not_exist", true, false, true); }, "faild to add manager that not exist");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Manager("mamma mia", "userNotExist", true, false, true); }, "faild to add manager that not exist");
         }
 
         [TestMethod()]
         public void add_the_same_manager_again_test()
         {
             I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
-            if (userServiceLayer3.Register("addManager_user3", "12345"))
+            if (userServiceLayer3.Register("addManagerUser3", "12345Fgbh"))
             {
-                userServiceLayer3.Login("addManager_user3", "12345");
-                if(userServiceLayer1.Add_Store_Manager("mamma mia", "addManager_user3", true, true , true))
-                    Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Manager("mamma mia", "addManager_user3", true, false, true); }, "the manager is already manager");
+                userServiceLayer3.Login("addManagerUser3", "12345Fgbh");
+                if(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser3", true, true , true))
+                    Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser3", true, false, true); }, "the manager is already manager");
             }
         }
 
@@ -109,13 +109,12 @@ namespace sadna192.Tests
         public void not_owner_try_to_add_manager_test()  //bad
         {
             I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
-            tmp_userServiceLayer.Register("addManager_tmp_user", "11111");
+            tmp_userServiceLayer.Register("addManagerTmpUser", "11111RTrt");
 
             I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
-            if (userServiceLayer3.Register("addManager_user3", "12345"))
-                userServiceLayer3.Login("addManager_user3", "12345");
+                userServiceLayer3.Login("addManagerUser3", "12345Ghgh");
 
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.Add_Store_Manager("mamma mia", "addManager_tmp_user", false, true, true); }, "only store owner can add new manager to the store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer3.Add_Store_Manager("mamma mia", "addManagerTmpUser", false, true, true); }, "only store owner can add new manager to the store");
         }
     }
 }

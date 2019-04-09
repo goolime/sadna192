@@ -15,28 +15,26 @@ namespace sadna192.Tests
         private static I_ServiceLayer serviceLayer;
         private I_User_ServiceLayer userServiceLayer1;
         private I_User_ServiceLayer userServiceLayer2;
-        private I_DeliverySystem deliverySystem;
-        private I_PaymentSystem paymentSystem;
 
         [TestInitialize]
         public void init()
         {
             serviceLayer = new ServiceLayer();
-            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234");
+            serviceLayer.Create_ServiceLayer(new stub_deliverySystem(), new stub_paymentSystem(), "admin", "1234ASdf");
             userServiceLayer1 = serviceLayer.Connect();
-            if (userServiceLayer1.Register("updateProductInStore_user", "1221"))
-                if (userServiceLayer1.Login("updateProductInStore_user", "1221"))
+            if (userServiceLayer1.Register("updateProductInStoreUser", "1221YhnJ"))
+                if (userServiceLayer1.Login("updateProductInStoreUser", "1221YhnJ"))
                 {
                     if (userServiceLayer1.Open_Store("my store"))
                     {
-                        userServiceLayer1.Add_Product_Store("my store", "bread", "food", 9.9, 42, null, null);
-                        userServiceLayer1.Add_Product_Store("my store", "pie", "food", 19.9, 22, null, null);
-                        userServiceLayer1.Add_Product_Store("my store", "brown suger", "food", 11.9, 12, null, null);
+                        userServiceLayer1.Add_Product_Store("my store", "bread", "food", 9.9, 42, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("my store", "pie", "food", 19.9, 22, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("my store", "brown suger", "food", 11.9, 12, new noDiscount(), new regularPolicy());
                     }
                 }
             userServiceLayer2 = serviceLayer.Connect();
-            if (userServiceLayer2.Register("updateProductInStore_user2", "87654"))
-                userServiceLayer2.Login("updateProductInStore_user2", "87654");
+            if (userServiceLayer2.Register("updateProductInStoreUser2", "87654GfbH"))
+                userServiceLayer2.Login("updateProductInStoreUser2", "87654GfbH");
 
         }
 
@@ -45,7 +43,7 @@ namespace sadna192.Tests
         {
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("bread", "food", null, 0, 100, 0, 0);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", "light bread", "health food", 8.9, 90, null, null));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", "light bread", "health food", 8.9, 90, new noDiscount(), new regularPolicy()));   //happy 1
             search1 = userServiceLayer2.GlobalSearch("bread", "food", null, 0, 100, 0, 0);
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("light bread", "health food", null, 0, 100, 0, 0);
             Assert.AreEqual(1, search2.Count);
@@ -57,7 +55,7 @@ namespace sadna192.Tests
         {
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
             int pre_amount = search1[0].getAmount(); 
-            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Update_Product_Store("my store", "tea", "green tea", "drink", 6.8, 900, null, null);}, "product does not exist in store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Update_Product_Store("my store", "tea", "green tea", "drink", 6.8, 900, new noDiscount(), new regularPolicy());}, "product does not exist in store");
             search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount , search1[0].getAmount());   //happy 2
         }
@@ -67,7 +65,7 @@ namespace sadna192.Tests
         {
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "pie", "pie", "food", 8.9, 0, null, null));
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "pie", "pie", "food", 8.9, 0, new noDiscount(), new regularPolicy()));
             search1 = userServiceLayer2.GlobalSearch("pie", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount, search1.Count-1);   //happy 2
             for(int i=0; i<search1.Count; i++)
@@ -84,14 +82,14 @@ namespace sadna192.Tests
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("suger", "food", null, 0, 100, 0, 0);
             int pre_amount_brown_suger = search1.Count;
             int pre_amount_suger = search2.Count;
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("my store", "brown suger", "suger", "food", 9, 8, null, null); }, "only store owner or manager can update product in the store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("my store", "brown suger", "suger", "food", 9, 8, new noDiscount(), new regularPolicy()); }, "only store owner or manager can update product in the store");
             search1 = userServiceLayer2.GlobalSearch("brown suger", "food", null, 0, 100, 0, 0);
             search2 = userServiceLayer2.GlobalSearch("suger", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount_brown_suger, search1.Count);
             Assert.AreEqual(pre_amount_suger, search2.Count);
 
             I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
-            Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Update_Product_Store("my store", "brown suger", "suger", "food", 9, 8, null, null); }, "only store owner or manager can update product in the store");
+            Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Update_Product_Store("my store", "brown suger", "suger", "food", 9, 8, new noDiscount(), new regularPolicy()); }, "only store owner or manager can update product in the store");
             search1 = userServiceLayer2.GlobalSearch("brown suger", "food", null, 0, 100, 0, 0);
             search2 = userServiceLayer2.GlobalSearch("suger", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount_brown_suger, search1.Count);

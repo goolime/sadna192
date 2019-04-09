@@ -66,9 +66,15 @@ namespace sadna192
             throw new SystemException("There is no such product in store" + p.getStore().getName());
         }
 
-        internal bool Finalize_Purchase(string address, string payment)
+        internal double Finalize_Purchase()
         {
-            throw new NotImplementedException();
+            if (this.savedProducts == null) throw new Exception("there are no save products");
+            double ans = 0;
+            foreach (KeyValuePair<ProductInStore, KeyValuePair<int, double>> p in this.savedProducts)
+            {
+                ans += p.Value.Value;
+            }
+            return ans;
         }
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)

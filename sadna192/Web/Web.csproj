@@ -10,4 +10,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\sadna192\sadna192.csproj" />
+    <ProjectReference Include="..\sadna192_Tests\sadna192_Tests.csproj" />
+  </ItemGroup>
+
 </Project>

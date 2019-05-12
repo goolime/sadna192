@@ -11,6 +11,8 @@ namespace Web.Pages
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _db;
+        [BindProperty]
+        public new User User { get; set; }
 
         public IndexModel(AppDbContext db)
         {
@@ -18,6 +20,7 @@ namespace Web.Pages
         }
 
         public IList<Customer> Customers { get; private set; }
+
 
         public async Task OnGetAsync()
         {
@@ -36,5 +39,24 @@ namespace Web.Pages
 
             return RedirectToPage();
         }
+
+
+        public IActionResult OnPostLogin()
+        {
+            bool succeed = false;
+            try
+            {
+                succeed = _db.Login(User.Name, User.Password);
+            }
+            catch (Exception) { }
+            if (succeed)
+                return RedirectToPage("/Edit");
+            else
+            {
+                return RedirectToPage("/About");
+            }
+
+        }
+
     }
 }

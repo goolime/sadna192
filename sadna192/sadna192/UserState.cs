@@ -2,7 +2,7 @@
 
 namespace sadna192
 {
-    interface UserState
+    public interface UserState
     {
         bool isVistor();
         bool isMember();

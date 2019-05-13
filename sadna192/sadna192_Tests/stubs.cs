@@ -9,7 +9,7 @@ namespace sadna192_Tests
 {
     class Stubs
     {
-        public class stub_deliverySystem : I_DeliverySystem
+        public class Stub_deliverySystem : I_DeliverySystem
         {
             int index = 0;
             public virtual void canclePackage(string code)
@@ -35,7 +35,7 @@ namespace sadna192_Tests
             }
         }
 
-        public class stub_paymentSystem : I_PaymentSystem
+        public class Stub_paymentSystem : I_PaymentSystem
         {
             public virtual bool check_payment(string payment)
             {

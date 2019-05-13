@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="sadna192.Tests.AcceptanceTests.PurchaseCart_AT.PurchaseCart_happyTest" /><Add Test="sadna192.Tests.AcceptanceTests.PurchaseCart_AT.Canceled_purchaseCart_10MIN_happyTest" /></Playlist>

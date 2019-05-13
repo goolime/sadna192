@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="sadna192.Tests.AcceptanceTests.AddOwner_AT.AddShopOwner_happyTest" /><Add Test="sadna192.Tests.AcceptanceTests.AddOwner_AT.AddShopOwnerThatNotExist_happyTest" /><Add Test="sadna192.Tests.AcceptanceTests.AddOwner_AT.AddTheSameOwnerAgain_happyTest" /><Add Test="sadna192.Tests.AcceptanceTests.AddOwner_AT.NotOwnerTryToAddOwner_sadTest" /></Playlist>

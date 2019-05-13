@@ -1,0 +1,6 @@
+<Playlist Version="1.0">
+<Add Test="sadna192.Tests.AcceptanceTests.UpdateCart_AT.AddToCart_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.UpdateCart_AT.Update_unvalid_product_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.UpdateCart_AT.Update_product_that_is_not_in_cart_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.UpdateCart_AT.Update_unvalid_amount_of_product_happyTest" />
+</Playlist>

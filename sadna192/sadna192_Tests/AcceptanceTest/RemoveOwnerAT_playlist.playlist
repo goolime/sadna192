@@ -1,0 +1,8 @@
+<Playlist Version="1.0">
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Remove_shop_owner_happyTests" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Remove_shop_owner_that_not_exist_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Remove_shop_owner_that_is_not_owner_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Remove_owner_that_defined_by_someonelse_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Remove_owner_remove_all_the_owners_that_defined_by_him_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveOwner_AT.Not_owner_try_to_remove_an_owner_sadTest" />
+</Playlist>

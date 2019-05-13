@@ -1,0 +1,1 @@
+<Playlist Version="1.0"><Add Test="sadna192.Tests.AcceptanceTests.WatchCart_AT.Watch_cart_of_existing_store_in_cart_happyTest" /><Add Test="sadna192.Tests.AcceptanceTests.WatchCart_AT.Watch_cart_when_not_existing_store_in_cart_happyTest" /></Playlist>

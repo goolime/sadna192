@@ -110,15 +110,5 @@ namespace sadna192
             if (other is Owner && !(other is Manager)) return other.removeMe();
             throw new Exception("the member is an manager of the shop");
         }
-
-        internal virtual bool addStorePolicy(Policy p)
-        {
-            return this.store.addPolicy(p);
-        }
-
-        internal virtual bool removeStorePolicy(Policy p)
-        {
-            return this.store.removePolicy(p);
-        }
     }
 }

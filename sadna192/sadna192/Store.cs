@@ -12,14 +12,12 @@ namespace sadna192
         private List<ProductInStore> productInStores= new List<ProductInStore>();
         private List<Owner> owners;
         private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
-        private List<Policy> policies;
 
         public Store(string name)
         {
             this.name = name;
             this.productInStores = new List<ProductInStore>();
             this.owners = new List<Owner>();
-            this.policies = new List<Policy>();
         }
 
         public string getName()
@@ -130,18 +128,6 @@ namespace sadna192
                 }
             }
             throw new Exception("The Product " + product_name + " wasn't found in the store " + this.getName());
-        }
-
-        internal bool addPolicy(Policy p)
-        {
-            this.policies.Add(p);
-            return true;
-        }
-
-        internal bool removePolicy(Policy p)
-        {
-            this.policies.Remove(p);
-            return true;
         }
 
         internal List<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)

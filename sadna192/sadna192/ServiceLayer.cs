@@ -463,6 +463,18 @@ namespace sadna192
                 throw new Exception("only admins can view the log");
             }
 
+            public override string ToString()
+            {
+                if (this.userState.isVistor())
+                {
+                    return "Visitor";
+                }
+                else
+                {
+                    return ((Member)this.userState).name;
+                }
+            }
+
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

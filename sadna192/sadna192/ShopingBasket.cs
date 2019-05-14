@@ -70,11 +70,16 @@ namespace sadna192
         }
 
 
-        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
+        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount, UserState u)
         {
             savedProducts = null; 
             if (p.getStore().FindProductInStore(p.getName()).GetPolicy().immidiate())
             {
+                foreach (Policy pol in p.getStore().policies)
+                {
+                    pol.Check(p, u);
+                }
+                p.getPolicy().Check(p, u);
                 if (p.getAmount() - amount >= 0)
                 {
                     p.setAmount(p.getAmount() - amount);
@@ -89,12 +94,13 @@ namespace sadna192
             return this.savedProducts;
         }
 
-        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
+        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
         {
             foreach(ShoppingCart sc in shoppingCarts)
             {
-                if(sc.getStore().getName() == store_name)
+                if (sc.getStore().getName() == store_name)
                 {
+                    sc.check(u);
                     savedProducts = new List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>>();
                     foreach(KeyValuePair<ProductInStore,int> p in sc.getCart())
                     {

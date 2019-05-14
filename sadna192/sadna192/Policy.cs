@@ -2,16 +2,15 @@
 
 namespace sadna192
 {
-    public interface Policy
+    interface Policy
     {
-        bool check();
+        bool Check(ProductInStore p, UserState u);
         bool immidiate();
     }
 
-    public class regularPolicy: Policy
+    class regularPolicy: Policy
     {
-        public bool check()
-        {
+        public bool Check(ProductInStore pro, UserState user) { 
             return true;
         }
 
@@ -21,13 +20,13 @@ namespace sadna192
         }
     }
 
-    public class immidiatePolicy: Policy
+    class immidiatePolicy: Policy
     {
-        public bool check()
+        public bool Check(ProductInStore pro, UserState user)
         {
-            return true;
+            throw new NotImplementedException();
         }
-       
+
         public bool immidiate()
         {
             return true; 

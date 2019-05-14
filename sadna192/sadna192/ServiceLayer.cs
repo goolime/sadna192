@@ -193,8 +193,351 @@ namespace sadna192
                 throw new Exception("unvalid amount");
             }
 
-        // RSL 7
-        void Add_Log(string log);
-        ////////
+            public bool Finalize_Purchase(string address, string payment)
+            {
+                if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
+                {
+                    double total = this.userState.Finalize_Purchase();
+                    string code = this.single_ServiceLayer.deliverySystem.sendPackage(address);
+                    try
+                    {
+                        this.single_ServiceLayer.paymentSystem.pay(total,payment);
+                    }
+                    catch (Exception e)
+                    {
+                        this.single_ServiceLayer.deliverySystem.canclePackage(code);
+                        throw e;
+                    }
+                    this.Add_Log("Finish Purchased with total payment of " + total + " payed in " + payment +". package '" + code +"' was sent to address - " + address);
+                    return true;
+                }
+                return false;
+            }
+
+            public List<ProductInStore> GlobalSearch(string name, string Category, List<string> keywords, double price_min, double price_max, double Store_rank, double product_rank)
+            {
+                if ((name == null || Tools.check_productNames(name)) &&
+                    (Category == null || Tools.check_productCategory(Category)) &&
+                    (Tools.check_price(price_min) || price_min == -1) &&
+                    (Tools.check_price(price_max) || price_max == -1) &&
+                     (price_min <=price_max || (price_min>0 && price_max==-1)) &&
+                    (Tools.check_price(Store_rank) || Store_rank==-1) &&
+                    (Tools.check_price(product_rank) || product_rank==-1)
+                    ) {
+                    List<ProductInStore> ans = new List<ProductInStore>();
+                    foreach (Store store in this.single_ServiceLayer.store)
+                        ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
+                    string kw;
+                    if (keywords == null) kw = "";
+                    else kw = keywords.ToString();
+                    this.Add_Log("got "+ ans.Count +" matches in Global Search with parameters: name : " +name+" ,category :"+ Category+" ,keywords :" + kw  + " ,minimum price :" +price_min +" ,maximum price :" +price_max + " ,store rank :"+ Store_rank + " ,product rank :" +product_rank);
+                    return ans;
+                }
+                throw new Exception("one or more of the parameters is wrong");
+            }
+
+            public bool Login(string user_name, string user_pass)
+            {
+                if (!this.userState.isVistor()) throw new Exception("you are already logedin");
+                if (Tools.check_username(user_name) && Tools.check_password(user_pass))
+                {
+                    foreach (Member member in single_ServiceLayer.members)
+                    {
+                        if (member.check(user_name, user_pass))
+                        {
+                            this.userState = member;
+                            single_ServiceLayer.members.Remove(member);
+                            this.Add_Log("Logged In");
+                            return true;
+                        }
+                    }
+                    throw new Exception("user not found");
+                }
+                return false;
+            }
+
+            public bool Logout()
+            {
+                if (this.userState.isMember())
+                {
+                    
+                    single_ServiceLayer.members.Add((Member)this.userState);
+                    this.Add_Log("logout");
+                    this.userState = new Visitor();
+                    return true;
+                }
+                throw new Exception("you are not logedin");
+            }
+
+            public bool Open_Store(string name)
+            {
+                if (this.userState.isVistor()) throw new Exception("you can't open the store if not logedin");
+                if (Tools.check_storeName(name))
+                {
+                    foreach (Store store in this.single_ServiceLayer.store)
+                    {
+                        if (store.isMe(name)) throw new Exception("name is allready in use");
+                    }
+                    Store newstore = new Store(name);
+                    bool ans = this.userState.Open_Store(newstore);
+                    this.single_ServiceLayer.store.Add(newstore);
+                    if (ans) this.Add_Log("opened new store named - " +name);
+                    return ans;
+                }
+                return false;
+            }
+
+            public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
+            {
+                if (isProductInStore(p) && Tools.check_amount(amount))
+                {
+                    List < KeyValuePair < ProductInStore, KeyValuePair<int, double> >> ans = this.userState.Purchase_product(p, amount);
+                    this.Add_Log("saved for purching [" + amount + "]" + p.getName() + " from store " + p.getStore().getName()) ;
+                    return ans;
+                }
+                return null;
+            }
+
+            public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
+            {
+                if (Tools.check_storeName(store_name))
+                {
+                    List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> ans = this.userState.Purchase_Store_cart(store_name);
+                    string log = "in store " + store_name + " saved for purching:";
+                    foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> p in ans) {
+                        log += "[" + p.Value.Key + "]" + p.Key.getName()+", ";
+                    }
+                    this.Add_Log(log);
+                    return ans;
+                }
+                return null;
+            }
+
+            public bool Register(string user_name, string user_pass)
+            {
+                if (Tools.check_username(user_name) && Tools.check_password(user_pass))
+                {
+                    if (this.userState.isVistor())
+                    {
+                        bool ans = false;
+                        foreach (User_ServiceLayer user in single_ServiceLayer.users)
+                        {
+                            if (user.userState.isMember())
+                            {
+                                if (((Member)user.userState).isMe(user_name))
+                                {
+                                    ans = true;
+                                }
+                            }
+                        }
+                        foreach (Member member in single_ServiceLayer.members)
+                        {
+                            if (member.isMe(user_name))
+                            {
+                                ans = true;
+                            }
+                        }
+                        if (ans) throw new Exception("the user name is allready in use");
+                        this.single_ServiceLayer.members.Add(new Member(user_name, user_pass));
+                        this.Add_Log("Registerd new user with name '" + user_name + "'");
+                        return true;
+                    }
+                    throw new Exception("you are allready logedin");
+                }
+                return false;
+            }
+
+            public bool Remove_Product_Store(string Store_name, string product_name)
+            {
+                if (Tools.check_storeName(Store_name) && Tools.check_productNames(product_name))
+                {
+                    bool ans = this.userState.Remove_Product_Store(Store_name, product_name);
+                    if (ans) Add_Log("removed product '"+product_name+"' from store '" + Store_name +"'");
+                    return ans;
+                }
+                return false;
+            }
+
+            public bool Remove_Store_Manager(string Store_name, string other_Manager_name)
+            {
+                if (Tools.check_storeName(Store_name) && Tools.check_username(other_Manager_name))
+                {
+                    bool ans= this.userState.Remove_Store_Manager(Store_name, this.GetMember(other_Manager_name));
+                    if (ans) this.Add_Log("removed the assigndment of '" +other_Manager_name+ "' as manager in store '" + Store_name + "'");
+                    return ans;
+                }
+                return false;
+            }
+
+            public bool Remove_Store_Owner(string Store_name, string other_owner_name)
+            {
+                if (Tools.check_storeName(Store_name) && Tools.check_username(other_owner_name))
+                {
+                    bool ans = this.userState.Remove_Store_Owner(Store_name, this.GetMember(other_owner_name));
+                    if (ans) this.Add_Log("removed the assigndment of '" + other_owner_name + "' as owner in store '" + Store_name + "'");
+                    return ans;
+                }
+                return false;
+            }
+
+            public bool Remove_User(string other_user)
+            {
+                if (Tools.check_username(other_user))
+                {
+                    if (this.userState.isAdmin())
+                    {
+
+                        if (((Member)this.userState).isMe(other_user)) throw new Exception("You can't remove yourself");
+                        foreach (User_ServiceLayer user in single_ServiceLayer.users)
+                        {
+                            if (user.userState.isMember())
+                            {
+                                if (((Member)user.userState).isMe(other_user))
+                                {
+                                    Member tmp = (Member)user.userState;
+                                    user.Logout();
+                                    single_ServiceLayer.members.Remove(tmp);
+                                    this.Add_Log("removed '" + other_user + "' from the system");
+                                    return true;
+                                }
+                            }
+                        }
+                        foreach (Member member in single_ServiceLayer.members)
+                        {
+                            if (member.isMe(other_user))
+                            {
+                                single_ServiceLayer.members.Remove(member);
+                                this.Add_Log("removed '" + other_user + "' from the system");
+                                return true;
+                            }
+                        }
+                        throw new Exception("user not found");
+                    }
+                    throw new Exception("the user is not an Admin");
+                }
+                return false;
+            }
+
+            public bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
+            {
+                if (Tools.check_storeName(Store_name) &&
+                    Tools.check_productNames(product_name) &&
+                    Tools.check_productNames(product_new_name) &&
+                    Tools.check_productCategory(product_new_category) &&
+                    Tools.check_price(product_new_price) &&
+                    Tools.check_amount(product_new_amount)
+                    )
+                {
+                    bool ans = false;
+                    if (product_new_amount > 0)
+                    {
+                        ans = this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
+                        if (ans) this.Add_Log("in store '" + Store_name + "' updated '" + product_name + "' - new name:'" + product_new_name + "',new category:'" + product_new_category + "' ,new price:" + product_new_price + " ,new amount:" + product_new_amount + " , new discount:" + product_new_discount.ToString() + " ,new policy:" + product_new_policy.ToString());
+                    }
+                    else
+                        ans = this.Remove_Product_Store(Store_name, product_name);
+                    return ans;
+                }
+                return false;
+            }
+
+            public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
+            {
+                List < KeyValuePair<ProductInStore, int> > ans = this.userState.Watch_Cart();
+                ans.Sort(new cartOrder());
+                this.Add_Log("watched his cart");
+                return ans;
+            }
+
+            public string get_log()
+            {
+                if (this.userState.isAdmin())
+                {
+                    string ans = "";
+                    for(int i=0; i<singleton.log.Count; i++)
+                    {
+                        ans += singleton.log[i] + "\n";
+                    }
+                    return ans;
+                }
+                throw new Exception("only admins can view the log");
+            }
+
+            public override string ToString()
+            {
+                if (this.userState.isVistor())
+                {
+                    return "Visitor";
+                }
+                else
+                {
+                    return ((Member)this.userState).name;
+                }
+            }
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////                                                                                           //////////
+            //////////  ////////    ////////    ///////   ///       ///    //////      ///////////  ///////////  //////////
+            //////////  ///   ///   ///   ///     ///      ///     ///    ///  ///    ///////////   ///    ///   //////////
+            //////////  ///   ///   ///   ///     ///       ///   ///    ///    ///       ///       ///...       //////////
+            //////////  ///////     ///////       ///        /// ///    ////////////      ///       ///'''       //////////
+            //////////  ///         ///  ///      ///         /////    ////      ////     ///       ///     ///  //////////
+            //////////  ///         ///   ///   ///////       ////    ////        ////    ///       //////////   //////////
+            //////////                                                                                           //////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            private class cartOrder : IComparer<KeyValuePair<ProductInStore, int>>
+            {
+                public int Compare(KeyValuePair<ProductInStore, int> x, KeyValuePair<ProductInStore, int> y)
+                {
+                    return x.Key.getStore().getName().CompareTo(y.Key.getStore().getName());
+                }
+            }
+
+            private bool isProductInStore(ProductInStore p)
+            {
+                try
+                {
+                    p.getStore().FindProductInStore(p.getProduct().getName());
+                }
+                catch
+                {
+                    throw new Exception("Product is not in the store");
+                }
+                return true;
+            }
+
+            private Member GetMember(string Username)
+            {
+                Member ans = null;
+                foreach (User_ServiceLayer user in single_ServiceLayer.users)
+                {
+                    if (user.userState.isMember())
+                    {
+                        if (((Member)user.userState).isMe(Username))
+                        {
+                            ans = (Member)user.userState;
+                        }
+                    }
+                }
+                if (ans == null)
+                {
+                    foreach (Member member in single_ServiceLayer.members)
+                    {
+                        if (member.isMe(Username))
+                        {
+                            ans = member;
+                        }
+                    }
+                }
+                if (ans == null) throw new Exception("no user was found");
+                return ans;
+            }
+
+            
+        }
     }
 }

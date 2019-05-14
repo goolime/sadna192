@@ -1,11 +1,16 @@
 ﻿@page
 @model IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-<form method="POST">
-    <div>Name: <input asp-for="User.Name"/></div>
-    <div>Password: <input asp-for="User.Password" /></div>
-    <input type="submit" asp-page-handler="login"/>
-</form>
+    <form method="POST">
+        <div>Name: <input asp-for="User.Name" /></div>
+        <div>Password: <input asp-for="User.Password" /></div>
+        <input type="submit" asp-page-handler="login" />
+
+        <!--<p>hi avi how are you?</p>-->
+    </form>
+
+
+   
 
 
 <!--<h1>Contacts</h1>

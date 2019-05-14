@@ -50,10 +50,10 @@ namespace Web.Pages
             }
             catch (Exception) { }
             if (succeed)
-                return RedirectToPage("/Edit");
+                return RedirectToPage("/About");
             else
             {
-                return RedirectToPage("/About");
+                return RedirectToPage("/index");
             }
 
         }

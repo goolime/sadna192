@@ -16,7 +16,12 @@ namespace WebApplication1.Controllers
            public IActionResult Index()
         {
             this.validateConnection();
-            return View();
+            if(!IsLoggedIn())
+                return View();
+            else
+            {
+                return RedirectToAction("LoggedIn");
+            }
         }
 
         public IActionResult Login()
@@ -25,19 +30,45 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        public IActionResult About()
+        public IActionResult Logout()
+        {
+            this.validateConnection().Logout();
+            return RedirectToAction("index");
+        }
+
+        public IActionResult Basket()
         {
             this.validateConnection();
-            ViewData["Message"] = "Your application description page.";
+            ViewData["Message"] = "Your application Visitor Basket";
 
             return View();
         }
 
-        public IActionResult Contact()
+        public IActionResult Register()
         {
             this.validateConnection();
-            ViewData["Message"] = "Your contact page.";
+            ViewData["Message"] = "Your application Register";
 
+            return View();
+        }
+
+        public IActionResult BasketLogged()
+        {
+            this.validateConnection();
+            ViewData["Message"] = "Your application Basket Logged.";
+
+            return View();
+        }
+
+        public IActionResult LoggedIn()
+        {
+            this.validateConnection();
+            return View();
+        }
+
+        public IActionResult RegisterSuccess()
+        {
+            this.validateConnection();
             return View();
         }
 
@@ -68,13 +99,37 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Login(name, password)) return RedirectToAction("index");
+                if (SL.Login(name, password))
+                    return RedirectToAction("LoggedIn");
                 return RedirectToAction("Error");
             }
             catch
             {
                 return RedirectToAction("Error");
             }
+        }
+
+        [HttpPost]
+        public ActionResult RegisterForm(string name, string password)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Register(name, password))
+                    return RedirectToAction("RegisterSuccess");
+                return RedirectToAction("Error");
+            }
+            catch
+            {
+                return RedirectToAction("Error");
+            }
+        }
+
+        public bool IsLoggedIn()
+        {
+            string currentUserId = HttpContext.Connection.RemoteIpAddress.ToString();
+            I_User_ServiceLayer ius = SessionControler.GetSession(currentUserId);
+            return "Visitir".Equals(ius.ToString());
         }
     }
 }

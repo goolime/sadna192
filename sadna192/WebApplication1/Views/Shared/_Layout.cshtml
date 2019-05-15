@@ -30,17 +30,29 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Login">Login</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Login" id="login">Login</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Basket">Basket</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Register">Register</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Register" id="register">Register</a></li>
+                    <li>
+                        <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm">
+                            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
-        <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm" >
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
-        </form>
     </nav>
+    <script>
+        if ("@ViewData["state"]" == "Visitor") {
+            document.getElementById("login").innerHTML = "Login";
+            document.getElementById("register").innerHTML = "Register";
+        }
+        else {
+            document.getElementById("login").innerHTML = "Logout";
+            document.getElementById("register").innerHTML = "My Page";
+        }
+    </script>
 
     <partial name="_CookieConsentPartial" />
 

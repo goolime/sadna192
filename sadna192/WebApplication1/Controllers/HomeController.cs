@@ -16,33 +16,30 @@ namespace WebApplication1.Controllers
         public IActionResult Index()
         {
             this.validateConnection();
-            if (!IsLoggedIn())
-                return View();
-            else
-            {
-                return RedirectToAction("LoggedIn");
-            }
+            return View();
         }
 
         public IActionResult Login(bool? error)
         {
             this.validateConnection();
-            ViewResult viewResult = View();
-            if (error.HasValue)
+            if (!IsLoggedIn())
             {
-                viewResult.ViewData["error"] = error.Value;
+                ViewResult viewResult = View();
+                if (error.HasValue)
+                {
+                    viewResult.ViewData["error"] = error.Value;
+                }
+                else
+                {
+                    viewResult.ViewData["error"] = false;
+                }
+                return viewResult;
             }
             else
             {
-                viewResult.ViewData["error"] = false;
+                this.validateConnection().Logout();
+                return RedirectToAction("index");
             }
-            return viewResult;
-        }
-
-        public IActionResult Logout()
-        {
-            this.validateConnection().Logout();
-            return RedirectToAction("index");
         }
 
         public IActionResult Basket()
@@ -64,10 +61,17 @@ namespace WebApplication1.Controllers
 
         public IActionResult Register()
         {
-            this.validateConnection();
-            ViewData["Message"] = "Your application Register";
+            if (!IsLoggedIn())
+            {
+                this.validateConnection();
+                ViewData["Message"] = "Your application Register";
 
-            return View();
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("LoggedIn");
+            }
         }
 
         public IActionResult SearchResults(string key)

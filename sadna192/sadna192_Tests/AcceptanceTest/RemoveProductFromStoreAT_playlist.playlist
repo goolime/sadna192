@@ -1,0 +1,5 @@
+<Playlist Version="1.0">
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveProductFromStore_AT.Not_owner_try_remove_product_sadTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveProductFromStore_AT.Remove_valid_product_from_store_happyTest" />
+<Add Test="sadna192.Tests.AcceptanceTests.RemoveProductFromStore_AT.Remove_product_that_not_exisit_happyTest" />
+</Playlist>

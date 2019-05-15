@@ -1,0 +1,78 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using sadna192;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static sadna192_Tests.Stubs;
+
+namespace sadna192.Tests.AcceptanceTests
+{
+    [TestClass()]
+    public class RemoveUser_AT
+    {
+        private static I_ServiceLayer serviceLayer;
+        private I_User_ServiceLayer userServiceLayer_admin;
+        private I_User_ServiceLayer userServiceLayer1;
+
+        [TestInitialize]
+        public void Init()
+        {
+            serviceLayer = new ServiceLayer();
+            try
+            {
+                serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "123456Ui");
+            }
+            catch (Exception) { }
+            userServiceLayer_admin = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect();
+            try
+            {
+                userServiceLayer_admin.Login("admin", "123456Ui");
+                userServiceLayer1.Register("removeUser", "1221Asdf");
+            }
+            catch (Exception) { }
+        }
+
+        [TestMethod()]
+        public void Remove_user_from_the_system_happyTest()
+        {
+            Assert.IsTrue(userServiceLayer1.Login("removeUser", "1221Asdf"));
+            Assert.IsTrue(userServiceLayer_admin.Remove_User("removeUser"));
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("removeUser", "1221Asdf"); }, "this user has been removed from the system");
+        }
+
+        [TestMethod()]
+        public void Remove_user_that_not_exist_happyTest()
+        {
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_admin.Remove_User("stamUser"); }, "can't remove user that dont exist from the system");
+        }
+
+        [TestMethod()]
+        public void Admin_try_remove_himself_happyTest()
+        {
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_admin.Remove_User("admin"); }, "admin cannot remove himself from the system");
+            Assert.IsTrue(userServiceLayer_admin.Open_Store("AdminStore")); 
+        }
+
+        [TestMethod()]
+        public void Not_admin_try_remove_user_SadTest()
+        {
+            //userServiceLayer1.Register("removeUser1", "1221Asdf");
+            userServiceLayer1.Login("removeUser", "1221Asdf");
+
+            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer2.Register("removeUserTmp", "1221Poiu");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Remove_User("removeUserTmp"); }, "only admin can remove users from the system");
+            Assert.IsTrue(userServiceLayer2.Login("removeUserTmp", "1221Poiu"));
+        }
+
+        [TestCleanup]
+        public void TestClean()
+        {
+            userServiceLayer_admin.Logout();
+        }
+    }
+}
+

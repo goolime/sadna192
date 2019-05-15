@@ -13,10 +13,10 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-           public IActionResult Index()
+        public IActionResult Index()
         {
             this.validateConnection();
-            if(!IsLoggedIn())
+            if (!IsLoggedIn())
                 return View();
             else
             {
@@ -24,10 +24,19 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public IActionResult Login()
+        public IActionResult Login(bool? error)
         {
             this.validateConnection();
-            return View();
+            ViewResult viewResult = View();
+            if (error.HasValue)
+            {
+                viewResult.ViewData["error"] = error.Value;
+            }
+            else
+            {
+                viewResult.ViewData["error"] = false;
+            }
+            return viewResult;
         }
 
         public IActionResult Logout()
@@ -44,12 +53,38 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+
+        public IActionResult MyStores()
+        {
+            this.validateConnection();
+            ViewData["Message"] = "Your application MyStores";
+
+            return View();
+        }
+
         public IActionResult Register()
         {
             this.validateConnection();
             ViewData["Message"] = "Your application Register";
 
             return View();
+        }
+
+        public IActionResult SearchResults(string key)
+        {
+            ViewResult viewResult = View();
+
+            if (key != null)
+            {
+                I_User_ServiceLayer SL = validateConnection();
+                List<ProductInStore> list = SL.GlobalSearch(key, null, null, -1, -1, -1, -1);
+                viewResult.ViewData["products"] = list;
+            }
+            else
+            {
+                viewResult.ViewData["products"] = new List<ProductInStore>();
+            }
+            return viewResult;
         }
 
         public IActionResult BasketLogged()
@@ -100,12 +135,16 @@ namespace WebApplication1.Controllers
             try
             {
                 if (SL.Login(name, password))
+                {
                     return RedirectToAction("LoggedIn");
-                return RedirectToAction("Error");
+                }
+                return RedirectToAction("Login", new { error = true });
             }
             catch
             {
-                return RedirectToAction("Error");
+                return RedirectToAction("Login", new { error = true });
+
+
             }
         }
 
@@ -125,11 +164,17 @@ namespace WebApplication1.Controllers
             }
         }
 
+        public ActionResult SearchForm(string keyword)
+        {
+           return RedirectToAction("SearchResults",new { key = keyword});
+            
+        }
+
         public bool IsLoggedIn()
         {
             string currentUserId = HttpContext.Connection.RemoteIpAddress.ToString();
             I_User_ServiceLayer ius = SessionControler.GetSession(currentUserId);
-            return "Visitir".Equals(ius.ToString());
+            return !"Visitor".Equals(ius.ToString());
         }
     }
 }

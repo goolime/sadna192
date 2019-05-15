@@ -26,15 +26,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">WebApplication1</a>
+                <a asp-area="" asp-controller="Home" asp-action="LoggedIn" class="navbar-brand">Home</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="BasketLogged">Basket</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="MyStores">MyStores</a></li>
                 </ul>
             </div>
         </div>
+        <form class="form-inline md-form mr-auto mb-4">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="keyword">
+            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
+        </form>
     </nav>
 
     <partial name="_CookieConsentPartial" />

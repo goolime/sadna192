@@ -24,5 +24,18 @@ namespace WebApplication1
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
+
+        public static void init(ServiceLayer SL)
+        {
+            I_User_ServiceLayer UL = SL.Connect();
+            UL.Register("initUser", "1234Abcd");
+            UL.Login("initUser", "1234Abcd");
+            UL.Open_Store("testStore");
+            UL.Add_Product_Store("testStore", "Banna", "food", 5.0, 50, new noDiscount(), new regularPolicy());
+            UL.Add_Product_Store("testStore", "Apple", "food", 5.0, 70, new noDiscount(), new regularPolicy());
+            UL.Logout();
+        }
     }
+
+    
 }

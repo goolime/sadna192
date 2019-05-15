@@ -44,9 +44,21 @@ namespace WebApplication1.Controllers
 
         public IActionResult Basket()
         {
-            this.validateConnection();
-            ViewData["Message"] = "Your application Visitor Basket";
+            List<KeyValuePair<ProductInStore,int>> tmp =  this.validateConnection().Watch_Cart();
+            var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
+            foreach (KeyValuePair<ProductInStore, int> p in tmp)
+            {
+                string store = p.Key.getStore().getName();
+                if (!map.Keys.Contains(store))
+                {
+                    map[store] = new List<KeyValuePair<ProductInStore, int>>();
+                }
+                map[store].Add(p);
+            }
 
+            ViewData["cart"] = map;
+            //ViewData["Message"] = "Your application Visitor Basket";
+            
             return View();
         }
 
@@ -151,6 +163,29 @@ namespace WebApplication1.Controllers
 
             }
         }
+
+
+        [HttpPost]
+        public ActionResult RemoveUserForm(string name)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Remove_User(name))
+                {
+                    return RedirectToAction("LoggedIn");
+                }
+                return RedirectToAction("LoggedIn", new { error = true });
+            }
+            catch
+            {
+                return RedirectToAction("LoggedIn", new { error = true });
+
+
+            }
+        }
+
 
         [HttpPost]
         public ActionResult RegisterForm(string name, string password)

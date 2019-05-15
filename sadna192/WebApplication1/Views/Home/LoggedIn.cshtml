@@ -2,5 +2,15 @@
     ViewData["Title"] = "LoggedIn";
 }
 
-<h2>LoggedIn</h2>
+<h2>My Page</h2>
+
+@if (ViewData["state"].ToString() == "admin")
+{
+    <form action="/Home/RemoveUserForm" method="post">
+        <font color="black">Username: </font>
+        <input type="text" name="name" title="user name" />
+        <input type="submit" value="Remove" />
+    </form>
+ }
+
 

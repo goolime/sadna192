@@ -1,7 +1,27 @@
-﻿@{
+﻿@using sadna192;
+@{
     ViewData["Title"] = "Basket";
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-<p>Use this area to provide additional information.</p>
+@foreach (string s in ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"]).Keys)
+{
+    List<KeyValuePair<ProductInStore, int>> store = ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"])[s];
+    <h4>@s</h4>
+    <table>
+        <tr>
+            <th>Product Name</th>
+            <th>Amount</th>
+            <th>price per unit</th>
+        </tr>
+        @foreach (KeyValuePair<ProductInStore, int> pr in store)
+        {
+        <tr>
+            <th>@pr.Key.getName()</th>
+            <th>@pr.Value</th>
+            <th>@pr.Key.getPrice()</th>
+        </tr>
+        }
+    </table>
+}

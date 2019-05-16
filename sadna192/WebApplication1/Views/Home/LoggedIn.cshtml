@@ -2,15 +2,54 @@
     ViewData["Title"] = "LoggedIn";
 }
 
-<h2>My Page</h2>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <h2>My Page</h2>
 
-@if (ViewData["state"].ToString() == "admin")
-{
-    <form action="/Home/RemoveUserForm" method="post">
-        <font color="black">Username: </font>
-        <input type="text" name="name" title="user name" />
-        <input type="submit" value="Remove" />
-    </form>
- }
+    @if (ViewData["state"].ToString() == "admin")
+    {
+        <form action="/Home/RemoveUserForm" method="post">
+            <font color="black">Username: </font>
+            <input type="text" name="name" title="user name" />
+            <input type="submit" value="Remove" />
+        </form>
+    }
+    <button onclick="show_open_store_form()" id="AddStoresButton">Add Store</button>
+    @if (ViewData["storeerr"]!=null && (bool)ViewData["storeerr"])
+    {
+        <div id="addStoreDiv" name="openstorediv" style="visibility: visible;">
+            <font color="red">could not add store</font>
+            <form action="/Home/OpenStoreForm" method="post">
+                <font color="black">Open Store: </font>
+                <input type="text" name="storeName" title="storeName" />
+                <input type="submit" />
+            </form>
+        </div>
+    }
+    else
+    {
+        <div id="addStoreDiv" name="openstorediv" style="visibility: hidden;">
+            <form action="/Home/OpenStoreForm" method="post">
+                <font color="black">Open Store: </font>
+                <input type="text" name="storeName" title="storeName" />
+                <input type="submit" />
+            </form>
+        </div>
+    }
+
+    <script>
+        function show_open_store_form() {
+            var isHidden = document.getElementById("addStoreDiv").style.visibility === "hidden";
+            document.getElementById("addStoreDiv").style.visibility = isHidden ? "visible" : "hidden";
+            document.getElementById("AddStoresButton").innerHTML = isHidden ? "Hide" : "Add Store";
+
+        }
+    </script>
+</body>
+</html>
+
 
 

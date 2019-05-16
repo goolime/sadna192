@@ -33,6 +33,7 @@ namespace WebApplication1.Controllers
                 {
                     viewResult.ViewData["error"] = false;
                 }
+
                 return viewResult;
             }
             else
@@ -111,10 +112,19 @@ namespace WebApplication1.Controllers
             return View();
         }
 
-        public IActionResult LoggedIn()
+        public IActionResult LoggedIn(bool? storeerr)
         {
+            ViewResult viewResult = View();
+            if (storeerr.HasValue)
+            {
+                viewResult.ViewData["storeerr"] = storeerr.Value;
+            }
+            else
+            {
+                viewResult.ViewData["storeerr"] = false;
+            }
             this.validateConnection();
-            return View();
+            return viewResult;
         }
 
         public IActionResult RegisterSuccess()
@@ -164,6 +174,26 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+        [HttpPost]
+        public ActionResult OpenStoreForm(string storeName)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Open_Store(storeName))
+                {
+                    return RedirectToAction("MyStores");
+                }
+                return RedirectToAction("LoggedIn", new { storeerr = true });
+            }
+            catch
+            {
+                return RedirectToAction("LoggedIn", new { storeerr = true });
+
+
+            }
+        }
 
         [HttpPost]
         public ActionResult RemoveUserForm(string name)

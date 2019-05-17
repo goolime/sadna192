@@ -1,7 +1,70 @@
-﻿
+﻿@model StoreViewModel
 @{
     ViewData["Title"] = "MyStores";
 }
+<h2>Store: @Model.StoreName</h2>
+<button onclick="show_add_owner_form()" id="addOwnerButton">
+    @if (ViewData["ownererr"] != null && (bool)ViewData["ownererr"])
+    {
+        <font>Hide</font>
+    }
+    else
+    {
+        <font>Add Owner</font>
 
-<h2>MyStores</h2>
+    }
+</button>
+<div id="addOwnerDiv" style="visibility: @(((bool)ViewData["ownererr"])?"visible":"hidden");">
+    @if (ViewData["ownererr"] != null && (bool)ViewData["ownererr"])
+    {
+        <font color="red">could not add Owner</font>
+    }
+        <form action="/Home/AddOwnerForm" method="post">
+            <font color="black">Owner Name: </font>
+            <input type="text" name="ownername" title="ownername" />
+            @Html.TextBoxFor(s => Model.StoreName,null,new { @style= "visibility: hidden;" })<br />
+            <input type="submit" />
+        </form>
+</div>
+
+<button onclick="show_add_manager_form()" id="addManagerButton">
+    @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+    {
+        <font>Hide</font>
+    }
+    else
+    {
+        <font>Add Owner</font>
+
+    }
+</button>
+<div id="addManagerDiv" style="visibility: @(((bool)ViewData["managererr"])?"visible":"hidden");">
+    @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+    {
+        <font color="red">could not add Manager</font>
+    }
+    <form action="/Home/AddManagerForm" method="post">
+        <font color="black">Manager Name: </font>
+        <input type="text" name="managername" title="managername" />
+        <input type="submit" />
+    </form>
+</div>
+
+<script>
+    document.getElementById("storename").value = @ViewData["storename"];
+    function show_add_owner_form() {
+        var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
+        document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
+        document.getElementById("addOwnerButton").innerHTML = isHidden ? "Hide" : "Add Owner";
+
+    }
+
+    function show_add_manager_form() {
+        var isHidden = document.getElementById("addManagerDiv").style.visibility === "hidden";
+        document.getElementById("addManagerDiv").style.visibility = isHidden ? "visible" : "hidden";
+        document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
+
+    }
+</script>
+
 

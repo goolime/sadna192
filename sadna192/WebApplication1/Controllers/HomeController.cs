@@ -72,12 +72,18 @@ namespace WebApplication1.Controllers
         }
 
 
-        public IActionResult MyStores()
+        public IActionResult MyStores(string storename,bool? ownererr,bool? managererr)
         {
+            ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
+            ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
             this.validateConnection();
-            ViewData["Message"] = "Your application MyStores";
-
-            return View();
+            ViewResult viewResult = View(new StoreViewModel() { StoreName = storename});
+            if (storename != null)
+            {
+                ViewData["storename"] = storename;
+                
+            }
+            return viewResult;
         }
 
         public IActionResult Register()
@@ -122,6 +128,7 @@ namespace WebApplication1.Controllers
             {
                 ViewData["storeerr"] = false;
             }
+            ViewData["stores"] = this.validateConnection().usersStores();
             I_User_ServiceLayer SL = this.validateConnection();
             ViewData["Owner"] = SL.usersStores();
             return View();
@@ -184,7 +191,7 @@ namespace WebApplication1.Controllers
             {
                 if (SL.Open_Store(storeName))
                 {
-                    return RedirectToAction("MyStores");
+                    return RedirectToAction("LoggedIn");
                 }
                 return RedirectToAction("LoggedIn", new { storeerr = true });
             }
@@ -217,6 +224,42 @@ namespace WebApplication1.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult AddOwnerForm(StoreViewModel model, string ownername)
+        {
+            string store = model.StoreName;
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Add_Store_Owner(store, ownername))
+                {
+                    return RedirectToAction("MyStores", new { storename = store });
+                }
+            }
+            catch
+            {
+            }
+            return RedirectToAction("MyStores", new { storename = store, ownererr = true });
+        }
+        /*
+        [HttpPost]
+        public ActionResult AddManagerForm(string managername)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Add_Store_Manager((string)ViewData["storename"], managername))
+                {
+                    return RedirectToAction("MyStores", new { storename = (string)ViewData["storename"] });
+                }
+            }
+            catch
+            {
+            }
+            return RedirectToAction("MyStores", new { storename = (string)ViewData["storename"], ownererr = true });
+        }*/
 
         [HttpPost]
         public ActionResult RegisterForm(string name, string password)

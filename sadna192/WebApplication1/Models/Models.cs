@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace WebApplication1.Models
 {
-    public class LoginFailedMessage
+    public class StoreViewModel
     {
-        public bool ShowError { get; set; }
+        public string StoreName { get; set; }
 
     }
 }

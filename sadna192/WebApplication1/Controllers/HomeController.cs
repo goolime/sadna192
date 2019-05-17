@@ -45,19 +45,27 @@ namespace WebApplication1.Controllers
 
         public IActionResult Basket()
         {
-            List<KeyValuePair<ProductInStore,int>> tmp =  this.validateConnection().Watch_Cart();
-            var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
-            foreach (KeyValuePair<ProductInStore, int> p in tmp)
+            
+            try
             {
-                string store = p.Key.getStore().getName();
-                if (!map.Keys.Contains(store))
+                List<KeyValuePair<ProductInStore, int>> tmp = this.validateConnection().Watch_Cart();
+                var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
+                foreach (KeyValuePair<ProductInStore, int> p in tmp)
                 {
-                    map[store] = new List<KeyValuePair<ProductInStore, int>>();
+                    string store = p.Key.getStore().getName();
+                    if (!map.Keys.Contains(store))
+                    {
+                        map[store] = new List<KeyValuePair<ProductInStore, int>>();
+                    }
+                    map[store].Add(p);
                 }
-                map[store].Add(p);
-            }
 
-            ViewData["cart"] = map;
+                ViewData["cart"] = map;
+            }
+            catch(Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
             //ViewData["Message"] = "Your application Visitor Basket";
             
             return View();
@@ -142,7 +150,8 @@ namespace WebApplication1.Controllers
         {
             string currentUserId = HttpContext.Connection.RemoteIpAddress.ToString();
             I_User_ServiceLayer SL = SessionControler.GetSession(currentUserId);
-            this.ViewData["state"] = SL.ToString();
+            ViewData["state"] = SL.ToString();
+            ViewData["Error"] = "";
             return SL;
         }
 

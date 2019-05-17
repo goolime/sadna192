@@ -1,4 +1,6 @@
-﻿@{
+﻿@using sadna192
+
+@{
     ViewData["Title"] = "LoggedIn";
 }
 
@@ -18,27 +20,17 @@
         </form>
     }
     <button onclick="show_open_store_form()" id="AddStoresButton">Add Store</button>
-    @if (ViewData["storeerr"]!=null && (bool)ViewData["storeerr"])
-    {
-        <div id="addStoreDiv" name="openstorediv" style="visibility: visible;">
+    <div id="addStoreDiv" name="openstorediv" style="visibility: visible;">
+        @if (ViewData["storeerr"] != null && (bool)ViewData["storeerr"])
+        {
             <font color="red">could not add store</font>
-            <form action="/Home/OpenStoreForm" method="post">
-                <font color="black">Open Store: </font>
-                <input type="text" name="storeName" title="storeName" />
-                <input type="submit" />
-            </form>
-        </div>
-    }
-    else
-    {
-        <div id="addStoreDiv" name="openstorediv" style="visibility: hidden;">
-            <form action="/Home/OpenStoreForm" method="post">
-                <font color="black">Open Store: </font>
-                <input type="text" name="storeName" title="storeName" />
-                <input type="submit" />
-            </form>
-        </div>
-    }
+        }
+        <form action="/Home/OpenStoreForm" method="post">
+            <font color="black">Open Store: </font>
+            <input type="text" name="storeName" title="storeName" />
+            <input type="submit"/>
+        </form>
+    </div>
 
     <script>
         function show_open_store_form() {
@@ -48,6 +40,21 @@
 
         }
     </script>
+
+    <!-- 
+        dictionery keys
+        
+        store -> object Store
+        isManager -> bool
+        permision_add -> bool
+        permision_remove -> bool
+        permision_update -> bool
+
+    -->
+    @foreach (Dictionary<string,dynamic> o in (List<Dictionary<string, dynamic>>)ViewData["Owner"])
+    {
+        <h3>@(((Store)o["store"]).getName())</h3>
+    }
 </body>
 </html>
 

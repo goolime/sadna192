@@ -104,27 +104,19 @@ namespace WebApplication1.Controllers
             return viewResult;
         }
 
-        public IActionResult BasketLogged()
-        {
-            this.validateConnection();
-            ViewData["Message"] = "Your application Basket Logged.";
-
-            return View();
-        }
-
         public IActionResult LoggedIn(bool? storeerr)
         {
-            ViewResult viewResult = View();
             if (storeerr.HasValue)
             {
-                viewResult.ViewData["storeerr"] = storeerr.Value;
+                ViewData["storeerr"] = storeerr.Value;
             }
             else
             {
-                viewResult.ViewData["storeerr"] = false;
+                ViewData["storeerr"] = false;
             }
-            this.validateConnection();
-            return viewResult;
+            I_User_ServiceLayer SL = this.validateConnection();
+            ViewData["Owner"] = SL.usersStores();
+            return View();
         }
 
         public IActionResult RegisterSuccess()

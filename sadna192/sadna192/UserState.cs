@@ -24,5 +24,6 @@ namespace sadna192
         bool isOwner(string store_name);
         bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy);
         List<KeyValuePair<ProductInStore, int>> Watch_Cart();
+        List<Dictionary<string, dynamic>> getMyShops();
     }
 }

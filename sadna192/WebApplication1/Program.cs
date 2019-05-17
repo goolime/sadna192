@@ -18,6 +18,7 @@ namespace WebApplication1
         {
             I_ServiceLayer tmp_sl = new sadna192.ServiceLayer();
             tmp_sl.Create_ServiceLayer(new Stubs.Stub_deliverySystem(), new Stubs.Stub_paymentSystem(),"admin", "1234Abcd");
+            init(tmp_sl);
             CreateWebHostBuilder(args).Build().Run();
         }
 
@@ -25,7 +26,7 @@ namespace WebApplication1
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
 
-        public static void init(ServiceLayer SL)
+        public static void init(I_ServiceLayer SL)
         {
             I_User_ServiceLayer UL = SL.Connect();
             UL.Register("initUser", "1234Abcd");

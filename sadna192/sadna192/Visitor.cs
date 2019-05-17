@@ -108,5 +108,10 @@ namespace sadna192
         {
             return (System.DateTime.Now.ToString() + "| Visitor");
         }
+
+        public virtual List<Dictionary<string, dynamic>> getMyShops()
+        {
+            throw new Exception("User must login to view his stores");
+        }
     }
 }

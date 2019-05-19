@@ -118,6 +118,25 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     </table>
 </div>
 
+<button onclick="show_add_product_form()">Add Product</button>
+<div id="addProductDiv" style="visibility: @(((bool)ViewData["producterr"])?"visible":"hidden");">
+    @if (ViewData["producterr"] != null && (bool)ViewData["producterr"])
+    {
+        <font color="red">could not add Product</font>
+    }
+    @using (Html.BeginForm("AddProductForm", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(s => Model.S.StoreName)
+        <font>Product Name:</font>@Html.TextBoxFor(s => s.AP.ProductName)
+        <font>Product Amount:</font>@Html.TextBoxFor(s => s.AP.ProductAmount)
+        <font>Product Category:</font>@Html.TextBoxFor(s => s.AP.ProductCategory)
+        <font>Product Price:</font>@Html.TextBoxFor(s => s.AP.ProductPrice)
+        <font>Add:</font><input type="submit" class="btn btn-primary" />
+
+
+    }
+</div>
+
 <script>
     document.getElementById("storeName").value = "@ViewData["storename"]";
     function show_add_owner_form() {
@@ -138,9 +157,14 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
         document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
     }
+
+    function show_add_product_form() {
+        var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
+        document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
+    }
 </script>
 <script>
-    function show_manager_modal(ownerName,add,remove,update) {
+    function show_manager_modal(ownerName, add, remove, update) {
         document.getElementById("username").innerHTML = ownerName;
         document.getElementById("ownerName").value = ownerName;
         document.getElementById("add").checked = add;

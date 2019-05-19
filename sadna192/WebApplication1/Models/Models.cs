@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using sadna192;
 
 namespace WebApplication1.Models
 {
@@ -32,12 +33,24 @@ namespace WebApplication1.Models
         public bool UpdatePermission { get; set; }
     }
 
+    public class AddProductViewModel
+    {
+        public string ProductCategory { get; set; } 
+        public double ProductPrice { get; set; } = -1;
+        public Discount Discount;
+        public Policy ProductPolicy;
+
+        [Required]
+        public string ProductName { get;  set; }
+        public int ProductAmount { get;  set; } = -1;
+    }
+
     public class Store_AddManagerViewModel
     {
         public OwnerViewModel O { get; set; }
         public StoreViewModel S { get; set; }
         public AddManagerViewModel AM { get; set; }
-        //public AddManagerViewModel AM { get; set; }
+        public AddProductViewModel AP { get; set; }
 
         public string DeleteOwnerConfig(string owner, string store)
         {

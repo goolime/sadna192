@@ -72,13 +72,14 @@ namespace WebApplication1.Controllers
         }
 
 
-        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr,bool? producterr)
         {
             I_User_ServiceLayer sl = this.validateConnection();
             Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
             ViewData["currStore"] = storeDictionary["store"];
             ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
+            ViewData["producterr"] = producterr.HasValue ? producterr.Value : false;
             StoreViewModel Store = new StoreViewModel { StoreName = storename };
             Store_AddManagerViewModel model = new Store_AddManagerViewModel() { S = Store, AM = null };
             if (storename != null)
@@ -269,7 +270,23 @@ namespace WebApplication1.Controllers
             return RedirectToAction("MyStores", new { storename = model.S.StoreName, managererr = true });
         }
 
-
+        [HttpPost]
+        public ActionResult AddProductForm(Store_AddManagerViewModel model)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (ModelState.IsValid &&
+                    SL.Add_Product_Store(model.S.StoreName,model.AP.ProductName, model.AP.ProductCategory, model.AP.ProductPrice, model.AP.ProductAmount, model.AP.Discount, model.AP.ProductPolicy))
+                {
+                    return RedirectToAction("MyStores", new { storename = model.S.StoreName });
+                }
+            }
+            catch
+            {
+            }
+            return RedirectToAction("MyStores", new { storename = model.S.StoreName, producterr = true });
+        }
 
         [HttpPost]
         public ActionResult EditManagerForm(Store_AddManagerViewModel model)

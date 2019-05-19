@@ -3,7 +3,7 @@ using System;
 
 namespace sadna192
 {
-    internal class Visitor : UserState
+    public class Visitor : UserState
     {
         internal ShopingBasket shopingBasket;
 

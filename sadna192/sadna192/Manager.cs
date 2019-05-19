@@ -1,10 +1,10 @@
 ﻿namespace sadna192
 {
-    internal class Manager : Owner
+    public class Manager : Owner
     {
-        internal bool permision_add;
-        internal bool permision_remove;
-        internal bool permision_update;
+        public bool permision_add { get; internal set; }
+        public bool permision_remove { get; internal set; }
+        public bool permision_update { get; internal set; }
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {
             this.permision_add = permision_add;
@@ -54,5 +54,7 @@
         {
             throw new System.Exception("Manager can't remove Owners");
         }
+
+        public override bool isManger() => true;
     }
 }

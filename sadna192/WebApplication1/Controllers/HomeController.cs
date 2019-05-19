@@ -74,9 +74,11 @@ namespace WebApplication1.Controllers
 
         public IActionResult MyStores(string storename, bool? ownererr, bool? managererr)
         {
+            I_User_ServiceLayer sl = this.validateConnection();
+            Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
+            ViewData["currStore"] = storeDictionary["store"];
             ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
-            this.validateConnection();
             StoreViewModel Store = new StoreViewModel { StoreName = storename };
             Store_AddManagerViewModel model = new Store_AddManagerViewModel() { S = Store, AM = null };
             if (storename != null)
@@ -251,8 +253,7 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-
-                if (ModelState.IsValid && 
+                if (ModelState.IsValid &&
                     SL.Add_Store_Manager(model.S.StoreName,
                     model.AM.Name,
                     model.AM.AddPermission,
@@ -266,6 +267,47 @@ namespace WebApplication1.Controllers
             {
             }
             return RedirectToAction("MyStores", new { storename = model.S.StoreName, managererr = true });
+        }
+
+
+
+        [HttpPost]
+        public ActionResult EditManagerForm(Store_AddManagerViewModel model)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Remove_Store_Manager(model.S.StoreName, model.O.Name)
+                    && SL.Add_Store_Manager(model.S.StoreName,
+                    model.O.Name,
+                    model.AM.AddPermission,
+                    model.AM.RemovePermission,
+                    model.AM.UpdatePermission))
+                {
+                    return RedirectToAction("MyStores", new { storename = model.S.StoreName });
+                }
+            }
+            catch
+            {
+            }
+            return RedirectToAction("MyStores", new { storename = model.S.StoreName, managererr = true });
+        }
+
+        [HttpPost]
+        public ActionResult RemoveManagerForm(Store_AddManagerViewModel model)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Remove_Store_Manager(model.S.StoreName, model.O.Name))
+                {
+                    return RedirectToAction("MyStores", new { storename = model.S.StoreName });
+                }
+            }
+            catch
+            {
+            }
+            return RedirectToAction("MyStores", new { storename = model.S.StoreName, managerremove = true });
         }
 
         [HttpPost]
@@ -295,6 +337,26 @@ namespace WebApplication1.Controllers
             string currentUserId = HttpContext.Connection.RemoteIpAddress.ToString();
             I_User_ServiceLayer ius = SessionControler.GetSession(currentUserId);
             return !"Visitor".Equals(ius.ToString());
+        }
+
+        [HttpPost]
+        public ActionResult RemoveOwnerForm(Store_AddManagerViewModel vm)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Remove_Store_Owner(vm.S.StoreName,vm.O.Name))
+                {
+                    return RedirectToAction("LoggedIn");
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertRemoveOwner"] = true;
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
 {
-    internal class Member : Visitor
+    public class Member : Visitor
     {
         internal string name;
         private string code;

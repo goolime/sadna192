@@ -82,6 +82,8 @@ namespace sadna192
         string get_log();
 
         List<Dictionary<string, dynamic>> usersStores();
+
+        bool canclePurch();
     }
     
 

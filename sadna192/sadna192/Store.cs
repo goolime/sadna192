@@ -88,7 +88,8 @@ namespace sadna192
 
             if(product_new_category != null)
             {
-                p.getProduct().setCategory(product_new_category);
+                Product tmp = p.getProduct();
+                tmp.setCategory(product_new_category);
             }
 
             if(product_new_price != -1)

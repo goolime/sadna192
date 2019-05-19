@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace sadna192_Tests
 {
-    class Stubs
+    public class Stubs
     {
         public class Stub_deliverySystem : I_DeliverySystem
         {

@@ -73,10 +73,12 @@
     <Compile Include="AT\Store\RemoveProductFromStore_AT.cs" />
     <Compile Include="AT\User\RemoveUser_AT.cs" />
     <Compile Include="Stubs.cs" />
-    <Compile Include="ToolsTests.cs" />
+    <Compile Include="Unit_Tests\ToolsTests.cs" />
     <Compile Include="AT\Sales\updateCart_AT.cs" />
     <Compile Include="AT\Store\UpdateProductInStore_AT.cs" />
     <Compile Include="AT\Sales\WatchCart_AT.cs" />
+    <Compile Include="Unit_Tests\Manager_UT.cs" />
+    <Compile Include="Unit_Tests\Owner_UT.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

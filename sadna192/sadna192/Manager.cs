@@ -1,10 +1,15 @@
-﻿namespace sadna192
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("sadna192_Tests.Unit_Tests")]
+
+namespace sadna192
 {
     internal class Manager : Owner
     {
         internal bool permision_add;
         internal bool permision_remove;
         internal bool permision_update;
+
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {
             this.permision_add = permision_add;

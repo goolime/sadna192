@@ -1,8 +1,8 @@
-﻿@model StoreViewModel
+﻿@model Store_AddManagerViewModel
 @{
     ViewData["Title"] = "MyStores";
 }
-<h2>Store: @Model.StoreName</h2>
+<h2>Store: @Model.S.StoreName</h2>
 <button onclick="show_add_owner_form()" id="addOwnerButton">
     @if (ViewData["ownererr"] != null && (bool)ViewData["ownererr"])
     {
@@ -22,7 +22,7 @@
         <form action="/Home/AddOwnerForm" method="post">
             <font color="black">Owner Name: </font>
             <input type="text" name="ownername" title="ownername" />
-            @Html.TextBoxFor(s => Model.StoreName,null,new { @style= "visibility: hidden;" })<br />
+            @Html.TextBoxFor(s => Model.S.StoreName,null,new { @style= "visibility: hidden;" })<br />
             <input type="submit" />
         </form>
 </div>
@@ -34,20 +34,25 @@
     }
     else
     {
-        <font>Add Owner</font>
+        <font>Add Manager</font>
 
     }
 </button>
-<div id="addManagerDiv" style="visibility: @(((bool)ViewData["managererr"])?"visible":"hidden");">
-    @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+<div id="addManagerDiv" style="visibility:@(((bool)ViewData["managererr"])?"visible":"hidden");">
+    @using (Html.BeginForm("AddManagerForm", "Home", FormMethod.Post))
     {
-        <font color="red">could not add Manager</font>
-    }
-    <form action="/Home/AddManagerForm" method="post">
-        <font color="black">Manager Name: </font>
-        <input type="text" name="managername" title="managername" />
+        @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+        {
+    <font color="red">could not add Manager</font><br />
+        }
+    <font color="black">Manager Name: </font>
+        @Html.TextBoxFor(s => s.AM.Name)
+        @Html.TextBoxFor(s => Model.S.StoreName, null, new { @style = "visibility: hidden;" })<br />
+        <font>Add Permission:</font> @Html.CheckBoxFor(s => s.AM.AddPermission)
+        <font>Remove Permission:</font> @Html.CheckBoxFor(s => s.AM.RemovePermission)
+        <font>Update Permission:</font> @Html.CheckBoxFor(s => s.AM.UpdatePermission)
         <input type="submit" />
-    </form>
+    }
 </div>
 
 <script>

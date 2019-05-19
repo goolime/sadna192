@@ -45,7 +45,7 @@ namespace WebApplication1.Controllers
 
         public IActionResult Basket()
         {
-            
+
             try
             {
                 List<KeyValuePair<ProductInStore, int>> tmp = this.validateConnection().Watch_Cart();
@@ -62,28 +62,29 @@ namespace WebApplication1.Controllers
 
                 ViewData["cart"] = map;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewData["Error"] = e.Message;
             }
             //ViewData["Message"] = "Your application Visitor Basket";
-            
+
             return View();
         }
 
 
-        public IActionResult MyStores(string storename,bool? ownererr,bool? managererr)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr)
         {
             ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
             this.validateConnection();
-            ViewResult viewResult = View(new StoreViewModel() { StoreName = storename});
+            StoreViewModel Store = new StoreViewModel { StoreName = storename };
+            Store_AddManagerViewModel model = new Store_AddManagerViewModel() { S = Store, AM = null };
             if (storename != null)
             {
                 ViewData["storename"] = storename;
-                
+
             }
-            return viewResult;
+            return View(model);
         }
 
         public IActionResult Register()
@@ -225,9 +226,10 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOwnerForm(StoreViewModel model, string ownername)
+        public ActionResult AddOwnerForm(Store_AddManagerViewModel model, string ownername)
         {
-            string store = model.StoreName;
+
+            string store = model.S.StoreName;
             I_User_ServiceLayer SL = validateConnection();
             try
             {
@@ -242,24 +244,29 @@ namespace WebApplication1.Controllers
             }
             return RedirectToAction("MyStores", new { storename = store, ownererr = true });
         }
-        /*
+
         [HttpPost]
-        public ActionResult AddManagerForm(string managername)
+        public ActionResult AddManagerForm(Store_AddManagerViewModel model)
         {
             I_User_ServiceLayer SL = validateConnection();
             try
             {
 
-                if (SL.Add_Store_Manager((string)ViewData["storename"], managername))
+                if (ModelState.IsValid && 
+                    SL.Add_Store_Manager(model.S.StoreName,
+                    model.AM.Name,
+                    model.AM.AddPermission,
+                    model.AM.RemovePermission,
+                    model.AM.UpdatePermission))
                 {
-                    return RedirectToAction("MyStores", new { storename = (string)ViewData["storename"] });
+                    return RedirectToAction("MyStores", new { storename = model.S.StoreName });
                 }
             }
             catch
             {
             }
-            return RedirectToAction("MyStores", new { storename = (string)ViewData["storename"], ownererr = true });
-        }*/
+            return RedirectToAction("MyStores", new { storename = model.S.StoreName, managererr = true });
+        }
 
         [HttpPost]
         public ActionResult RegisterForm(string name, string password)
@@ -279,8 +286,8 @@ namespace WebApplication1.Controllers
 
         public ActionResult SearchForm(string keyword)
         {
-           return RedirectToAction("SearchResults",new { key = keyword});
-            
+            return RedirectToAction("SearchResults", new { key = keyword });
+
         }
 
         public bool IsLoggedIn()

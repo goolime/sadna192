@@ -16,20 +16,22 @@ else
             <tr>
                 <th>Name</th>
                 <th>Price</th>
+                <th>Store Name</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in (List<ProductInStore>)ViewData["products"])
             {
 
-                <tr>
-                    <td>@product.getName()</td>
-                    <td>@product.getPrice()</td>
-                    <td>
-                        <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(product.getStore().getName())" asp-route-productname="@product.getName()">@product.getName()</a>
-                        <!--<input />-->
-                    </td>
-                </tr>
+            <tr>
+                <td>@product.getName()</td>
+                <td>@product.getPrice()</td>
+                <td>@product.getStore().getName()</td>
+                <td>
+                    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(product.getStore().getName())" asp-route-productname="@product.getName()">View @product.getName() Page</a>
+                    <!--<input />-->
+                </td>
+            </tr>
             }
 
         <tbody />

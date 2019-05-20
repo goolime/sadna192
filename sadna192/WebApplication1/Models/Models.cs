@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,6 +73,7 @@ namespace WebApplication1.Models
         public StoreViewModel S { get; set; }
         public AddManagerViewModel AM { get; set; }
         public AddProductViewModel AP { get; set; }
+        public AddDiscountViewModel AD { get; set; }
 
         public string DeleteOwnerConfig(string owner, string store)
         {
@@ -84,5 +86,26 @@ namespace WebApplication1.Models
         {
             return DeleteOwnerConfig(owner, store);
         }
+    }
+
+    public class AddDiscountViewModel
+    {
+        public string LogicConnection { get; set; }
+        public bool IsStoreDiscount { get; set; }
+        public bool IsProductDiscount { get; set; }
+        public string ProductName { get; set; }
+        public bool IsFixed { get; set; }
+
+        [DisplayName("Start Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Start { get; set; }
+
+        [DisplayName("Finish Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Finish { get; set; }
+
+        public int Amount { get; set; }
+        public int DiscountPercent { get; set; }
+
     }
 }

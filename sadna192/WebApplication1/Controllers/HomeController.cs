@@ -527,5 +527,26 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
 
+        
+        [HttpPost]
+        public ActionResult AddDiscount(Store_AddManagerViewModel vm)
+        {
+            Discount d= null;
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Update_Product_Store(vm.S.StoreName,vm.O.Name,null,null,-1,-1,d,null))
+                {
+                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName});
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertAddDiscount"] = true;
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+        }
+
     }
 }

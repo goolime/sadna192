@@ -56,32 +56,13 @@
     }
 
 </div>
-
-<button onclick="show_add_discount_form()">Add Discount</button>
-<div id="addDiscount" style="visibility: @(ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]? "visible":"hidden")">
-    @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
-    {
-        <font color="red"> could not add the discount to the product </font>
-    }
-    @using (Html.BeginForm("AddDiscount", "Home", FormMethod.Post))
-    {
-        @Html.HiddenFor(s => Model.Name)
-        @Html.HiddenFor(s => Model.StoreName)
-
-    }
-
-</div>
-
 <script>
     function show_edit_product_form() {
         var isHidden = document.getElementById('editProduct').style.visibility === 'hidden';
         document.getElementById('editProduct').style.visibility = isHidden ? 'visible' : 'hidden';
     }
 
-    function show_add_discount_form() {
-        var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
-        document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
-    }
+
 
     function show_add_to_cart_form() {
         var isHidden = document.getElementById('addToCart').style.visibility === 'hidden';

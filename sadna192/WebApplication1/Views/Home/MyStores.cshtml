@@ -137,12 +137,40 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-Products: 
+<button onclick="show_add_discount_form()">Add Discount</button>
+<div id="addDiscount" style="visibility: @(ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]? "visible":"hidden")">
+    @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
+    {
+        <font color="red"> could not add the discount to the product </font>
+    }
+    @using (Html.BeginForm("AddDiscount", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(s => Model.S.StoreName)
+        @Html.HiddenFor(s => Model.O.Name)
+        @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>() { "OR", "AND" }), "Select Logic Connection")
+        <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
+        <font>Is Product Discount:</font>@Html.CheckBoxFor(s => s.AD.IsProductDiscount, new { @onchange = "show_product_name(this)" })
+        @Html.DropDownListFor(s => s.AD.ProductName, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "productname", @style = "visibility:hidden", @placeholder = "Product name" })
+        <br />
+        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.IsFixed, new { @onchange = "show_time_range(this)" })
+        <div id="discountDiv" style="visibility:hidden">
+            <font>Start:</font>@Html.TextBoxFor(s => s.AD.Start, new { @type = "date" })
+            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.Finish, new { @type = "date" })
+        </div>
+        @Html.TextBoxFor(s => s.AD.Amount, new { @placeholder = "Amount" })
+        @Html.TextBoxFor(s => s.AD.DiscountPercent, new { @placeholder = "DiscountPercent" })
+        <button input="submit" class="btn btn-success">Add Discount</button>
+
+
+    }
+
+</div>
+Products:
 @foreach (ProductInStore product in ((Store)ViewData["currStore"]).getProductInStore())
 {
-<div>
-    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product"  asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
-</div><br />
+    <div>
+        <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
+    </div><br />
 }
 
 <script>
@@ -170,23 +198,28 @@ Products:
         var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
         document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
     }
-</script>
-<script>
-    function show_manager_modal(ownerName, add, remove, update) {
-        document.getElementById("username").innerHTML = ownerName;
-        document.getElementById("ownerName").value = ownerName;
-        document.getElementById("add").checked = add;
-        document.getElementById("remove").checked = remove;
-        document.getElementById("update").checked = update;
-        $("#editOwnerForm").modal("show");
+    function show_add_discount_form() {
+        var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
+        document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
     }
+
+    function show_product_name(obj) {
+        if ($(obj).is(":checked")) {
+            document.getElementById("productname").style.visibility = "visible";
+        } else {
+            document.getElementById("productname").style.visibility = "hidden";
+        }
+    }
+
+    function show_time_range(obj) {
+        if ($(obj).is(":checked")) {
+            document.getElementById("discountDiv").style.visibility = "visible";
+        } else {
+            document.getElementById("discountDiv").style.visibility = "hidden";
+        }
+    }
+
 </script>
-@if (ViewData["alertRemoveOwner"] != null && (bool)ViewData["alertRemoveOwner"])
-{
-    <script>
-        alert("couldnt remove owner");
-    </script>
-}
 
 
 

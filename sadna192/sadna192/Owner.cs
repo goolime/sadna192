@@ -40,7 +40,7 @@ namespace sadna192
                         return true;
                     }
                 }
-                throw new Exception("");
+                throw new Sadna192Exception("add manager faild. <Owner: addManager>");
             }
             catch
             {
@@ -89,7 +89,7 @@ namespace sadna192
                 }
                 catch (Exception) { }
             }
-            throw new Exception("the Other member was not assigned by this Owner");
+            throw new Sadna192Exception("the Other member was not assigned by this Owner. <Owner: findOwner>");
         }
 
         internal virtual bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
@@ -101,14 +101,14 @@ namespace sadna192
         {
             Owner other = findOwner(other_Manager);
             if (other is Manager) return other.removeMe();
-            throw new Exception("the member is an owner of the shop");
+            throw new Sadna192Exception("the member is an owner of the shop. <Owner: removeManager> ");
         }
 
         internal virtual bool removeOwner(Member other_Owner)
         {
             Owner other = findOwner(other_Owner);
             if (other is Owner && !(other is Manager)) return other.removeMe();
-            throw new Exception("the member is an manager of the shop");
+            throw new Sadna192Exception("the member is an manager of the shop. <Owner: removeOwner>");
         }
 
         public virtual bool isManger() => false;

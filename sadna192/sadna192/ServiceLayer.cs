@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Timers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("sadna192_Tests.Integration_Tests")]
 namespace sadna192
 {
     public class ServiceLayer : I_ServiceLayer
@@ -68,7 +70,7 @@ namespace sadna192
             protected static ServiceLayer singleton = null;
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
-            public List<string> log;
+            public Logger log;
             public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
@@ -78,7 +80,7 @@ namespace sadna192
                 this.paymentSystem = paymentSystem;
                 this.members = new List<Member>();
                 this.users = new List<I_User_ServiceLayer>();
-                this.log = new List<string>();
+                this.log = new Logger("EventLog");//new List<string>();
                 Timer t = new Timer(1000*60*10);
                 t.Elapsed += OnTimedEvent;
                 t.AutoReset = true;
@@ -96,6 +98,7 @@ namespace sadna192
             }
         }
 
+       
         private class User_ServiceLayer:I_User_ServiceLayer
         {
             private single_ServiceLayer single_ServiceLayer;
@@ -482,9 +485,11 @@ namespace sadna192
                 }
             }
 
+            public UserState GetUserState()
             public List<Dictionary<string, dynamic>> usersStores()
             {
                 return this.userState.getMyShops();
+                return this.userState;
             }
 
 

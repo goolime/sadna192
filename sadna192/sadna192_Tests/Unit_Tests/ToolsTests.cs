@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sadna192.Tests
+namespace sadna192_Tests.Unit_Tests
 {
     [TestClass()]
     public class ToolsTests

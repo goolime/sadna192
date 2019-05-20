@@ -25,12 +25,14 @@ namespace sadna192
         {
             Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
             //checking if the prouct exists in the current shopping cart
-            if (shoppingCartContent.Contains(producttoadd))
-            {
-                return false;
-            }
-            else
-            {
+                foreach(Pair<ProductInStore, int>  pro in shoppingCartContent)
+                {
+                    if (pro.First.getName() == p.getName())
+                    {
+                        pro.Second = pro.Second + amount;
+                        return true;
+                    }
+                }
                 try
                 {
                     shoppingCartContent.Add(producttoadd);
@@ -39,7 +41,7 @@ namespace sadna192
                 {
                     throw new Sadna192Exception("Fail to add product " + p.getName() + " to the cart" , "ShoppingCart" , "addProduct");
                 }
-            }
+            
             return true;
         }
 
@@ -90,6 +92,17 @@ namespace sadna192
             }
             return ans;
         }
+
+        internal Pair<ProductInStore, int> FindProductInCart(String s)
+        {
+            foreach (Pair<ProductInStore, int> pro in shoppingCartContent)
+            {
+                if (pro.First.getName() == s)
+                {
+                    return pro;
+                }
+            }
+            throw new Sadna192Exception("There is no such product in this cart this moment", "ShoppingCart", "FindProductInCart" );
 
         internal int numOfItemsInCart()
         {

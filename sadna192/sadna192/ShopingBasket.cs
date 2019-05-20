@@ -23,9 +23,15 @@ namespace sadna192
             this.shoppingCarts = null;
         }
 
+        public List<ShoppingCart> getshoppingCarts()
+        {
+            return shoppingCarts;
+        }
+
         internal bool addProduct(ProductInStore p, int amount)
         {
             //checking if already there is a Shopping cart for this prodcut in the shopping basket
+            //in case that there is such store, adds the product to this store.
             foreach(ShoppingCart sc in shoppingCarts)
             {
                 if (sc.getStore()==p.getStore()){
@@ -34,7 +40,8 @@ namespace sadna192
                 }
 
             }
-            //if there is no Shopping cart for this store, add it
+
+            //if there is no Shopping cart for this store, Opens new one
             List<Pair<ProductInStore, int>> shoppingCartContent = new List<Pair<ProductInStore, int>>();
             Pair<ProductInStore, int> productToAdd = new Pair<ProductInStore, int>(p, amount);
             shoppingCartContent.Add(productToAdd);

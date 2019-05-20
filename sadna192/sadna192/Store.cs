@@ -167,13 +167,17 @@ namespace sadna192
                 ans =  SearchProductByKeywords(keywords, ans);
             }
             //Searching by price range
-            if (price_min != -1)
+            if (price_min != -1 && price_max != -1)
             {
-                ans = SearchProductByMinPriceRange(price_min, ans);
+                ans = SearchProductByMinPriceRangeBoth(price_min,price_max, ans);
             }
-            if (price_max != -1)
+            if (price_min != -1 &&  price_max==-1)
             {
-                ans = SearchProductByMaxPriceRange(price_max, ans);
+                ans = SearchProductByMinPriceOnlyRange(price_min, ans);
+            }
+            if (price_max != -1 && price_min==-1)
+            {
+                ans = SearchProductByMaxPriceOnlyRange(price_max, ans);
             }
             if (product_rank != -1)
             {
@@ -221,7 +225,7 @@ namespace sadna192
             {
                 foreach(ProductInStore p in list)
                 {
-                    if (p.getProduct().getKeywords().Contains(keyword))
+                    if (p.getProduct().getKeywords() != null && p.getProduct().getKeywords().Contains(keyword))
                     {
                         listToReturn.Add(p);
                     }
@@ -230,25 +234,12 @@ namespace sadna192
             return listToReturn;
         }
 
-        private List<ProductInStore> SearchProductByMinPriceRange(double price_min, List<ProductInStore> list)
+        private List<ProductInStore> SearchProductByMinPriceRangeBoth(double price_min, double price_max, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
             foreach (ProductInStore p in list)
             {
-                if (p.getPrice() > price_min)
-                {
-                    productsResult.Add(p);
-                }
-            }
-            return productsResult;
-        }
-
-        private List<ProductInStore> SearchProductByMaxPriceRange(double price_max, List<ProductInStore> list)
-        {
-            List<ProductInStore> productsResult = new List<ProductInStore>();
-            foreach (ProductInStore p in list)
-            {
-                if (p.getPrice() < price_max)
+                if (p.getPrice() >= price_min && p.getPrice() <= price_max)
                 {
                     productsResult.Add(p);
                 }
@@ -257,6 +248,33 @@ namespace sadna192
         }
 
 
+        private List<ProductInStore> SearchProductByMinPriceOnlyRange(double price_min, List<ProductInStore> list)
+        {
+            List<ProductInStore> productsResult = new List<ProductInStore>();
+            foreach (ProductInStore p in list)
+            {
+                if (p.getPrice() >= price_min)
+                {
+                    productsResult.Add(p);
+                }
+            }
+            return productsResult;
+        }
+
+        private List<ProductInStore> SearchProductByMaxPriceOnlyRange(double price_max, List<ProductInStore> list)
+        {
+            List<ProductInStore> productsResult = new List<ProductInStore>();
+            foreach (ProductInStore p in list)
+            {
+                if (p.getPrice() <= price_max)
+                {
+                    productsResult.Add(p);
+                }
+            }
+            return productsResult;
+        }
+
+        
         private List<ProductInStore> SearchProductByProductRank(double rank, List<ProductInStore> list)
         {
             List<ProductInStore> productsResult = new List<ProductInStore>();
@@ -275,23 +293,14 @@ namespace sadna192
         public bool ChangeAmoutStoreInPurchase(ProductInStore p, int amount)
         {
             //checking if the amount to purcahse is available in the store
-            int currentAmount = p.getAmount();
-            if (currentAmount - amount < 0)
+            if (!(Tools.check_amount(p.getAmount() - amount)))
             {
                 throw new Sadna192Exception("The Amount to purchase os more tham the amount available in the store for this moment", "Store", "ChangeAmoutStoreInPurchase");
             }
             else
             {
-                try
-                {
-                    p.setAmount(currentAmount - amount);
+                    p.setAmount(p.getAmount() - amount);
                     return true;
-                }
-                catch
-                {
-
-                }
-                return false;
             }
         }
 

@@ -33,7 +33,7 @@ namespace sadna192
             {
                 foreach (Owner o in new_manager.owner)
                 {
-                    if (o.store.isMe(this.store.getName()) && o is Manager) {
+                    if (o.store.isMe(this.store.getName()) && o is Manager){
                         ((Manager)o).permision_add = ((Manager)o).permision_add || permision_add;
                         ((Manager)o).permision_remove = ((Manager)o).permision_remove || permission_remove;
                         ((Manager)o).permision_update = ((Manager)o).permision_update || permission_update;

@@ -507,5 +507,26 @@ namespace WebApplication1.Controllers
             ViewData["alertEditProduct"] = true;
             return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
+
+        
+        [HttpPost]
+        public ActionResult AddToCart(ProductInStoreViewModel vm)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+                if (SL.Add_To_ShopingBasket(SL.GetProductFromStore(vm.Name,vm.StoreName),vm.AddToCart.Amount))
+                {
+                    return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertAddToCart"] = true;
+            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
+        }
+
     }
 }

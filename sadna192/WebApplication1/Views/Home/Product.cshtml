@@ -41,7 +41,19 @@
 
 }
 <button onclick="show_add_to_cart_form()">Add To Cart</button>
-<div id="addToCart" style="visibility:hidden">
+<div id="addToCart" style="visibility: @(ViewData["alertAddToCart"]!=null && (bool)ViewData["alertAddToCart"]? "visible":"hidden")">
+    @if (ViewData["alertAddToCart"] != null && (bool)ViewData["alertAddToCart"])
+    {
+        <font color="red"> could not add the product to cart</font>
+    }
+    @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(s => Model.Name)
+        @Html.HiddenFor(s => Model.StoreName)
+        @Html.TextBoxFor(s => s.AddToCart.Amount, new { @placeholder = "amount is " + Model.EditProduct.ProductAmount })
+        <button type="submit" class="btn btn-primary">Add</button>
+
+    }
 
 </div>
 <script>

@@ -12,6 +12,7 @@ namespace WebApplication1.Models
         public string Name { get; set; }
         public string StoreName { get; set; }
         public EditProductViewModel EditProduct { get; set; }
+        public AddToCartViewModel AddToCart { get; set; }
     }
 
     public class EditProductViewModel
@@ -20,6 +21,11 @@ namespace WebApplication1.Models
         public double ProductPrice { get; set; } = -1;
         public int ProductAmount { get; set; } = -1;
         public string NewName { get; set; }
+    }
+
+    public class AddToCartViewModel
+    {
+        public int Amount { get; set; }
     }
 
     public class StoreViewModel

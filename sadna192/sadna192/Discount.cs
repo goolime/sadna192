@@ -130,6 +130,21 @@ namespace sadna192
             else return 1;
         }
     }
+
+    public class fixDiscount:Discount
+    {
+        double discount;
+
+        public fixDiscount(double discount)
+        {
+            this.discount = discount;
+        }
+
+        public double calculate(ProductInStore p, UserState u)
+        {
+            return this.discount;
+        }
+    }
 }
 
 

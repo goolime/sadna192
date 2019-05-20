@@ -119,7 +119,7 @@ namespace sadna192
             return this.shopingBasket.numOfItemsInCart(store);
         }
 
-        public int numOfItemsInCart(string store, ProductInStore p)
+        public int numOfItemsInCart(string store, string p)
         {
             return this.shopingBasket.numOfItemsInCart(store,p);
         }

@@ -79,15 +79,12 @@ namespace sadna192
             this.name = name;
         }
 
-        public void setCategory(string name)
+        public void setCategory(string category)
         {
             this.category = category;
         }
 
-        public void setRank(string name)
-        {
-            this.rank = rank;
-        }
+        public void SetRank(string rank) => this.rank = double.Parse(rank);
 
 
 

@@ -125,6 +125,24 @@ namespace sadna192
             throw new Exception("no cart for the store");
         }
 
+        internal int numOfItemsInCart(string store)
+        {
+            foreach(ShoppingCart sc in this.shoppingCarts)
+            {
+                if (sc.getStore().getName() == store) return sc.numOfItemsInCart();
+            }
+            return -1;
+        }
+
+        internal int numOfItemsInCart(string store,ProductInStore p)
+        {
+            foreach (ShoppingCart sc in this.shoppingCarts)
+            {
+                if (sc.getStore().getName() == store) return sc.numOfItemsInCart(p);
+            }
+            return -1;
+        }
+
         internal List<KeyValuePair<ProductInStore, int>> get_basket()
         {
             List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();

@@ -104,11 +104,11 @@ namespace sadna192
             return ans;
         }
 
-        internal int numOfItemsInCart(ProductInStore op)
+        internal int numOfItemsInCart(string op)
         {
             foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
             {
-                if (op.getName() == p.First.getName()) return p.Second;
+                if (op == p.First.getName()) return p.Second;
             }
             return -1;
         }

@@ -74,6 +74,62 @@ namespace sadna192
         }
     }
 
+    public class ProductAmountDiscount : Discount
+    {
+        string product;
+        int amount;
+        double discount;
+
+        public ProductAmountDiscount(string product, int i,double discount)
+        {
+            this.amount = i;
+            this.product = product;
+            this.discount = discount;
+        }
+
+        public double calculate(ProductInStore p, UserState u)
+        {
+            if (u.numOfItemsInCart(p.getStore().getName(), this.product) >= this.amount) return this.discount;
+            else return 1;
+        }
+    }
+
+    public class ProductAmountInBasketDiscount : Discount
+    {
+        int amount;
+        double discount;
+
+        public ProductAmountInBasketDiscount(int i, double discount)
+        {
+            this.amount = i;
+            this.discount = discount;
+        }
+
+        public double calculate(ProductInStore p, UserState u)
+        {
+            if (u.numOfItemsInCart(p.getStore().getName()) >= this.amount) return this.discount;
+            else return 1;
+        }
+    }
+
+    public class TimeDiscount : Discount
+    {
+        DateTime from, to;
+        double discount;
+
+        public TimeDiscount(DateTime from, DateTime to, double discount)
+        {
+            this.from = from;
+            this.to = to;
+            this.discount = discount;
+        }
+
+        public double calculate(ProductInStore p, UserState u)
+        {
+            if (from<DateTime.Now && DateTime.Now<to) return this.discount;
+            else return 1;
+        }
+    }
 }
 
 

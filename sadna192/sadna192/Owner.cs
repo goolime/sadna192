@@ -33,7 +33,7 @@ namespace sadna192
             {
                 foreach (Owner o in new_manager.owner)
                 {
-                    if (o.store.isMe(this.store.getName()) && o is Manager) {
+                    if (o.store.isMe(this.store.getName()) && o is Manager){
                         ((Manager)o).permision_add = ((Manager)o).permision_add || permision_add;
                         ((Manager)o).permision_remove = ((Manager)o).permision_remove || permission_remove;
                         ((Manager)o).permision_update = ((Manager)o).permision_update || permission_update;
@@ -107,7 +107,7 @@ namespace sadna192
         internal virtual bool removeOwner(Member other_Owner)
         {
             Owner other = findOwner(other_Owner);
-            if (other is Owner && !(other is Manager)) return other.removeMe();
+            if (this.user!=other_Owner && other is Owner && !(other is Manager)) return other.removeMe();
             throw new Exception("the member is an manager of the shop");
         }
     }

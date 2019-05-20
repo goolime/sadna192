@@ -79,6 +79,8 @@
     <Compile Include="AT\Sales\WatchCart_AT.cs" />
     <Compile Include="Unit_Tests\Manager_UT.cs" />
     <Compile Include="Unit_Tests\Owner_UT.cs" />
+    <Compile Include="Unit_Tests\Store_UT.cs" />
+    <Compile Include="Unit_Tests\Visitor_UT.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

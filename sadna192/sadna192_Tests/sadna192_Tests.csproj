@@ -73,6 +73,7 @@
     <Compile Include="AT\Store\RemoveProductFromStore_AT.cs" />
     <Compile Include="AT\User\RemoveUser_AT.cs" />
     <Compile Include="Stubs.cs" />
+    <Compile Include="Unit_Tests\Shopping_Cart_UT.cs" />
     <Compile Include="Unit_Tests\ToolsTests.cs" />
     <Compile Include="AT\Sales\updateCart_AT.cs" />
     <Compile Include="AT\Store\UpdateProductInStore_AT.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="Unit_Tests\Manager_UT.cs" />
     <Compile Include="Unit_Tests\Owner_UT.cs" />
     <Compile Include="Unit_Tests\Store_UT.cs" />
+    <Compile Include="Unit_Tests\Shopping_Basket_UT.cs" />
+    <Compile Include="Unit_Tests\Member_UT.cs" />
     <Compile Include="Unit_Tests\Visitor_UT.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -304,6 +304,9 @@ namespace sadna192
             }
         }
 
-
+        public List<Owner> GetOwners()
+        {
+            return this.owners;
+        }
     }
 }

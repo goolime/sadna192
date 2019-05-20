@@ -14,7 +14,6 @@ namespace sadna192.Tests.AcceptanceTests
     {
         private static I_ServiceLayer serviceLayer;
         private I_User_ServiceLayer userServiceLayer_admin;
-        private I_User_ServiceLayer userServiceLayer1;
 
         [TestInitialize]
         public void Init()
@@ -26,19 +25,23 @@ namespace sadna192.Tests.AcceptanceTests
             }
             catch (Exception) { }
             userServiceLayer_admin = serviceLayer.Connect();
-            userServiceLayer1 = serviceLayer.Connect();
+            
             try
             {
                 userServiceLayer_admin.Login("admin", "123456Ui");
-                userServiceLayer1.Register("removeUser", "1221Asdf");
+               
             }
             catch (Exception) { }
+           
         }
 
         [TestMethod()]
         public void Remove_user_from_the_system_happyTest()
         {
+            I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
+            userServiceLayer1.Register("removeUser", "1221Asdf");
             Assert.IsTrue(userServiceLayer1.Login("removeUser", "1221Asdf"));
+            userServiceLayer1.Logout();
             Assert.IsTrue(userServiceLayer_admin.Remove_User("removeUser"));
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("removeUser", "1221Asdf"); }, "this user has been removed from the system");
         }
@@ -59,8 +62,9 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Not_admin_try_remove_user_SadTest()
         {
-            //userServiceLayer1.Register("removeUser1", "1221Asdf");
-            userServiceLayer1.Login("removeUser", "1221Asdf");
+            I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
+            userServiceLayer1.Register("removeUser2", "1221Asdf");
+            userServiceLayer1.Login("removeUser2", "1221Asdf");
 
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
             userServiceLayer2.Register("removeUserTmp", "1221Poiu");

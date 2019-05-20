@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace sadna192
@@ -79,11 +79,12 @@ namespace sadna192
 
         // RSL 7
         void Add_Log(string log);
-        string get_log();
 
         List<Dictionary<string, dynamic>> usersStores();
 
         bool canclePurch();
+
+        UserState GetUserState();
     }
     
 

@@ -78,7 +78,8 @@ namespace sadna192
                 if (p.getAmount() - amount >= 0)
                 {
                     p.setAmount(p.getAmount() - amount);
-                    savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>> (p,new KeyValuePair<int, double>(amount, p.getPrice()*amount-p.getDiscount().calculate(p, u))));
+                    savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>> (p,new KeyValuePair<int, double>(amount, p.getPrice()*amount*p.getDiscount().calculate(p, u))));
+                    this.checkSaved(u);
                 }
                 else
                 {
@@ -87,6 +88,12 @@ namespace sadna192
                 }
             }
             return this.savedProducts;
+        }
+
+        private void checkSaved(UserState u)
+        {
+            // TODO-MICHAL
+            throw new NotImplementedException();
         }
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
@@ -101,7 +108,7 @@ namespace sadna192
                         if (p.Key.getAmount() - p.Value >= 0)
                         {
                             p.Key.setAmount(p.Key.getAmount() - p.Value);
-                            savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value - p.Key.getDiscount().calculate(p.Key, u))));
+                            savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value * p.Key.getDiscount().calculate(p.Key, u))));
                             sc.DeleteProduct(p.Key,0);
                         }
                         else
@@ -111,6 +118,7 @@ namespace sadna192
                         }
                     }
                     this.shoppingCarts.Remove(sc);
+                    this.checkSaved(u);
                     return this.savedProducts;
                 }
             }

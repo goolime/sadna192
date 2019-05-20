@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewData["Title"] = "SearchResults";
+}
+
+<h2>SearchResults</h2>
+@using sadna192
+@foreach (var product in (List<ProductInStore>)ViewData["products"])
+{
+    <tr>
+        <td>@product.getName()</td>
+        <td>@product.getPrice()</td>
+        <td>
+            <a>add to cart</a>
+            <!--<input />-->
+        </td>
+    </tr>
+}

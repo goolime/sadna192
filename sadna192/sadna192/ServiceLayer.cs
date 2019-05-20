@@ -33,14 +33,21 @@ namespace sadna192
         {
             if (singleton != null)
             {
-                foreach(Member m in singleton.members)
+                List<Visitor> all = new List<Visitor>();
+                all.AddRange(singleton.members);
+                foreach (I_User_ServiceLayer u in singleton.users)
+                {
+                    //ToDo....
+                    //all.add((Visitor)u.)
+                }
+                foreach (Visitor m in all)
                 {
                     if (m.shopingBasket.toBeRemoved)
                     {
                         if (m.shopingBasket.savedProducts != null)
                         {
                             m.shopingBasket.returnProducts();
-                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.name +"'" );
+                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.ToString() +"'" );
                         }
                         m.shopingBasket.toBeRemoved = false;
                     }
@@ -475,6 +482,11 @@ namespace sadna192
                 }
             }
 
+            public List<Dictionary<string, dynamic>> usersStores()
+            {
+                return this.userState.getMyShops();
+            }
+
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,7 +549,11 @@ namespace sadna192
                 return ans;
             }
 
-            
+            public bool canclePurch()
+            {
+                ((Visitor)this.userState).shopingBasket.returnProducts();
+                return true;
+            }
         }
     }
 }

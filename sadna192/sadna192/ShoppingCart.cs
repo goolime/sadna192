@@ -102,7 +102,8 @@ namespace sadna192
                     return pro;
                 }
             }
-            throw new Sadna192Exception("There is no such product in this cart this moment", "ShoppingCart", "FindProductInCart" );
+            throw new Sadna192Exception("There is no such product in this cart this moment", "ShoppingCart", "FindProductInCart");
+        }
 
         internal int numOfItemsInCart()
         {

@@ -26,6 +26,6 @@ namespace sadna192
         List<KeyValuePair<ProductInStore, int>> Watch_Cart();
         List<Dictionary<string, dynamic>> getMyShops();
         int numOfItemsInCart(string store);
-        int numOfItemsInCart(string v, ProductInStore p);
+        int numOfItemsInCart(string v, string p);
     }
 }

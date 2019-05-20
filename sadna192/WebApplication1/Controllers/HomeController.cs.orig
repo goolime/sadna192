@@ -173,10 +173,9 @@ namespace WebApplication1.Controllers
 
         public IActionResult Product(string storename, string productname)
         {
-            ViewData["SL"] = this.validateConnection();
+            this.validateConnection();
             ViewData["store"] = storename;
             ViewData["product"] = productname;
-            ViewData["SL"] = this.validateConnection();
             return View();
         }
 
@@ -412,6 +411,26 @@ namespace WebApplication1.Controllers
             return !"Visitor".Equals(ius.ToString());
         }
         [HttpPost]
+        public ActionResult RemoveOwnerForm(Store_AddManagerViewModel vm)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Remove_Store_Owner(vm.S.StoreName, vm.O.Name))
+                {
+                    return RedirectToAction("LoggedIn");
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertRemoveOwner"] = true;
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+        }
+
+        [HttpPost]
         public ActionResult return_to_cart() {
             I_User_ServiceLayer SL = this.validateConnection();
             SL.canclePurch();
@@ -427,31 +446,11 @@ namespace WebApplication1.Controllers
                 SL.Finalize_Purchase(shipping, payment);
                 return RedirectToAction("Allgood");
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ViewData["Error"] = e.Message;
                 return RedirectToAction("Error");
             }
-        }
-
-        [HttpPost]
-        public ActionResult RemoveOwnerForm(Store_AddManagerViewModel vm)
-        {
-            I_User_ServiceLayer SL = validateConnection();
-            try
-            {
-
-                if (SL.Remove_Store_Owner(vm.S.StoreName,vm.O.Name))
-                {
-                    return RedirectToAction("LoggedIn");
-                }
-            }
-            catch
-            {
-
-            }
-            ViewData["alertRemoveOwner"] = true;
-            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
         }
     }
 }

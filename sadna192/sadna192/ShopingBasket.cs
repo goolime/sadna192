@@ -141,7 +141,7 @@ namespace sadna192
             return -1;
         }
 
-        internal int numOfItemsInCart(string store,ProductInStore p)
+        internal int numOfItemsInCart(string store,string p)
         {
             foreach (ShoppingCart sc in this.shoppingCarts)
             {

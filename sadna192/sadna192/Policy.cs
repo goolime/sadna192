@@ -190,7 +190,7 @@ namespace sadna192
 
         public bool check(ProductInStore p, UserState u)
         {
-            return u.numOfItemsInCart(p.getStore().getName(),p) >= this.min;
+            return u.numOfItemsInCart(p.getStore().getName(),p.getName()) >= this.min;
         }
 
         public bool immidiate()
@@ -228,7 +228,7 @@ namespace sadna192
 
         public bool check(ProductInStore p, UserState u)
         {
-            return u.numOfItemsInCart(p.getStore().getName(), p) <= this.max;
+            return u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.max;
         }
 
         public bool immidiate()

@@ -121,20 +121,19 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public IActionResult SearchResults(string key)
+        public IActionResult SearchResults(string key,string keys,string cat,double max ,double min)
         {
-
-            if (key != null)
-            {
-                I_User_ServiceLayer SL = validateConnection();
-                List<ProductInStore> list = SL.GlobalSearch(key, null, null, -1, -1, -1, -1);
-                ViewData["products"] = list;
-                ViewData["keyword"] = key;
-            }
-            else
-            {
-                ViewData["products"] = new List<ProductInStore>();
-            }
+            I_User_ServiceLayer SL = validateConnection();
+            List<ProductInStore> list =
+                SL.GlobalSearch(key,
+                cat,
+                keys?.Split('-').ToList(),
+                min == 0 ? -1 : min,
+                max == 0 ? -1 : max,
+                -1,
+                -1);
+            ViewData["products"] = list;
+            ViewData["keyword"] = key;
             return View();
         }
 
@@ -410,10 +409,10 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public ActionResult SearchForm(string keyword)
+        public ActionResult SearchForm(string keyword, string keywords,string category,double pricemax, double pricemin)
         {
             validateConnection();
-            return RedirectToAction("SearchResults", new { key = keyword });
+            return RedirectToAction("SearchResults", new { key = keyword,keys=keywords, cat = category,max=pricemax,min=pricemin });
 
         }
 
@@ -517,7 +516,7 @@ namespace WebApplication1.Controllers
             {
                 if (SL.Add_To_ShopingBasket(SL.GetProductFromStore(vm.Name,vm.StoreName),vm.AddToCart.Amount))
                 {
-                    return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
+                    return RedirectToAction("Basket");
                 }
             }
             catch

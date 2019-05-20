@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace sadna192
@@ -80,15 +80,20 @@ namespace sadna192
         // RSL 7
         void Add_Log(string log);
 <<<<<<< HEAD
-        string get_log();
+
+        UserState GetUserState();
+=======
+>>>>>>> origin/master
 
         List<Dictionary<string, dynamic>> usersStores();
 
         bool canclePurch();
-=======
 
+<<<<<<< HEAD
+         ProductInStore GetProductFromStore(string productName, string storeName);
+=======
         UserState GetUserState();
->>>>>>> origin/MichalBranch
+>>>>>>> origin/master
     }
     
 

@@ -75,7 +75,7 @@ namespace sadna192
             {
                 if (owner.getStore().isMe(store_name)) return owner;
             }
-            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'. <Member: getUserStore>");
+            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)

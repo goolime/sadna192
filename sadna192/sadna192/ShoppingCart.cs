@@ -37,7 +37,7 @@ namespace sadna192
                 }
                 catch (Exception)
                 {
-                    throw new SystemException("Fail to add product " + p.getName() + " to the cart");
+                    throw new Sadna192Exception("Fail to add product " + p.getName() + " to the cart" , "ShoppingCart" , "addProduct");
                 }
             }
             return true;
@@ -56,7 +56,7 @@ namespace sadna192
                 }
                 else
                 {
-                    throw new Exception("There is no such product " + p.getName() + " in the shopping cart");
+                    throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart", "ShoppingCart", "DeleteProduct");
                 }
             }
             return false;
@@ -76,15 +76,13 @@ namespace sadna192
                     return true;
                 }
             }
-            throw new Exception("There is no such product " + p.getName() + " in the shopping cart of " + store.getName());
+            throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart of " + store.getName(), "ShoppingCart", "editAmount");
         }
 
 
         internal bool Finalize_Purchase(ProductInStore product, string address, string payment)
         {
-            throw new NotImplementedException();
-            
-            
+            throw new NotImplementedException();                     
         }
 
         internal List<KeyValuePair<ProductInStore, int>> getCart()

@@ -52,10 +52,10 @@ namespace sadna192.Tests.AcceptanceTests
         public void Add_shop_manager_and_check_permissions_happyTest()
         {
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't add products");
-            //Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 5, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't update products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 5, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato1"); }, "user2 still is not manager so he can't remove products");
 
-          /*  Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, false, false));
+            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, false, false));
 
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("seven up", null, null, -1, -1, -1, -1);
             int pre_amount = search1.Count;
@@ -94,7 +94,7 @@ namespace sadna192.Tests.AcceptanceTests
             {
                 if (search2[i].getStore().getName().Equals("mamma mia"))
                     Assert.Fail("manager faild to remove the product properly");
-            }*/
+            }
             
         }
 

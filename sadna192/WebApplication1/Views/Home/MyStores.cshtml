@@ -137,6 +137,14 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
+Products: 
+@foreach (ProductInStore product in ((Store)ViewData["currStore"]).getProductInStore())
+{
+<div>
+    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product"  asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
+</div><br />
+}
+
 <script>
     document.getElementById("storeName").value = "@ViewData["storename"]";
     function show_add_owner_form() {

@@ -150,6 +150,14 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public IActionResult Product(string storename, string productname)
+        {
+            this.validateConnection();
+            ViewData["store"] = storename;
+            ViewData["product"] = productname;
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

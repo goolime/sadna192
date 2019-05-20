@@ -12,12 +12,27 @@ namespace sadna192
         private List<ProductInStore> productInStores= new List<ProductInStore>();
         private List<Owner> owners;
         private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
+        private Policy storePolicy;
+        private Discount storeDiscount;
+
 
         public Store(string name)
         {
             this.name = name;
             this.productInStores = new List<ProductInStore>();
             this.owners = new List<Owner>();
+            this.storePolicy = new regularPolicy();
+            this.storeDiscount = new noDiscount();
+        }
+
+        public Policy GetPolicy()
+        {
+            return this.storePolicy;
+        }
+
+        public Discount GetDiscount()
+        {
+            return this.storeDiscount;
         }
 
         public string getName()
@@ -71,7 +86,7 @@ namespace sadna192
                     return true;
                 }
             }
-            throw new Exception("Product to be removed was not found");
+            throw new Sadna192Exception("Product to be removed was not found", "Store", "removeProduct");
             
         }
 
@@ -128,7 +143,7 @@ namespace sadna192
                     return p;
                 }
             }
-            throw new Exception("The Product " + product_name + " wasn't found in the store " + this.getName());
+            throw new Sadna192Exception("The Product " + product_name + " wasn't found in the store " + this.getName(), "Store", "FindProductInStore");
         }
 
         internal List<ProductInStore> Search(string name, string category, List<string> keywords, double price_min, double price_max, double store_rank, double product_rank)
@@ -280,7 +295,7 @@ namespace sadna192
             //checking if the amount to purcahse is available in the store
             if (!(Tools.check_amount(p.getAmount() - amount)))
             {
-                throw new Exception("The Amount to purchase os more tham the amount available in the store for this moment");
+                throw new Sadna192Exception("The Amount to purchase os more tham the amount available in the store for this moment", "Store", "ChangeAmoutStoreInPurchase");
             }
             else
             {

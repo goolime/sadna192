@@ -39,7 +39,7 @@ namespace sadna192
                 }
                 catch (Exception)
                 {
-                    throw new SystemException("Fail to add product " + p.getName() + " to the cart");
+                    throw new Sadna192Exception("Fail to add product " + p.getName() + " to the cart" , "ShoppingCart" , "addProduct");
                 }
             
             return true;
@@ -56,9 +56,8 @@ namespace sadna192
                     shoppingCartContent.Remove(v);
                     return true;
                 }
-                
             }
-            throw new Exception("There is no such product " + p.getName() + " in the shopping cart");
+            throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart", "ShoppingCart", "DeleteProduct");
         }
         
 
@@ -75,15 +74,13 @@ namespace sadna192
                     return true;
                 }
             }
-            throw new Exception("There is no such product " + p.getName() + " in the shopping cart of " + store.getName());
+            throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart of " + store.getName(), "ShoppingCart", "editAmount");
         }
 
 
         internal bool Finalize_Purchase(ProductInStore product, string address, string payment)
         {
-            throw new NotImplementedException();
-            
-            
+            throw new NotImplementedException();                     
         }
 
         internal List<KeyValuePair<ProductInStore, int>> getCart()
@@ -105,7 +102,25 @@ namespace sadna192
                     return pro;
                 }
             }
-            throw new Exception("There is no such product in this cart this moment");
+            throw new Sadna192Exception("There is no such product in this cart this moment", "ShoppingCart", "FindProductInCart" );
+
+        internal int numOfItemsInCart()
+        {
+            int ans = 0;
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                ans += p.Second;
+            }
+            return ans;
+        }
+
+        internal int numOfItemsInCart(string op)
+        {
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                if (op == p.First.getName()) return p.Second;
+            }
+            return -1;
         }
     }
 

@@ -75,7 +75,6 @@ namespace sadna192.Tests.AcceptanceTests
         [TestCleanup]
         public void TestClean()
         {
-            userServiceLayer = null;
             serviceLayer = null;
         }
     }

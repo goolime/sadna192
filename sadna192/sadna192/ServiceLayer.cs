@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Timers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("sadna192_Tests.Integration_Tests")]
 namespace sadna192
 {
     public class ServiceLayer : I_ServiceLayer
@@ -89,6 +91,7 @@ namespace sadna192
             }
         }
 
+       
         private class User_ServiceLayer:I_User_ServiceLayer
         {
             private single_ServiceLayer single_ServiceLayer;
@@ -461,6 +464,10 @@ namespace sadna192
                 }
             }
 
+            public UserState GetUserState()
+            {
+                return this.userState;
+            }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

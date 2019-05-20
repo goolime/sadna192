@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("sadna192_Tests")]
 [assembly: InternalsVisibleTo("sadna192_Tests.Unit_Tests")]
+[assembly: InternalsVisibleTo("sadna192_Tests.Integration_Tests")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from

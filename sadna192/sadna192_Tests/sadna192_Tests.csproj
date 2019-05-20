@@ -65,6 +65,7 @@
     <Compile Include="AT\User\Logout_AT.cs" />
     <Compile Include="AT\Store\OpenStore_AT.cs" />
     <Compile Include="AT\Sales\ProductSerch_AT.cs" />
+    <Compile Include="Integration_Tests\UserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AT\Sales\PurchaseCart_AT.cs" />
     <Compile Include="AT\User\Register_AT.cs" />

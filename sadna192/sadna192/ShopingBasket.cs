@@ -70,7 +70,7 @@ namespace sadna192
         }
 
 
-        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
+        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount, UserState u)
         {
             savedProducts = null; 
             if (p.getStore().FindProductInStore(p.getName()).GetPolicy().immidiate())
@@ -78,7 +78,8 @@ namespace sadna192
                 if (p.getAmount() - amount >= 0)
                 {
                     p.setAmount(p.getAmount() - amount);
-                    savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>> (p,new KeyValuePair<int, double>(amount, p.getPrice()*amount-p.getDiscount().calculate(amount, p.getPrice()))));
+                    savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>> (p,new KeyValuePair<int, double>(amount, p.getPrice()*amount*p.getDiscount().calculate(p, u))));
+                    this.checkSaved(u);
                 }
                 else
                 {
@@ -89,7 +90,13 @@ namespace sadna192
             return this.savedProducts;
         }
 
-        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
+        private void checkSaved(UserState u)
+        {
+            // TODO-MICHAL
+            throw new NotImplementedException();
+        }
+
+        internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
         {
             foreach(ShoppingCart sc in shoppingCarts)
             {
@@ -101,7 +108,7 @@ namespace sadna192
                         if (p.Key.getAmount() - p.Value >= 0)
                         {
                             p.Key.setAmount(p.Key.getAmount() - p.Value);
-                            savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value - p.Key.getDiscount().calculate(p.Value, p.Key.getPrice()))));
+                            savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value * p.Key.getDiscount().calculate(p.Key, u))));
                             sc.DeleteProduct(p.Key,0);
                         }
                         else
@@ -111,10 +118,29 @@ namespace sadna192
                         }
                     }
                     this.shoppingCarts.Remove(sc);
+                    this.checkSaved(u);
                     return this.savedProducts;
                 }
             }
             throw new Sadna192Exception("no cart for the store", "ShopingBasket", "Purchase_Store_cart(2)");
+        }
+
+        internal int numOfItemsInCart(string store)
+        {
+            foreach(ShoppingCart sc in this.shoppingCarts)
+            {
+                if (sc.getStore().getName() == store) return sc.numOfItemsInCart();
+            }
+            return -1;
+        }
+
+        internal int numOfItemsInCart(string store,ProductInStore p)
+        {
+            foreach (ShoppingCart sc in this.shoppingCarts)
+            {
+                if (sc.getStore().getName() == store) return sc.numOfItemsInCart(p);
+            }
+            return -1;
         }
 
         internal List<KeyValuePair<ProductInStore, int>> get_basket()

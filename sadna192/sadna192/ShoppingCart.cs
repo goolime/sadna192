@@ -25,7 +25,7 @@ namespace sadna192
         {
             Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
             //checking if the prouct exists in the current shopping cart
-            if (shoppingCartContent.Contains(producttoadd) | store.ChangeAmoutStoreInPurchase(p, amount))
+            if (shoppingCartContent.Contains(producttoadd))
             {
                 return false;
             }
@@ -54,12 +54,8 @@ namespace sadna192
                     shoppingCartContent.Remove(v);
                     return true;
                 }
-                else
-                {
-                    throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart", "ShoppingCart", "DeleteProduct");
-                }
             }
-            return false;
+            throw new Sadna192Exception("There is no such product " + p.getName() + " in the shopping cart", "ShoppingCart", "DeleteProduct");
         }
         
 
@@ -93,6 +89,25 @@ namespace sadna192
                 ans.Add(new KeyValuePair<ProductInStore, int>(p.First, p.Second));
             }
             return ans;
+        }
+
+        internal int numOfItemsInCart()
+        {
+            int ans = 0;
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                ans += p.Second;
+            }
+            return ans;
+        }
+
+        internal int numOfItemsInCart(string op)
+        {
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                if (op == p.First.getName()) return p.Second;
+            }
+            return -1;
         }
     }
 

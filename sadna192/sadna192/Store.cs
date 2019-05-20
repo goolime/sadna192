@@ -12,12 +12,27 @@ namespace sadna192
         private List<ProductInStore> productInStores= new List<ProductInStore>();
         private List<Owner> owners;
         private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
+        private Policy storePolicy;
+        private Discount storeDiscount;
+
 
         public Store(string name)
         {
             this.name = name;
             this.productInStores = new List<ProductInStore>();
             this.owners = new List<Owner>();
+            this.storePolicy = new regularPolicy();
+            this.storeDiscount = new noDiscount();
+        }
+
+        public Policy GetPolicy()
+        {
+            return this.storePolicy;
+        }
+
+        public Discount GetDiscount()
+        {
+            return this.storeDiscount;
         }
 
         public string getName()

@@ -136,5 +136,23 @@ namespace sadna192
         {
             return (System.DateTime.Now.ToString() + "| " +this.name);
         }
+
+        public override List<Dictionary<string, dynamic>> getMyShops()
+        {
+            List<Dictionary<string, dynamic>> ans = new List<Dictionary<string, dynamic>>();
+
+            foreach(Owner o in this.owner)
+            {
+                Dictionary<string, dynamic> tmp = new Dictionary<string, dynamic>();
+                tmp["store"] = o.getStore();
+                tmp["isManager"] = typeof(Manager) == o.GetType();
+                tmp["permision_add"] = !tmp["isManager"] || ((Manager)o).permision_add;
+                tmp["permision_remove"] = !tmp["isManager"] || ((Manager)o).permision_remove;
+                tmp["permision_update"] = !tmp["isManager"] || ((Manager)o).permision_update;
+                ans.Add(tmp);
+            }
+
+            return ans;
+        }
     }
 }

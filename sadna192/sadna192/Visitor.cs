@@ -71,12 +71,12 @@ namespace sadna192
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
         {
-            return this.shopingBasket.Purchase_product(p, amount);
+            return this.shopingBasket.Purchase_product(p, amount,this);
         }
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
         {
-            return this.shopingBasket.Purchase_Store_cart(store_name);
+            return this.shopingBasket.Purchase_Store_cart(store_name,this);
         }
 
         public virtual bool Remove_Product_Store(string Store_name, string product_name)
@@ -107,6 +107,21 @@ namespace sadna192
         public override string ToString()
         {
             return (System.DateTime.Now.ToString() + "| Visitor");
+        }
+
+        public virtual List<Dictionary<string, dynamic>> getMyShops()
+        {
+            throw new Exception("User must login to view his stores");
+        }
+
+        public int numOfItemsInCart(string store)
+        {
+            return this.shopingBasket.numOfItemsInCart(store);
+        }
+
+        public int numOfItemsInCart(string store, ProductInStore p)
+        {
+            return this.shopingBasket.numOfItemsInCart(store,p);
         }
     }
 }

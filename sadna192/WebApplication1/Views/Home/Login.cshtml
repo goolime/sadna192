@@ -1,12 +1,18 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Login";
 }
 
 <h2>Login</h2>
 
+@if ((bool)ViewData["error"])
+{
+    <font color="red">Username or Password incorrect</font>
+}
+
 <form action="/Home/LoginForm" method="post">
+    <font color="black">Username: </font>
     <input type="text" name="name" title="user name" />
-    <input type="password" name="password" title="password"/>
+    <font color="black">Password: </font>
+    <input type="password" name="password" title="password" />
     <input type="submit" value="Login" />
 </form>

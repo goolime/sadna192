@@ -459,6 +459,20 @@ namespace sadna192
                 return ans;
             }
 
+          /*  public string get_log()
+            {
+                if (this.userState.isAdmin())
+                {
+                    string ans = "";
+                    for(int i=0; i<singleton.log.Count; i++)
+                    {
+                        ans += singleton.log[i] + "\n";
+                    }
+                    return ans;
+                }
+                throw new Exception("only admins can view the log");
+            }*/
+
             public override string ToString()
             {
                 if (this.userState.isVistor())
@@ -471,15 +485,15 @@ namespace sadna192
                 }
             }
 
+            public UserState GetUserState()
+            {
+                return this.userState;
+            }
             public List<Dictionary<string, dynamic>> usersStores()
             {
                 return this.userState.getMyShops();
             }
 
-            public UserState GetUserState()
-            {
-                return this.userState;
-            }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,6 +560,19 @@ namespace sadna192
             {
                 ((Visitor)this.userState).shopingBasket.returnProducts();
                 return true;
+            }
+
+            public ProductInStore GetProductFromStore(string productName,string storeName)
+            {
+                foreach (Store s in this.single_ServiceLayer.store)
+                {
+                    if (s.getName() == storeName)
+                    {
+                        return s.getProductInStore().Find(t => t.getName() == productName);
+                    }
+                }
+                return null;
+
             }
         }
     }

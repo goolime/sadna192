@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace sadna192
 {
-    internal class Owner
+    public class Owner
     {
         private Store store;
         private Member user;
@@ -109,6 +109,13 @@ namespace sadna192
             Owner other = findOwner(other_Owner);
             if (other is Owner && !(other is Manager)) return other.removeMe();
             throw new Sadna192Exception("the member is an manager of the shop", "Owner", "removeOwner");
+        }
+
+        public virtual bool isManger() => false;
+
+        public string GetUsername()
+        {
+            return user.name;
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿@model StoreViewModel
+﻿@using sadna192
+@model Store_AddManagerViewModel
 @{
     ViewData["Title"] = "MyStores";
 }
-<h2>Store: @Model.StoreName</h2>
+Store: <h2 id="storeName">@Model.S.StoreName</h2>
 <button onclick="show_add_owner_form()" id="addOwnerButton">
     @if (ViewData["ownererr"] != null && (bool)ViewData["ownererr"])
     {
@@ -19,12 +20,12 @@
     {
         <font color="red">could not add Owner</font>
     }
-        <form action="/Home/AddOwnerForm" method="post">
-            <font color="black">Owner Name: </font>
-            <input type="text" name="ownername" title="ownername" />
-            @Html.TextBoxFor(s => Model.StoreName,null,new { @style= "visibility: hidden;" })<br />
-            <input type="submit" />
-        </form>
+    <form action="/Home/AddOwnerForm" method="post">
+        <font color="black">Owner Name: </font>
+        <input type="text" name="ownername" title="ownername" />
+        @Html.TextBoxFor(s => Model.S.StoreName, null, new { @style = "visibility: hidden;" })<br />
+        <input type="submit" />
+    </form>
 </div>
 
 <button onclick="show_add_manager_form()" id="addManagerButton">
@@ -34,24 +35,118 @@
     }
     else
     {
-        <font>Add Owner</font>
+        <font>Add Manager</font>
 
     }
 </button>
-<div id="addManagerDiv" style="visibility: @(((bool)ViewData["managererr"])?"visible":"hidden");">
-    @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+<div id="addManagerDiv" style="visibility:@(((bool)ViewData["managererr"])?"visible":"hidden");">
+    @using (Html.BeginForm("AddManagerForm", "Home", FormMethod.Post))
     {
-        <font color="red">could not add Manager</font>
-    }
-    <form action="/Home/AddManagerForm" method="post">
+        @if (ViewData["managererr"] != null && (bool)ViewData["managererr"])
+        {
+            <font color="red">could not add Manager</font><br />
+        }
         <font color="black">Manager Name: </font>
-        <input type="text" name="managername" title="managername" />
+        @Html.TextBoxFor(s => s.AM.Name)
+        @Html.TextBoxFor(s => Model.S.StoreName, null, new { @style = "visibility: hidden;" })<br />
+        <font>Add Permission:</font> @Html.CheckBoxFor(s => s.AM.AddPermission)
+        <font>Remove Permission:</font> @Html.CheckBoxFor(s => s.AM.RemovePermission)
+        <font>Update Permission:</font> @Html.CheckBoxFor(s => s.AM.UpdatePermission)
         <input type="submit" />
-    </form>
+    }
 </div>
 
+<button onclick="show_store_management_form()">Management</button>
+<div id="storeOwnersDiv" style="visibility: hidden;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (Owner owner in ((Store)ViewData["currStore"]).GetOwners())
+            {
+                <tr>
+                    <td>@owner.GetUsername()</td>
+                    <td>
+                        @if (owner.isManger())
+                        {
+                            <font>Edit Manager:</font>
+                            @using (Html.BeginForm("EditManagerForm", "Home", FormMethod.Post))
+                            {
+                                @Model.DeleteManagerConfig(owner.GetUsername(), Model.S.StoreName)
+                                @Html.HiddenFor(s => Model.S.StoreName)
+                                @Html.HiddenFor(s => Model.O.Name)
+                                <font>Add Permission:</font> @Html.CheckBoxFor(s => s.AM.AddPermission, ((Manager)owner).permision_add ? new { @checked = "checked" } : null)
+                                <font>Remove Permission:</font> @Html.CheckBoxFor(s => s.AM.RemovePermission, ((Manager)owner).permision_remove ? new { @checked = "checked" } : null)
+                                <font>Update Permission:</font> @Html.CheckBoxFor(s => s.AM.UpdatePermission, ((Manager)owner).permision_update ? new { @checked = "checked" } : null)
+                                <input type="submit" class="btn btn-primary" /><br />
+                            }
+                            <br />
+                            @using (Html.BeginForm("RemoveManagerForm", "Home", FormMethod.Post))
+                            {
+                                @Model.DeleteManagerConfig(owner.GetUsername(), Model.S.StoreName)
+                                @Html.HiddenFor(s => Model.S.StoreName)
+                                @Html.HiddenFor(s => Model.O.Name)
+                                <font>Remove From Management:</font><input type="submit" class="btn btn-warning" /><br />
+                            }
+
+                        }
+                        else
+                        {
+
+                            @using (Html.BeginForm("RemoveOwnerForm", "Home", FormMethod.Post))
+                            {
+                                @Model.DeleteOwnerConfig(owner.GetUsername(), ((Store)ViewData["currStore"]).getName());
+                                @Html.HiddenFor(s => Model.O.Name);
+                                @Html.HiddenFor(s => Model.S.StoreName);
+
+                                <font>Remove Owner:</font><input type="submit" class="btn btn-primary" />
+
+
+                            }
+                        }
+
+                    </td>
+                </tr>
+
+            }
+
+        </tbody>
+    </table>
+</div>
+
+<button onclick="show_add_product_form()">Add Product</button>
+<div id="addProductDiv" style="visibility: @(((bool)ViewData["producterr"])?"visible":"hidden");">
+    @if (ViewData["producterr"] != null && (bool)ViewData["producterr"])
+    {
+        <font color="red">could not add Product</font>
+    }
+    @using (Html.BeginForm("AddProductForm", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(s => Model.S.StoreName)
+        <font>Product Name:</font>@Html.TextBoxFor(s => s.AP.ProductName)
+        <font>Product Amount:</font>@Html.TextBoxFor(s => s.AP.ProductAmount)
+        <font>Product Category:</font>@Html.TextBoxFor(s => s.AP.ProductCategory)
+        <font>Product Price:</font>@Html.TextBoxFor(s => s.AP.ProductPrice)
+        <font>Add:</font><input type="submit" class="btn btn-primary" />
+
+
+    }
+</div>
+
+Products: 
+@foreach (ProductInStore product in ((Store)ViewData["currStore"]).getProductInStore())
+{
+<div>
+    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product"  asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
+</div><br />
+}
+
 <script>
-    document.getElementById("storename").value = @ViewData["storename"];
+    document.getElementById("storeName").value = "@ViewData["storename"]";
     function show_add_owner_form() {
         var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
         document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
@@ -65,6 +160,34 @@
         document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
 
     }
+
+    function show_store_management_form() {
+        var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
+        document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
+    }
+
+    function show_add_product_form() {
+        var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
+        document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
+    }
 </script>
+<script>
+    function show_manager_modal(ownerName, add, remove, update) {
+        document.getElementById("username").innerHTML = ownerName;
+        document.getElementById("ownerName").value = ownerName;
+        document.getElementById("add").checked = add;
+        document.getElementById("remove").checked = remove;
+        document.getElementById("update").checked = update;
+        $("#editOwnerForm").modal("show");
+    }
+</script>
+@if (ViewData["alertRemoveOwner"] != null && (bool)ViewData["alertRemoveOwner"])
+{
+    <script>
+        alert("couldnt remove owner");
+    </script>
+}
+
+
 
 

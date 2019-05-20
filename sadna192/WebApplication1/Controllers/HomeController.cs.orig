@@ -121,20 +121,21 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public IActionResult SearchResults(string key,string keys,string cat,double max ,double min)
+        public IActionResult SearchResults(string key)
         {
-            I_User_ServiceLayer SL = validateConnection();
-            List<ProductInStore> list =
-                SL.GlobalSearch(key,
-                cat,
-                keys?.Split('-').ToList(),
-                min == 0 ? -1 : min,
-                max == 0 ? -1 : max,
-                -1,
-                -1);
-            ViewData["products"] = list;
-            ViewData["keyword"] = key;
-            return View();
+            ViewResult viewResult = View();
+
+            if (key != null)
+            {
+                I_User_ServiceLayer SL = validateConnection();
+                List<ProductInStore> list = SL.GlobalSearch(key, null, null, -1, -1, -1, -1);
+                viewResult.ViewData["products"] = list;
+            }
+            else
+            {
+                viewResult.ViewData["products"] = new List<ProductInStore>();
+            }
+            return viewResult;
         }
 
         public IActionResult LoggedIn(bool? storeerr)
@@ -172,22 +173,10 @@ namespace WebApplication1.Controllers
 
         public IActionResult Product(string storename, string productname)
         {
-            I_User_ServiceLayer SL = this.validateConnection();
-            ViewData["SL"] = SL;
-            ProductInStore product = SL.GetProductFromStore(productname, storename);
-            return base.View(new ProductInStoreViewModel()
-            {
-                Name = productname,
-                StoreName = storename,
-                EditProduct = new EditProductViewModel()
-                {
-                    
-                    ProductAmount = product.getAmount(),
-                    ProductCategory = product.getCategory(),
-                    ProductPrice = product.getPrice(),
-                    NewName = productname
-               }
-            });
+            this.validateConnection();
+            ViewData["store"] = storename;
+            ViewData["product"] = productname;
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -409,10 +398,9 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public ActionResult SearchForm(string keyword, string keywords,string category,double pricemax, double pricemin)
+        public ActionResult SearchForm(string keyword)
         {
-            validateConnection();
-            return RedirectToAction("SearchResults", new { key = keyword,keys=keywords, cat = category,max=pricemax,min=pricemin });
+            return RedirectToAction("SearchResults", new { key = keyword });
 
         }
 
@@ -422,29 +410,6 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer ius = SessionControler.GetSession(currentUserId);
             return !"Visitor".Equals(ius.ToString());
         }
-        [HttpPost]
-        public ActionResult return_to_cart() {
-            I_User_ServiceLayer SL = this.validateConnection();
-            SL.canclePurch();
-            return RedirectToAction("Baskt");
-        }
-
-        [HttpPost]
-        public ActionResult finalize(string payment, string shipping)
-        {
-            I_User_ServiceLayer SL = this.validateConnection();
-            try
-            {
-                SL.Finalize_Purchase(shipping, payment);
-                return RedirectToAction("Allgood");
-            }
-            catch (Exception e)
-            {
-                ViewData["Error"] = e.Message;
-                return RedirectToAction("Error");
-            }
-        }
-
         [HttpPost]
         public ActionResult RemoveOwnerForm(Store_AddManagerViewModel vm)
         {
@@ -466,66 +431,26 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost]
-        public ActionResult RemoveProductForm(ProductInStoreViewModel vm)
-        {
-            I_User_ServiceLayer SL = validateConnection();
-            try
-            {
-
-                if (SL.Remove_Product_Store(vm.StoreName, vm.Name))
-                {
-                    return RedirectToAction("MyStores",new { storename = vm.StoreName});
-                }
-            }
-            catch
-            {
-
-            }
-            ViewData["alertRemoveProduct"] = true;
-            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
+        public ActionResult return_to_cart() {
+            I_User_ServiceLayer SL = this.validateConnection();
+            SL.canclePurch();
+            return RedirectToAction("Baskt");
         }
 
-        
         [HttpPost]
-        public ActionResult EditProductForm(ProductInStoreViewModel vm)
+        public ActionResult finalize(string payment, string shipping)
         {
-            I_User_ServiceLayer SL = validateConnection();
+            I_User_ServiceLayer SL = this.validateConnection();
             try
             {
-
-                if (SL.Update_Product_Store(vm.StoreName,vm.Name,vm.EditProduct.NewName,vm.EditProduct.ProductCategory, vm.EditProduct.ProductPrice
-                    , vm.EditProduct.ProductAmount,null,null))
-                {
-                    return RedirectToAction("MyStores", new { storename = vm.StoreName });
-                }
+                SL.Finalize_Purchase(shipping, payment);
+                return RedirectToAction("Allgood");
             }
-            catch
+            catch(Exception e)
             {
-
+                ViewData["Error"] = e.Message;
+                return RedirectToAction("Error");
             }
-            ViewData["alertEditProduct"] = true;
-            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
-
-        
-        [HttpPost]
-        public ActionResult AddToCart(ProductInStoreViewModel vm)
-        {
-            I_User_ServiceLayer SL = validateConnection();
-            try
-            {
-                if (SL.Add_To_ShopingBasket(SL.GetProductFromStore(vm.Name,vm.StoreName),vm.AddToCart.Amount))
-                {
-                    return RedirectToAction("Basket");
-                }
-            }
-            catch
-            {
-
-            }
-            ViewData["alertAddToCart"] = true;
-            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
-        }
-
     }
 }

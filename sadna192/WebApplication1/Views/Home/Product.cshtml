@@ -1,11 +1,57 @@
-﻿@using sadna192
+﻿@model ProductInStoreViewModel
+@using sadna192
 @{
     ViewData["Title"] = "Product";
 }
 
-<h2>@ViewData["store"] : @ViewData["product"]</h2>
-<!--->if (((I_User_ServiceLayer)ViewData["SL"]).isOwner((string)ViewData["store"]))
+<h2>@Model.StoreName : @Model.Name</h2>
+@if (((I_User_ServiceLayer)ViewData["SL"]).GetUserState().isOwner(Model.StoreName))
 {
-    <button>Edit</button>
-}-->
-<button>Buy</button>
+    <button onclick="show_edit_product_form()">Edit</button>
+    <div id="editProduct" style="visibility: @(ViewData["alertEditProduct"]!=null && (bool)ViewData["alertEditProduct"]? "visible":"hidden")">
+        @if(ViewData["alertEditProduct"] != null && (bool)ViewData["alertEditProduct"])
+        {
+            <font color="red">cannot edit the product</font>
+        }
+        @using (Html.BeginForm("EditProductForm", "Home", FormMethod.Post))
+        {
+            @Html.HiddenFor(s => Model.Name)
+            @Html.HiddenFor(s => Model.StoreName)
+            <font>New Name:</font> @Html.TextBoxFor(s => Model.EditProduct.NewName, new { @value = Model.Name + "" })
+            <font>Amount:</font> @Html.TextBoxFor(s => Model.EditProduct.ProductAmount, new { @value = Model.EditProduct.ProductAmount + "" })
+            <font>Category:</font> @Html.TextBoxFor(s => Model.EditProduct.ProductCategory, new { @value = Model.EditProduct.ProductCategory + "" })
+            <font>Price:</font> @Html.TextBoxFor(s => Model.EditProduct.ProductPrice, new { @value = Model.EditProduct.ProductPrice + "" })
+
+            <button type="submit" class="btn btn-primary">Save</button>
+
+
+        }
+    </div>
+    if (ViewData["alertRemoveProduct"] != null && (bool)ViewData["alertRemoveProduct"])
+    {
+        <font color="red"> could not remove the product</font>
+    }
+    @using (Html.BeginForm("RemoveProductForm", "Home", FormMethod.Post))
+    {
+        @Html.HiddenFor(s => Model.Name)
+        @Html.HiddenFor(s => Model.StoreName)
+        <button type="submit" class="btn btn-primary">Delete</button>
+
+    }
+
+}
+<button onclick="show_add_to_cart_form()">Add To Cart</button>
+<div id="addToCart" style="visibility:hidden">
+
+</div>
+<script>
+    function show_edit_product_form() {
+        var isHidden = document.getElementById('editProduct').style.visibility === 'hidden';
+        document.getElementById('editProduct').style.visibility = isHidden ? 'visible' : 'hidden';
+    }
+
+    function show_add_to_cart_form() {
+        var isHidden = document.getElementById('addToCart').style.visibility === 'hidden';
+        document.getElementById('addToCart').style.visibility = isHidden ? 'visible' : 'hidden';
+    }
+</script>

@@ -123,19 +123,19 @@ namespace WebApplication1.Controllers
 
         public IActionResult SearchResults(string key)
         {
-            ViewResult viewResult = View();
 
             if (key != null)
             {
                 I_User_ServiceLayer SL = validateConnection();
                 List<ProductInStore> list = SL.GlobalSearch(key, null, null, -1, -1, -1, -1);
-                viewResult.ViewData["products"] = list;
+                ViewData["products"] = list;
+                ViewData["keyword"] = key;
             }
             else
             {
-                viewResult.ViewData["products"] = new List<ProductInStore>();
+                ViewData["products"] = new List<ProductInStore>();
             }
-            return viewResult;
+            return View();
         }
 
         public IActionResult LoggedIn(bool? storeerr)
@@ -173,11 +173,22 @@ namespace WebApplication1.Controllers
 
         public IActionResult Product(string storename, string productname)
         {
-            ViewData["SL"] = this.validateConnection();
-            ViewData["store"] = storename;
-            ViewData["product"] = productname;
-            ViewData["SL"] = this.validateConnection();
-            return View();
+            I_User_ServiceLayer SL = this.validateConnection();
+            ViewData["SL"] = SL;
+            ProductInStore product = SL.GetProductFromStore(productname, storename);
+            return base.View(new ProductInStoreViewModel()
+            {
+                Name = productname,
+                StoreName = storename,
+                EditProduct = new EditProductViewModel()
+                {
+                    
+                    ProductAmount = product.getAmount(),
+                    ProductCategory = product.getCategory(),
+                    ProductPrice = product.getPrice(),
+                    NewName = productname
+               }
+            });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -401,6 +412,7 @@ namespace WebApplication1.Controllers
 
         public ActionResult SearchForm(string keyword)
         {
+            validateConnection();
             return RedirectToAction("SearchResults", new { key = keyword });
 
         }
@@ -441,7 +453,7 @@ namespace WebApplication1.Controllers
             try
             {
 
-                if (SL.Remove_Store_Owner(vm.S.StoreName,vm.O.Name))
+                if (SL.Remove_Store_Owner(vm.S.StoreName, vm.O.Name))
                 {
                     return RedirectToAction("LoggedIn");
                 }
@@ -452,6 +464,48 @@ namespace WebApplication1.Controllers
             }
             ViewData["alertRemoveOwner"] = true;
             return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+        }
+
+        [HttpPost]
+        public ActionResult RemoveProductForm(ProductInStoreViewModel vm)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Remove_Product_Store(vm.StoreName, vm.Name))
+                {
+                    return RedirectToAction("MyStores",new { storename = vm.StoreName});
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertRemoveProduct"] = true;
+            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
+        }
+
+        
+        [HttpPost]
+        public ActionResult EditProductForm(ProductInStoreViewModel vm)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            try
+            {
+
+                if (SL.Update_Product_Store(vm.StoreName,vm.Name,vm.EditProduct.NewName,vm.EditProduct.ProductCategory, vm.EditProduct.ProductPrice
+                    , vm.EditProduct.ProductAmount,null,null))
+                {
+                    return RedirectToAction("MyStores", new { storename = vm.StoreName });
+                }
+            }
+            catch
+            {
+
+            }
+            ViewData["alertEditProduct"] = true;
+            return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
     }
 }

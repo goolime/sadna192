@@ -26,34 +26,29 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
+<<<<<<< HEAD:sadna192/WebApplication1/Views/Shared/_LayoutLogged.cshtml
+                <a asp-area="" asp-controller="Home" asp-action="LoggedIn" class="navbar-brand">Home</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Login" id="login">Login</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Basket">Basket</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Register" id="register">Register</a></li>
-                    <li>
-                        <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm">
-                            <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search" aria-label="Search">
-                            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
-                        </form>
-                    </li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="BasketLogged">Basket</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="MyStores">MyStores</a></li>
+=======
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a asp-page="/index">Login</a></li>
+                    <li><a asp-page="/Create">Register</a></li>
+>>>>>>> origin/MichalBranch:sadna192/Web/Pages/_Layout.cshtml
                 </ul>
             </div>
         </div>
+        <form class="form-inline md-form mr-auto mb-4">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="keyword">
+            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
+        </form>
     </nav>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script>
-        if ("@ViewData["state"]" == "Visitor") {
-            document.getElementById("login").innerHTML = "Login";
-            document.getElementById("register").innerHTML = "Register";
-        }
-        else {
-            document.getElementById("login").innerHTML = "Logout";
-            document.getElementById("register").innerHTML = "My Page";
-        }
-    </script>
 
     <partial name="_CookieConsentPartial" />
 

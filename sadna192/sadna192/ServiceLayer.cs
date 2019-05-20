@@ -459,7 +459,7 @@ namespace sadna192
                 return ans;
             }
 
-            public string get_log()
+          /*  public string get_log()
             {
                 if (this.userState.isAdmin())
                 {
@@ -471,7 +471,7 @@ namespace sadna192
                     return ans;
                 }
                 throw new Exception("only admins can view the log");
-            }
+            }*/
 
             public override string ToString()
             {
@@ -486,10 +486,12 @@ namespace sadna192
             }
 
             public UserState GetUserState()
+            {
+                return this.userState;
+            }
             public List<Dictionary<string, dynamic>> usersStores()
             {
                 return this.userState.getMyShops();
-                return this.userState;
             }
 
 
@@ -558,6 +560,19 @@ namespace sadna192
             {
                 ((Visitor)this.userState).shopingBasket.returnProducts();
                 return true;
+            }
+
+            public ProductInStore GetProductFromStore(string productName,string storeName)
+            {
+                foreach (Store s in this.single_ServiceLayer.store)
+                {
+                    if (s.getName() == storeName)
+                    {
+                        return s.getProductInStore().Find(t => t.getName() == productName);
+                    }
+                }
+                return null;
+
             }
         }
     }

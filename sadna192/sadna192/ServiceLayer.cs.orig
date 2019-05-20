@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Timers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("sadna192_Tests.Integration_Tests")]
 namespace sadna192
 {
     public class ServiceLayer : I_ServiceLayer
@@ -33,14 +35,21 @@ namespace sadna192
         {
             if (singleton != null)
             {
-                foreach(Member m in singleton.members)
+                List<Visitor> all = new List<Visitor>();
+                all.AddRange(singleton.members);
+                foreach (I_User_ServiceLayer u in singleton.users)
+                {
+                    //ToDo....
+                    //all.add((Visitor)u.)
+                }
+                foreach (Visitor m in all)
                 {
                     if (m.shopingBasket.toBeRemoved)
                     {
                         if (m.shopingBasket.savedProducts != null)
                         {
                             m.shopingBasket.returnProducts();
-                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.name +"'" );
+                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.ToString() +"'" );
                         }
                         m.shopingBasket.toBeRemoved = false;
                     }
@@ -61,7 +70,7 @@ namespace sadna192
             protected static ServiceLayer singleton = null;
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
-            public List<string> log;
+            public Logger log;
             public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
@@ -71,7 +80,7 @@ namespace sadna192
                 this.paymentSystem = paymentSystem;
                 this.members = new List<Member>();
                 this.users = new List<I_User_ServiceLayer>();
-                this.log = new List<string>();
+                this.log = new Logger("EventLog");//new List<string>();
                 Timer t = new Timer(1000*60*10);
                 t.Elapsed += OnTimedEvent;
                 t.AutoReset = true;
@@ -89,6 +98,7 @@ namespace sadna192
             }
         }
 
+       
         private class User_ServiceLayer:I_User_ServiceLayer
         {
             private single_ServiceLayer single_ServiceLayer;
@@ -193,13 +203,6 @@ namespace sadna192
                 throw new Exception("unvalid amount");
             }
 
-<<<<<<< HEAD
-        // RSL 7
-        void Add_Log(string log);
-        ////////
-    }
-    
-=======
             public bool Finalize_Purchase(string address, string payment)
             {
                 if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
@@ -375,7 +378,6 @@ namespace sadna192
                 }
                 return false;
             }
->>>>>>> master
 
             public bool Remove_Store_Owner(string Store_name, string other_owner_name)
             {
@@ -457,20 +459,30 @@ namespace sadna192
                 return ans;
             }
 
-            public string get_log()
+            public override string ToString()
             {
-                if (this.userState.isAdmin())
+                if (this.userState.isVistor())
                 {
-                    string ans = "";
-                    for(int i=0; i<singleton.log.Count; i++)
-                    {
-                        ans += singleton.log[i] + "\n";
-                    }
-                    return ans;
+                    return "Visitor";
                 }
-                throw new Exception("only admins can view the log");
+                else
+                {
+                    return ((Member)this.userState).name;
+                }
             }
 
+<<<<<<< HEAD
+            public List<Dictionary<string, dynamic>> usersStores()
+            {
+                return this.userState.getMyShops();
+            }
+
+=======
+            public UserState GetUserState()
+            {
+                return this.userState;
+            }
+>>>>>>> origin/MichalBranch
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -533,7 +545,11 @@ namespace sadna192
                 return ans;
             }
 
-            
+            public bool canclePurch()
+            {
+                ((Visitor)this.userState).shopingBasket.returnProducts();
+                return true;
+            }
         }
     }
 }

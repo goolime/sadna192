@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["state"] - G17-sadna192</title>
+    <title>@ViewData["Title"] - Web</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
@@ -26,34 +26,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
+                <a asp-page="/Index" class="navbar-brand">Web</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Login" id="login">Login</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Basket">Basket</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Register" id="register">Register</a></li>
-                    <li>
-                        <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm">
-                            <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search" aria-label="Search">
-                            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
-                        </form>
-                    </li>
+                    <li><a asp-page="/Index">Home</a></li>
+                    <li><a asp-page="/About">About</a></li>
+                    <li><a asp-page="/Contact">Contact</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script>
-        if ("@ViewData["state"]" == "Visitor") {
-            document.getElementById("login").innerHTML = "Login";
-            document.getElementById("register").innerHTML = "Register";
-        }
-        else {
-            document.getElementById("login").innerHTML = "Logout";
-            document.getElementById("register").innerHTML = "My Page";
-        }
-    </script>
 
     <partial name="_CookieConsentPartial" />
 
@@ -61,7 +44,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; Group 17 - sadna 2019/2</p>
+            <p>&copy; 2019 - Web</p>
         </footer>
     </div>
 
@@ -77,11 +60,11 @@
                 crossorigin="anonymous"
                 integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
         </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
                 crossorigin="anonymous"
-                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>

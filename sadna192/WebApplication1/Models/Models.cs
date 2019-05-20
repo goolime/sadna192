@@ -7,6 +7,21 @@ using sadna192;
 
 namespace WebApplication1.Models
 {
+    public class ProductInStoreViewModel
+    {
+        public string Name { get; set; }
+        public string StoreName { get; set; }
+        public EditProductViewModel EditProduct { get; set; }
+    }
+
+    public class EditProductViewModel
+    {
+        public string ProductCategory { get; set; }
+        public double ProductPrice { get; set; } = -1;
+        public int ProductAmount { get; set; } = -1;
+        public string NewName { get; set; }
+    }
+
     public class StoreViewModel
     {
         public string StoreName { get; set; }
@@ -35,14 +50,14 @@ namespace WebApplication1.Models
 
     public class AddProductViewModel
     {
-        public string ProductCategory { get; set; } 
+        public string ProductCategory { get; set; }
         public double ProductPrice { get; set; } = -1;
         public Discount Discount;
         public Policy ProductPolicy;
 
         [Required]
-        public string ProductName { get;  set; }
-        public int ProductAmount { get;  set; } = -1;
+        public string ProductName { get; set; }
+        public int ProductAmount { get; set; } = -1;
     }
 
     public class Store_AddManagerViewModel

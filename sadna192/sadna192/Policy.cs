@@ -48,4 +48,54 @@ namespace sadna192
         public abstract bool check(ProductInStore p, UserState u);
         public abstract bool immidiate();
     }
+
+    public class OrPolicy : MultiplePolicy
+    {
+        public OrPolicy(List<Policy> l):base()
+        {
+            this.Policies = l;
+        }
+        public override bool check(ProductInStore p, UserState u)
+        {
+            foreach (Policy poli in this.Policies)
+            {
+                if (poli.check(p, u)) return true;
+            }
+            return false;
+        }
+
+        public override bool immidiate()
+        {
+            foreach (Policy poli in this.Policies)
+            {
+                if (poli.immidiate()) return true;
+            }
+            return false;
+        }
+    }
+
+    public class AndPolicy : MultiplePolicy
+    {
+        public AndPolicy(List<Policy> l) : base()
+        {
+            this.Policies = l;
+        }
+        public override bool check(ProductInStore p, UserState u)
+        {
+            foreach (Policy poli in this.Policies)
+            {
+                if (!poli.check(p, u)) return false;
+            }
+            return true;
+        }
+
+        public override bool immidiate()
+        {
+            foreach (Policy poli in this.Policies)
+            {
+                if (!poli.immidiate()) return false;
+            }
+            return true;
+        }
+    }
 }

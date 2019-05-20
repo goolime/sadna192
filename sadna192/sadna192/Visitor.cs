@@ -113,5 +113,15 @@ namespace sadna192
         {
             throw new Exception("User must login to view his stores");
         }
+
+        public int numOfItemsInCart(string store)
+        {
+            return this.shopingBasket.numOfItemsInCart(store);
+        }
+
+        public int numOfItemsInCart(string store, ProductInStore p)
+        {
+            return this.shopingBasket.numOfItemsInCart(store,p);
+        }
     }
 }

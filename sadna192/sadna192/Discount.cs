@@ -47,9 +47,9 @@ namespace sadna192
         }
     }
 
-    public class OrDiscount : multipleDiscount
+    public class XOrDiscount : multipleDiscount
     {
-        public OrDiscount(List<Discount> l) : base()
+        public XOrDiscount(List<Discount> l) : base()
         {
             ServiceLayer SL = new ServiceLayer();
             this.discount = l;
@@ -63,6 +63,14 @@ namespace sadna192
                 if (tmp < ans) ans = tmp;
             }
             return ans;
+        }
+    }
+
+    public class IncludeStoreDiscount : Discount
+    {
+        public double calculate(ProductInStore p, UserState u)
+        {
+            return p.getStore().GetDiscount().calculate(p, u);
         }
     }
 

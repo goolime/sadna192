@@ -93,6 +93,25 @@ namespace sadna192
             }
             return ans;
         }
+
+        internal int numOfItemsInCart()
+        {
+            int ans = 0;
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                ans += p.Second;
+            }
+            return ans;
+        }
+
+        internal int numOfItemsInCart(ProductInStore op)
+        {
+            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            {
+                if (op.getName() == p.First.getName()) return p.Second;
+            }
+            return -1;
+        }
     }
 
     

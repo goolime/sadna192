@@ -98,4 +98,164 @@ namespace sadna192
             return true;
         }
     }
+
+    public class XOrPolicy : MultiplePolicy
+    {
+        public XOrPolicy(List<Policy> l) : base()
+        {
+            this.Policies = l;
+        }
+        public override bool check(ProductInStore p, UserState u)
+        {
+            bool ans = false;
+            foreach (Policy poli in this.Policies)
+            {
+                if (poli.check(p, u))
+                {
+                    if (ans) return false;
+                    else ans = true;
+                }
+
+            }
+            return ans;
+        }
+
+        public override bool immidiate()
+        {
+            bool ans = false;
+            foreach (Policy poli in this.Policies)
+            {
+                if (poli.immidiate())
+                {
+                    if (ans) return false;
+                    else ans = true;
+                }
+            }
+            return ans;
+        }
+    }
+
+    public class IncludeStorePolicy : Policy
+    {
+        public bool check(ProductInStore p, UserState u)
+        {
+            return p.getStore().GetPolicy().check(p, u);
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MamberPolicy : Policy
+    {
+        public bool check(ProductInStore p, UserState u)
+        {
+            return u.isMember();
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+    
+    public class MinimumInCart:Policy
+    {
+        int min;
+        public MinimumInCart(int i)
+        {
+            this.min = i;
+        }
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName()) >= this.min;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MinimumProductInCart : Policy
+    {
+        int min;
+        public MinimumProductInCart(int i)
+        {
+            this.min = i;
+        }
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName(),p) >= this.min;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MaximumInCart : Policy
+    {
+        int max;
+        public MaximumInCart(int i)
+        {
+            this.max = i;
+        }
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName()) <= this.max;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MaximumProductInCart : Policy
+    {
+        int max;
+        public MaximumProductInCart(int i)
+        {
+            this.max = i;
+        }
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName(), p) <= this.max;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class TimePolicy:Policy
+    {
+        DateTime from;
+        DateTime to;
+        public TimePolicy(DateTime from, DateTime to)
+        {
+            this.from = from;
+            this.to = to;
+        }
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            DateTime now = DateTime.Now;
+            return this.from < now && now < this.to;
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
 }

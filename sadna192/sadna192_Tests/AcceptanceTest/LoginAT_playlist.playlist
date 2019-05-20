@@ -1,5 +1,0 @@
-<Playlist Version="1.0">
-<Add Test="sadna192.Tests.AcceptanceTests.Login_AT.Login_happyTest" />
-<Add Test="sadna192.Tests.AcceptanceTests.Login_AT.Login_sadTest" />
-<Add Test="sadna192.Tests.AcceptanceTests.Login_AT.Login_badTest" />
-</Playlist>

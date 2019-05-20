@@ -14,17 +14,17 @@ namespace sadna192
 
         public virtual bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
-            throw new Exception("User must login to add a product to a store"); 
+            throw new Sadna192Exception("User must login to add a product to a store" , "Visitor", "Add_Product_Store" ); 
         }
 
         public virtual bool Add_Store_Manager(string Store_name, Member new_manger_name, bool permision_add, bool permission_remove, bool permission_update)
         {
-            throw new Exception("User must login to add a manager to a store");
+            throw new Sadna192Exception("User must login to add a manager to a store", "Visitor", "Add_Store_Manager");
         }
 
         public virtual bool Add_Store_Owner(string Store_name, Member new_owner_name)
         {
-            throw new Exception("User must login to add a Owner to a store");
+            throw new Sadna192Exception("User must login to add a Owner to a store", "Visitor", "Add_Store_Owner");
         }
 
         public bool Add_To_ShopingBasket(ProductInStore p, int amount)
@@ -66,7 +66,7 @@ namespace sadna192
 
         public virtual bool Open_Store(Store name)
         {
-            throw new Exception("User must login to open a store");
+            throw new Sadna192Exception("User must login to open a store", "Visitor", "Open_Store");
         }
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
@@ -81,22 +81,22 @@ namespace sadna192
 
         public virtual bool Remove_Product_Store(string Store_name, string product_name)
         {
-            throw new Exception("User must login to remove a product from a store");
+            throw new Sadna192Exception("User must login to remove a product from a store", "Visitor", "Remove_Product_Store");
         }
 
         public virtual bool Remove_Store_Manager(string Store_name, Member other_Manager)
         {
-            throw new Exception("User must login to remove a Manager from a store");
+            throw new Sadna192Exception("User must login to remove a Manager from a store", "Visitor", "Remove_Store_Manager");
         }
 
         public virtual bool Remove_Store_Owner(string Store_name, Member other_owner)
         {
-            throw new Exception("User must login to remove a owner from a store");
+            throw new Sadna192Exception("User must login to remove a owner from a store", "Visitor", "Remove_Store_Owner");
         }
 
         public virtual bool Update_Product_Store(string Store_name, string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
         {
-            throw new Exception("User must login to update a product in a store");
+            throw new Sadna192Exception("User must login to update a product in a store", "Visitor", "Update_Product_Store");
         }
 
         public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
@@ -112,6 +112,16 @@ namespace sadna192
         public virtual List<Dictionary<string, dynamic>> getMyShops()
         {
             throw new Exception("User must login to view his stores");
+        }
+
+        public int numOfItemsInCart(string store)
+        {
+            return this.shopingBasket.numOfItemsInCart(store);
+        }
+
+        public int numOfItemsInCart(string store, ProductInStore p)
+        {
+            return this.shopingBasket.numOfItemsInCart(store,p);
         }
     }
 }

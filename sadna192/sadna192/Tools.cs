@@ -11,9 +11,9 @@ namespace sadna192
 
         public static bool check_username(string name)
         {
-            if (name.Length < 4) throw new Exception("name must contain at least 4 charecters");
-            if (!isAlfa(name.ToCharArray()[0])) throw new Exception("name must start with a letter");
-            if (!isAlfaNumeric(name)) throw new Exception("name must contain only english letters and numbers");
+            if (name.Length < 4) throw new Sadna192Exception("name must contain at least 4 charecters", "Tools" , "check_username(1)");
+            if (!isAlfa(name.ToCharArray()[0])) throw new Sadna192Exception("name must start with a letter", "Tools", "check_username(2)");
+            if (!isAlfaNumeric(name)) throw new Sadna192Exception("name must contain only english letters and numbers", "Tools", "check_username(3)");
             return true;
         }
 
@@ -21,7 +21,7 @@ namespace sadna192
         {
             foreach (char c in name.ToCharArray())
             {
-                if (!isAlfa(c) && !isNumber(c)) throw new Exception("char '" + c + "' is not leagal");
+                if (!isAlfa(c) && !isNumber(c)) throw new Sadna192Exception("char '" + c + "' is not leagal", "Tools", "isAlfaNumeric");
             }
             return true;
         }
@@ -39,9 +39,9 @@ namespace sadna192
 
         public static bool check_password(string pass)
         {
-            if (pass.Length < 8 || pass.Length > 16) throw new Exception("passowrd must be atleast 8 chars long ans not longer than 16");
-            if (!isAlfaNumeric(pass)) throw new Exception("password must contain only english letters and numbers");
-            if (!containOneofEach(pass)) throw new Exception("password must contain atleast one small letter one capitol letter and one letter");
+            if (pass.Length < 8 || pass.Length > 16) throw new Sadna192Exception("passowrd must be atleast 8 chars long ans not longer than 16", "Tools", "check_password(1)");
+            if (!isAlfaNumeric(pass)) throw new Sadna192Exception("password must contain only english letters and numbers", "Tools", "check_password(2)");
+            if (!containOneofEach(pass)) throw new Sadna192Exception("password must contain atleast one small letter one capitol letter and one letter", "Tools", "check_password(3)");
             return true;
         }
 
@@ -59,27 +59,27 @@ namespace sadna192
 
         public static bool check_storeName(string name)
         {
-            if (name.Length < 4 || name.Length > 32) throw new Exception("the shop name must be longer then 4 chars and shorter then 32");
-            if (!isAlfa(name.ToCharArray()[0])) throw new Exception("store name must start with a letter");
-            if (!isAlfaNumeric(name)) throw new Exception("store name must contain only english letters and numbers");
+            if (name.Length < 4 || name.Length > 32) throw new Sadna192Exception("the shop name must be longer then 4 chars and shorter then 32", "Tools", "check_storeName(1)");
+            if (!isAlfa(name.ToCharArray()[0])) throw new Sadna192Exception("store name must start with a letter", "Tools", "check_storeName(2)");
+            if (!isAlfaNumeric(name)) throw new Sadna192Exception("store name must contain only english letters and numbers", "Tools", "check_storeName(3)");
             return true;
         }
 
         public static bool check_productNames(string name)
         {
-            if (name.Length < 4 || name.Length > 32) throw new Exception("the product name must be longer then 4 chars and shorter then 32");
+            if (name.Length < 4 || name.Length > 32) throw new Sadna192Exception("the product name must be longer then 4 chars and shorter then 32", "Tools", "check_productNames(1)");
             char c = name[0];
-            if (!isAlfa(c)) throw new Exception("product name must start with a letter");
-            if (!isAlfaNumeric(name)) throw new Exception("product name must contain only english letters and numbers");
+            if (!isAlfa(c)) throw new Sadna192Exception("product name must start with a letter", "Tools", "check_productNames(2)");
+            if (!isAlfaNumeric(name)) throw new Sadna192Exception("product name must contain only english letters and numbers", "Tools", "check_productNames(3)");
             return true;
         }
 
         public static bool check_productCategory(string category)
         {
-            if (category.Length < 4 || category.Length > 32) throw new Exception("the product name must be longer then 4 chars and shorter then 32");
+            if (category.Length < 4 || category.Length > 32) throw new Sadna192Exception("the product name must be longer then 4 chars and shorter then 32", "Tools", "check_productCategory(1)");
             foreach(char c in category)
             {
-                if(!isAlfa(c)) throw new Exception("char '" + c + "' is not leagal in category name");
+                if(!isAlfa(c)) throw new Sadna192Exception("char '" + c + "' is not leagal in category name", "Tools", "check_productCategory");
             }
             return true;
         }

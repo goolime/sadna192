@@ -12,9 +12,9 @@ namespace sadna192
         public static Logger errlog = new Logger("Error Log");
     
 
-        public Sadna192Exception(String exc) 
+        public Sadna192Exception(String exc , String classLoc , String func ) 
         {
-            errlog.Add(System.DateTime.Now.ToString() + " : " + exc);
+            errlog.Add(System.DateTime.Now.ToString() + " : " + exc + ".   <" + classLoc + " : " + func +">");
             throw new Exception(exc); 
         }
  

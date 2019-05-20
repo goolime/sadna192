@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace sadna192
@@ -87,6 +87,7 @@ namespace sadna192
         bool canclePurch();
 
          ProductInStore GetProductFromStore(string productName, string storeName);
+        UserState GetUserState();
     }
     
 

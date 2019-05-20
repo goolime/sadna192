@@ -29,8 +29,8 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer2 = serviceLayer.Connect();
             try
             {
-                userServiceLayer2.Register("loginuser2", "9876Abcd");
                 userServiceLayer1.Register("loginuser", "1221Abcd");
+                userServiceLayer2.Register("loginuser2", "9876Abcd");
             }
             catch (Exception) { }
         }
@@ -39,7 +39,6 @@ namespace sadna192.Tests.AcceptanceTests
         public void Login_happyTest()
         {
             Assert.IsTrue(userServiceLayer1.Login("loginuser", "1221Abcd"));
-            //Assert.IsTrue(userServiceLayer1.Open_Store("loginuser store"));
             userServiceLayer1.Logout();
         }
 
@@ -58,12 +57,5 @@ namespace sadna192.Tests.AcceptanceTests
                 Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
         }
 
-        [TestCleanup]
-        public void TestClean()
-        {
-            userServiceLayer1 = null;
-            userServiceLayer2 = null;
-            serviceLayer = null;
-        }
     }
 }

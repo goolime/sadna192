@@ -25,7 +25,7 @@ namespace sadna192
         {
             Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
             //checking if the prouct exists in the current shopping cart
-            if (shoppingCartContent.Contains(producttoadd) | store.ChangeAmoutStoreInPurchase(p, amount))
+            if (shoppingCartContent.Contains(producttoadd))
             {
                 return false;
             }
@@ -54,12 +54,9 @@ namespace sadna192
                     shoppingCartContent.Remove(v);
                     return true;
                 }
-                else
-                {
-                    throw new Exception("There is no such product " + p.getName() + " in the shopping cart");
-                }
+                
             }
-            return false;
+            throw new Exception("There is no such product " + p.getName() + " in the shopping cart");
         }
         
 

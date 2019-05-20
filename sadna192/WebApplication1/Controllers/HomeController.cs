@@ -48,7 +48,8 @@ namespace WebApplication1.Controllers
 
             try
             {
-                List<KeyValuePair<ProductInStore, int>> tmp = this.validateConnection().Watch_Cart();
+                I_User_ServiceLayer SL = this.validateConnection();
+                List<KeyValuePair<ProductInStore, int>> tmp = SL.Watch_Cart();
                 var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
                 foreach (KeyValuePair<ProductInStore, int> p in tmp)
                 {
@@ -71,6 +72,21 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public IActionResult Recipt(string store)
+        {
+            I_User_ServiceLayer SL = this.validateConnection();
+            try
+            {
+                ViewData["recipt"] = SL.Purchase_Store_cart(store);
+                return View();
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+                return RedirectToAction("Error");
+            }
+            
+        }
 
         public IActionResult MyStores(string storename, bool? ownererr, bool? managererr,bool? producterr)
         {
@@ -144,6 +160,11 @@ namespace WebApplication1.Controllers
             return View();
         }
 
+        public IActionResult Allgood()
+        {
+            this.validateConnection();
+            return View();
+        }
         public IActionResult Privacy()
         {
             this.validateConnection();
@@ -169,9 +190,35 @@ namespace WebApplication1.Controllers
         {
             string currentUserId = HttpContext.Connection.RemoteIpAddress.ToString();
             I_User_ServiceLayer SL = SessionControler.GetSession(currentUserId);
+            ViewData["SL"] = SL;
             ViewData["state"] = SL.ToString();
             ViewData["Error"] = "";
             return SL;
+        }
+
+        [HttpPost]
+        public ActionResult Buy_from_store_form(string Store)
+        {
+            return RedirectToAction("Recipt", new { store=Store });
+            
+        }
+       
+        [HttpPost]
+        public ActionResult update_product_inCart(string newAmount, string store, string product)
+        {
+            I_User_ServiceLayer SL = this.validateConnection();
+            List<KeyValuePair<ProductInStore, int>> tmp = SL.Watch_Cart();
+            //var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
+            foreach (KeyValuePair<ProductInStore, int> p in tmp)
+            {
+                if (p.Key.getName()==product && p.Key.getStore().getName() == store)
+                {
+                    SL.Edit_Product_In_ShopingBasket(p.Key, int.Parse(newAmount));
+                    return RedirectToAction("Basket");
+                }
+            }
+            ViewData["Error"] = "product awsnot found";
+            return RedirectToAction("Error");
         }
 
         [HttpPost]
@@ -363,6 +410,25 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer ius = SessionControler.GetSession(currentUserId);
             return !"Visitor".Equals(ius.ToString());
         }
+        [HttpPost]
+        public ActionResult return_to_cart() {
+            I_User_ServiceLayer SL = this.validateConnection();
+            SL.canclePurch();
+            return RedirectToAction("Baskt");
+        }
+
+        [HttpPost]
+        public ActionResult finalize(string payment, string shipping)
+        {
+            I_User_ServiceLayer SL = this.validateConnection();
+            try
+            {
+                SL.Finalize_Purchase(shipping, payment);
+                return RedirectToAction("Allgood");
+            }
+            catch(Exception e)
+            {
+                ViewData["Error"] = e.Message;
 
         [HttpPost]
         public ActionResult RemoveOwnerForm(Store_AddManagerViewModel vm)

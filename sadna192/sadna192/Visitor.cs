@@ -71,12 +71,12 @@ namespace sadna192
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount)
         {
-            return this.shopingBasket.Purchase_product(p, amount);
+            return this.shopingBasket.Purchase_product(p, amount,this);
         }
 
         public List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name)
         {
-            return this.shopingBasket.Purchase_Store_cart(store_name);
+            return this.shopingBasket.Purchase_Store_cart(store_name,this);
         }
 
         public virtual bool Remove_Product_Store(string Store_name, string product_name)

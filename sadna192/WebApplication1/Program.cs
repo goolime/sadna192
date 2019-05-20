@@ -34,6 +34,8 @@ namespace WebApplication1
             UL.Open_Store("testStore");
             UL.Add_Product_Store("testStore", "Banna", "food", 5.0, 50, new noDiscount(), new regularPolicy());
             UL.Add_Product_Store("testStore", "Apple", "food", 5.0, 70, new noDiscount(), new regularPolicy());
+            UL.Add_To_ShopingBasket(UL.GlobalSearch("Banna", null, null, -1, -1, -1, -1)[0],5);
+            UL.Add_To_ShopingBasket(UL.GlobalSearch("Apple", null, null, -1, -1, -1, -1)[0], 5);
             UL.Logout();
         }
     }

@@ -61,6 +61,7 @@
     <Compile Include="ProductPurchaseType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sadna192Exception.cs" />
     <Compile Include="ServiceLayer.cs" />
     <Compile Include="ShopingBasket.cs" />
     <Compile Include="ShoppingCart.cs" />

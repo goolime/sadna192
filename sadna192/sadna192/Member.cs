@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
 {
-    internal class Member : Visitor
+    public class Member : Visitor
     {
         internal string name;
         private string code;
@@ -75,7 +75,7 @@ namespace sadna192
             {
                 if (owner.getStore().isMe(store_name)) return owner;
             }
-            throw new Exception("the user is not associated with the store '" + store_name + "'");
+            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)

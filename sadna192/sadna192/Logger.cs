@@ -14,9 +14,10 @@ namespace sadna192
 
        public Logger(string fileName)
         {
+            Console.WriteLine(fileName);
             string dir_path = @"c:\Sadna192 log files";
              file_path = dir_path + "\\" +fileName+ ".txt";
-            Console.WriteLine("The current directory is {0}", file_path);
+            Console.WriteLine(file_path);
             try
             {
                 if (!Directory.Exists(dir_path))
@@ -41,11 +42,16 @@ namespace sadna192
         public void Add(string str)
         {
             Console.WriteLine("writting...{0}" , str);
-            using (streamWriter = new StreamWriter(file_path, true))
+            using (this.streamWriter = new StreamWriter(this.file_path, true))
             {
                 streamWriter.WriteLine(str);
                 streamWriter.Close(); 
             }
+        }
+
+        public String ToString()
+        {
+            return "logger : " + file_path; 
         }
     }
 }

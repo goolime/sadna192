@@ -9,13 +9,18 @@ namespace sadna192
 {
     class Sadna192Exception : Exception
     {
-        public static Logger errlog = new Logger("Error Log");
+        public static Logger log = new Logger("Event Log");
     
 
         public Sadna192Exception(String exc , String classLoc , String func ) 
         {
-            errlog.Add(System.DateTime.Now.ToString() + " : " + exc + ".   <" + classLoc + " : " + func +">");
+            log.Add("ERROR => " + exc + ".   <" + classLoc + " : " + func +">");
             throw new Exception(exc); 
+        }
+
+        public static void AddToEventLog (String str)
+        {
+            log.Add(str);
         }
  
     }

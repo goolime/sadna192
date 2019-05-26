@@ -49,7 +49,8 @@ namespace sadna192
                         if (m.shopingBasket.savedProducts != null)
                         {
                             m.shopingBasket.returnProducts();
-                            singleton.log.Add(System.DateTime.Now.ToString() + "SYSTEM : returned to store saved products of user '" + m.ToString() +"'" );
+                            Sadna192Exception.AddToEventLog("SYSTEM : returned to store saved products of user '" + m.ToString() + "'");
+
                         }
                         m.shopingBasket.toBeRemoved = false;
                     }
@@ -70,7 +71,6 @@ namespace sadna192
             protected static ServiceLayer singleton = null;
             public I_DeliverySystem deliverySystem;
             public I_PaymentSystem paymentSystem;
-            public Logger log;
             public List<Store> store=new List<Store>();
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
@@ -80,7 +80,6 @@ namespace sadna192
                 this.paymentSystem = paymentSystem;
                 this.members = new List<Member>();
                 this.users = new List<I_User_ServiceLayer>();
-                this.log = new Logger("EventLog");//new List<string>();
                 Timer t = new Timer(1000*60*10);
                 t.Elapsed += OnTimedEvent;
                 t.AutoReset = true;
@@ -112,7 +111,7 @@ namespace sadna192
 
             public void Add_Log(string log)
             {
-                this.single_ServiceLayer.log.Add(System.DateTime.Now.ToString() + this.userState.ToString() + ":" + log);
+                Sadna192Exception.AddToEventLog(this.userState.ToString() + ":" + log);
             }
 
             public bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -457,21 +456,7 @@ namespace sadna192
                 ans.Sort(new cartOrder());
                 this.Add_Log("watched his cart");
                 return ans;
-            }
-
-          /*  public string get_log()
-            {
-                if (this.userState.isAdmin())
-                {
-                    string ans = "";
-                    for(int i=0; i<singleton.log.Count; i++)
-                    {
-                        ans += singleton.log[i] + "\n";
-                    }
-                    return ans;
-                }
-                throw new Exception("only admins can view the log");
-            }*/
+            } 
 
             public override string ToString()
             {

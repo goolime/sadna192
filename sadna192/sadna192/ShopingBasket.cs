@@ -99,8 +99,14 @@ namespace sadna192
 
         private void checkSaved(UserState u)
         {
-            // TODO-MICHAL
-            throw new NotImplementedException();
+            foreach (KeyValuePair<ProductInStore, KeyValuePair<int, double>> p in this.savedProducts)
+            {
+                if (!p.Key.GetPolicy().check(p.Key, u))
+                {
+                    this.returnProducts();
+                    throw new Sadna192Exception("you don't stand in the shop policy", "ShoppingBasket", "checkSaved");
+                }
+            }
         }
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
@@ -167,6 +173,7 @@ namespace sadna192
             foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> productToReturn in savedProducts)
             {
                 productToReturn.Key.setAmount(productToReturn.Key.getAmount() + productToReturn.Value.Key);
+                this.addProduct(productToReturn.Key, productToReturn.Value.Key);
             }
             savedProducts = null;
         }

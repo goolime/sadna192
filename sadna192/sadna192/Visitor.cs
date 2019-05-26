@@ -12,7 +12,7 @@ namespace sadna192
             this.shopingBasket = new ShopingBasket(new List<ShoppingCart>());
         }
 
-        public ShopingBasket getShopingBasket()
+        internal ShopingBasket GetShopingBasket()
         {
             return this.shopingBasket;
         }

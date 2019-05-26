@@ -37,6 +37,7 @@
 {
     foreach (string s in ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"]).Keys)
     {
+        double total = 0;
         List<KeyValuePair<ProductInStore, int>> store = ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"])[s];
         <h4>@s</h4>
         <table style="width:100%" id="@s">
@@ -47,10 +48,11 @@
             </tr>
             @foreach (KeyValuePair<ProductInStore, int> pr in store)
             {
+                total += pr.Key.getPrice() * pr.Value;
                 <tr id="@(pr.Key.getName() + s)">
                     <th>@pr.Key.getName()</th>
                     <th>@pr.Value</th>
-                    <th>@pr.Key.getPrice()</th>
+                    <th>@pr.Key.getPrice()$</th>
 
                     <!--<th><button onclick="delete_row('@(pr.Key.getName()+s)')" uiactions="">remove</button></th>-->
                     <th>
@@ -77,6 +79,7 @@
                 </tr>
             }
         </table>
+        <h5>the store toal is @total$</h5>
         <form action="Buy_from_store_form"  method="post">
             <input type="submit" value="Buy From Store">
             <input type="text" style="visibility:hidden" value="@s" name="Store" />

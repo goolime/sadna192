@@ -164,7 +164,7 @@ namespace sadna192
             {
                 ans.AddRange(sc.getCart());
             }
-            if (ans.Count == 0) throw new Sadna192Exception("there are no product in the store", "ShopingBasket", "get_basket");
+            if (ans.Count == 0) throw new Sadna192Exception("there are no product in the cart", "ShopingBasket", "get_basket");
             return ans;
         }
 

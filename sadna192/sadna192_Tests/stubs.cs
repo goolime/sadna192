@@ -12,6 +12,13 @@ namespace sadna192_Tests
         public class Stub_deliverySystem : I_DeliverySystem
         {
             int index = 0;
+            bool isConnect = false; 
+
+            public Stub_deliverySystem()
+            {
+                isConnect = true; 
+            }
+
             public virtual void canclePackage(string code)
             {
 
@@ -24,7 +31,7 @@ namespace sadna192_Tests
 
             public virtual bool Connect()
             {
-                return true;
+                return isConnect;
             }
 
             public virtual string sendPackage(string address)
@@ -37,6 +44,13 @@ namespace sadna192_Tests
 
         public class Stub_paymentSystem : I_PaymentSystem
         {
+            bool isConnect = false;
+
+            public Stub_paymentSystem()
+            {
+                isConnect = true; 
+            }
+
             public virtual bool check_payment(string payment)
             {
                 return true;
@@ -44,7 +58,7 @@ namespace sadna192_Tests
 
             public virtual bool Connect()
             {
-                return true;
+                return isConnect;
             }
 
             public virtual void pay(double total, string payment)

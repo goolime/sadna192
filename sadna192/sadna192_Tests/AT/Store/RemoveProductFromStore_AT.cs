@@ -92,6 +92,7 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer2.Logout();
             userServiceLayer1 = null;
             userServiceLayer2 = null;
+            serviceLayer.CleanUpSystem();
             serviceLayer = null; 
         }
     }

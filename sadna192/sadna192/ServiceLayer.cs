@@ -17,7 +17,7 @@ namespace sadna192
 
         public I_User_ServiceLayer Connect()
         {
-            if (singleton == null) throw new Sadna192Exception("the system dosnwt exist" , "ServiceLayer" ,  "Connect");
+            if (singleton == null) throw new Sadna192Exception("the system dosn't exist" , "ServiceLayer" ,  "Connect");
             return singleton.Connect();
         }
 
@@ -29,6 +29,13 @@ namespace sadna192
                 return this;
             }
             else throw new Sadna192Exception("the system already exist",  "ServiceLayer", "Create_ServiceLayer");
+        }
+
+        public void CleanUpSystem()
+        {
+            if (singleton == null) throw new Exception("CleanUp faild - the system not exist.");
+            singleton.CleanUp();
+            singleton = null; 
         }
 
         private static void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -95,6 +102,17 @@ namespace sadna192
                 this.users.Add(ans);
                 return ans;
             }
+
+            internal void CleanUp()
+            {
+                users = null;
+                members = null;
+                singleton = null;
+                deliverySystem = null;
+                paymentSystem = null;
+                store = null;
+            }
+
         }
 
        

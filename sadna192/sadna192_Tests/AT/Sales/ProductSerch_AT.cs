@@ -94,10 +94,11 @@ namespace sadna192.Tests.AcceptanceTests
         [TestCleanup]
         public void TestClean()
         {
-            serviceLayer = null;
             userServiceLayer1 = null;
             userServiceLayer2 = null;
             userServiceLayer3 = null;
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

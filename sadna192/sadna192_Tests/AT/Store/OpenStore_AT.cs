@@ -52,5 +52,12 @@ namespace sadna192.Tests.AcceptanceTests
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Open_Store("dig dig dog"); }, "only registered user can open stores");  //happy 2
         }
 
+        [TestCleanup]
+        public void CleanUp()
+        {
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
+        }
+
     }
 }

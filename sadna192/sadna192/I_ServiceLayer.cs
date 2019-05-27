@@ -20,6 +20,8 @@ namespace sadna192
         /// </summary>
         /// <returns>a connection to a single user in the system</returns>
         I_User_ServiceLayer Connect();
+
+        void CleanUpSystem();
     }
 
     public interface I_User_ServiceLayer

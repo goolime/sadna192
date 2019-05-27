@@ -106,6 +106,7 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer_seller.Logout();
             userServiceLayer_buyer = null;
             userServiceLayer_seller = null;
+            serviceLayer.CleanUpSystem();
             serviceLayer = null;
         }
 

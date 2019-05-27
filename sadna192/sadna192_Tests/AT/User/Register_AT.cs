@@ -59,5 +59,12 @@ namespace sadna192.Tests.AcceptanceTests
             if (userServiceLayer1.Login("registerUser", "1221zxcV"))
                 Assert.ThrowsException<Exception>(() => { userServiceLayer1.Register("Alice", "3456Sdfg"); }, "trying to register when already logedin");
         }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
+        }
     }
 }

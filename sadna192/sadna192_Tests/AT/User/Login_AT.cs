@@ -57,5 +57,11 @@ namespace sadna192.Tests.AcceptanceTests
                 Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
         }
 
+        [TestCleanup]
+        public void CleanUp()
+        {
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
+        }
     }
 }

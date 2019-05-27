@@ -54,12 +54,13 @@ namespace sadna192.Tests.AcceptanceTests
         }
 
         [TestMethod()]
-        public void Watch_cart_of_existing_store_in_cart_happyTest()
+        public void Watch_cart_of_existing_store_in_cart_happyTest() //regression test
         {
             List<KeyValuePair<ProductInStore, int>> user_cart = userServiceLayer_buyer.Watch_Cart();
-            Assert.AreEqual(user_cart.Count, 2);
+            Assert.AreEqual(user_cart.Count, 3);
             Assert.AreEqual(user_cart[0].Key.getStore().getName(), "grocery store");
-            Assert.AreEqual(user_cart[1].Key.getStore().getName(), "zara");
+            Assert.AreEqual(user_cart[1].Key.getStore().getName(), "grocery store");
+            Assert.AreEqual(user_cart[2].Key.getStore().getName(), "zara");
         }
 
         [TestMethod()]
@@ -81,6 +82,8 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer_buyer.Logout();
             userServiceLayer_seller.Logout();
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

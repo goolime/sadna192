@@ -112,7 +112,8 @@ namespace sadna192
 
         public override string ToString()
         {
-            return (System.DateTime.Now.ToString() + "| Visitor");
+            //return (System.DateTime.Now.ToString() + "| Visitor");
+            return ("Visitor");
         }
 
         public virtual List<Dictionary<string, dynamic>> getMyShops()

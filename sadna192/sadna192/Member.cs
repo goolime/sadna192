@@ -134,7 +134,7 @@ namespace sadna192
 
         public override string ToString()
         {
-            return (System.DateTime.Now.ToString() + "| " +this.name);
+            return (this.name);
         }
 
         public override List<Dictionary<string, dynamic>> getMyShops()

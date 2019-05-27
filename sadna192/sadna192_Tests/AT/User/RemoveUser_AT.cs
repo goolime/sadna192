@@ -76,6 +76,8 @@ namespace sadna192.Tests.AcceptanceTests
         public void TestClean()
         {
             userServiceLayer_admin.Logout();
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

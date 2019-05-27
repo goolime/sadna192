@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\MSTest.TestFramework.1.4.0\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
@@ -65,6 +66,7 @@
     <Compile Include="AT\User\Logout_AT.cs" />
     <Compile Include="AT\Store\OpenStore_AT.cs" />
     <Compile Include="AT\Sales\ProductSerch_AT.cs" />
+    <Compile Include="Integration_Tests\System_IT.cs" />
     <Compile Include="Integration_Tests\UserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AT\Sales\PurchaseCart_AT.cs" />
@@ -74,21 +76,17 @@
     <Compile Include="AT\Store\RemoveProductFromStore_AT.cs" />
     <Compile Include="AT\User\RemoveUser_AT.cs" />
     <Compile Include="Stubs.cs" />
-    
     <Compile Include="Unit_Tests\Shopping_Cart_UT.cs" />
-
     <Compile Include="Unit_Tests\ToolsTests.cs" />
     <Compile Include="AT\Sales\updateCart_AT.cs" />
     <Compile Include="AT\Store\UpdateProductInStore_AT.cs" />
     <Compile Include="AT\Sales\WatchCart_AT.cs" />
     <Compile Include="Unit_Tests\Manager_UT.cs" />
     <Compile Include="Unit_Tests\Owner_UT.cs" />
-
     <Compile Include="Unit_Tests\Store_UT.cs" />
     <Compile Include="Unit_Tests\Shopping_Basket_UT.cs" />
     <Compile Include="Unit_Tests\Member_UT.cs" />
     <Compile Include="Unit_Tests\Visitor_UT.cs" />
-
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

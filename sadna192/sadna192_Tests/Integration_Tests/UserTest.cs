@@ -168,6 +168,8 @@ namespace sadna192_Tests.Integration_Tests
             Assert.ThrowsException<Exception>(() =>
             { testUser.Open_Store("testStore2"); }, "the user is not exist");
             //Assert.ThrowsException<Exception>(() => { testUser.GetProductFromStore("eggs", "testStore"); }, "the store is not exist because the owner has removed"); 
+            List<ProductInStore> milkSearch = storeOwner.GlobalSearch("eggs", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(milkSearch.Count, 1); //TODO : need to be 0 
             Assert.IsNotNull(testUser.GetProductFromStore("eggs", "testStore"));  //TODO  - why it still exist? 
 
         }

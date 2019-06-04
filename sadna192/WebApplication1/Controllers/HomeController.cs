@@ -88,7 +88,7 @@ namespace WebApplication1.Controllers
 
         }
 
-        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis, int? polnum)
         {
             I_User_ServiceLayer sl = this.validateConnection();
             Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
@@ -110,8 +110,8 @@ namespace WebApplication1.Controllers
                         DiscountVisible = ((disnum ?? 1) > 1) || (resetdis ?? false) },
                     APolicy = new AddPolicyViewModel()
                     {
-                        NumberOfPolicies = disnum ?? 1,
-                        IsPolicyVisible = ((disnum ?? 1)>1) || (resetpol ?? false),
+                        NumberOfPolicies = polnum ?? 1,
+                        IsPolicyVisible = ((polnum ?? 1)>1) || (resetpol ?? false),
                     }
                     
                 };
@@ -657,7 +657,7 @@ namespace WebApplication1.Controllers
             }
             else if (command.Equals("add"))
             {
-                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, disnum = vm.APolicy.NumberOfPolicies + 1 });
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, polnum = vm.APolicy.NumberOfPolicies + 1 });
             }
             else if (command.Equals("reset"))
             {

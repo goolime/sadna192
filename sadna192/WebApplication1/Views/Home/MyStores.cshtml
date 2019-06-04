@@ -189,44 +189,49 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
 
 <button onclick="show_add_policy_form()" id="addPolicyButton">Add Policy</button>
 <div id="addpolicydiv">
-    @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
+    @if (ViewData["alertAddPolicy"] != null && (bool)ViewData["alertAddPolicy"])
     {
         <font color="red"> could not add the policy to the store </font>
     }
-    @using (Html.BeginForm("AddDiscountForm", "Home", FormMethod.Post))
+    @using (Html.BeginForm("AddPolicyForm", "Home", FormMethod.Post))
     {
 
         @Html.HiddenFor(s => Model.S.StoreName)
         @Html.HiddenFor(s => Model.O.Name)
         @Html.HiddenFor(s => Model.APolicy.NumberOfPolicies)
-        <div id="productsPolicyForm">
-            Select Logic Connection: @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>
-                () { "OR", "AND" ,"XOR"}),new { @value="AND",@placeholder="AND",@style= Model.APolicy.NumberOfPolicies==1? "visibility:hidden": "visibility:visible" })
-            @for (int i = 0; i < Model.AD.NumberOfDiscounts; i++)
+        <font>Is Products Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IsProductsPolicy, new { @id = "productsPolicyCheckBox", @onchange = "is_product_policy(this)" })
+
+        <div id="productsPolicyForm" style="visibility:hidden">
+            Select Logic Connection: @Html.DropDownListFor(s => s.APolicy.LogicConnection, new SelectList(new List<string>
+() { "OR", "AND" ,"XOR"}),new { @value="AND",@placeholder="AND",@style= Model.APolicy.NumberOfPolicies==1? "visibility:hidden": "visibility:visible" })
+            @for (int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
             {
                 <br /><font color="blue">Policy Number #@(i + 1)</font><br />
                 <br />
                 @Html.DropDownListFor(s => s.APolicy.Policies[i].Name, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "policyproductname" + i, @placeholder = "Product name" })
                 <br />
-                @Html.TextBoxFor(s => s.AD.Discounts[i].Amount, new { @placeholder = "Amount" })
-                @Html.TextBoxFor(s => s.AD.Discounts[i].DiscountPercent, new { @placeholder = "DiscountPercent" })
+                @Html.TextBoxFor(s => s.APolicy.Policies[i].Amount, new { @placeholder = "Amount" })
                 <br />
+                @Html.DropDownListFor(s => s.APolicy.Policies[i].Constraint, new SelectList(new List<string>() { "MAX", "MIN" }), new { @id = "policyconstraint" + i, @placeholder = "MAX/MIN" })
+
             }
         </div>
-        <div id="storeDiscount">
-            @Html.TextBoxFor(s => s.AD.Discounts[0].Amount, new { @placeholder = "Amount" })
-            @Html.TextBoxFor(s => s.AD.Discounts[0].DiscountPercent, new { @placeholder = "DiscountPercent" })
+        <div id="storePolicy">
+
         </div>
         <br />
-        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timeDiv\")" })
-        <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
+        <font>Is Included In Store Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IncludeStorePolicy)
+        <font>Member Policy:</font>@Html.CheckBoxFor(s => s.APolicy.Memebr)
+        <font>Member Immidiate:</font>@Html.CheckBoxFor(s => s.APolicy.Immidiate)
 
-        <div id="timeDiv" style="visibility:hidden">
-            <font>Start:</font>@Html.TextBoxFor(s => s.AD.TimeSpan.Start, new { @type = "date" })
-            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.TimeSpan.Finish, new { @type = "date" })
+        <font>Is Time Policy:</font>@Html.CheckBoxFor(s => s.APolicy.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timePolicyDiv\")" })
+
+        <div id="timePolicyDiv" style="visibility:hidden">
+            <font>Start:</font>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Start, new { @type = "date" })
+            <fon>Finish:</fon>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Finish, new { @type = "date" })
         </div>
-        <button name="command" value="add" id="addDiscountButton" style="visibility:hidden">Add a Discount</button>
-        <button name="command" value="reset" id="resetDiscount" style="visibility:hidden">Reset Discounts</button>
+        <button name="command" value="add" id="addAPolicyDivButton" style="visibility:hidden">Add a Discount</button>
+        <button name="command" value="reset" id="resetPolicy" style="visibility:hidden">Reset Discounts</button>
         <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Total Discount</button>
     }
 </div>
@@ -294,6 +299,20 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
             document.getElementById("storeDiscount").style.visibility = "hidden";
             document.getElementById("addDiscountButton").style.visibility = "visible";
             document.getElementById("resetDiscount").style.visibility = "visible";
+        }
+    }
+
+    function is_product_policy(obj) {
+        if (!($(obj).is(":checked"))) {
+            document.getElementById("productsPolicyForm").style.visibility = "hidden";
+            document.getElementById("storePolicy").style.visibility = "visible";
+            document.getElementById("addAPolicyDivButton").style.visibility = "hidden";
+            document.getElementById("resetPolicy").style.visibility = "hidden";
+        } else {
+            document.getElementById("productsPolicyForm").style.visibility = "visible";
+            document.getElementById("storePolicy").style.visibility = "hidden";
+            document.getElementById("addAPolicyDivButton").style.visibility = "visible";
+            document.getElementById("resetPolicy").style.visibility = "visible";
         }
     }
 

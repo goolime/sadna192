@@ -37,9 +37,9 @@ namespace sadna192.Tests.AcceptanceTests
                 {
                     if (userServiceLayer1.Open_Store("mamma mia"))
                     {
-                        userServiceLayer1.Add_Product_Store("mamma mia", "melon", "fruit", 5, 4, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("mamma mia", "mint tea", "drink", 9, 100, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("mamma mia", "potato", "food", 17, 50, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("mamma mia", "melon", "fruit", 5, 4, new noDiscount(), new RegularPolicy());
+                        userServiceLayer1.Add_Product_Store("mamma mia", "mint tea", "drink", 9, 100, new noDiscount(), new RegularPolicy());
+                        userServiceLayer1.Add_Product_Store("mamma mia", "potato", "food", 17, 50, new noDiscount(), new RegularPolicy());
                     }
                 }
 
@@ -51,18 +51,18 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Add_shop_manager_and_check_permissions_happyTest()
         {
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't add products");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 5, new noDiscount(), new regularPolicy()); }, "user2 still is not manager so he can't update products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new RegularPolicy()); }, "user2 still is not manager so he can't add products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 5, new noDiscount(), new RegularPolicy()); }, "user2 still is not manager so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato1"); }, "user2 still is not manager so he can't remove products");
 
             Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, false, false));
 
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("seven up", null, null, -1, -1, -1, -1);
             int pre_amount = search1.Count;
-            Assert.IsTrue(userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new regularPolicy()));
+            Assert.IsTrue(userServiceLayer2.Add_Product_Store("mamma mia", "seven up", "drink", 7, 10, new noDiscount(), new RegularPolicy()));
             search1 = userServiceLayer2.GlobalSearch("seven up", null, null, -1, -1, -1, -1);
             Assert.AreEqual(pre_amount + 1, search1.Count);
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 9, new noDiscount(), new regularPolicy()); }, "user2 has no update permissions so he can't update products");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 9, new noDiscount(), new RegularPolicy()); }, "user2 has no update permissions so he can't update products");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("mamma mia", "potato"); }, "user2 has no remove permissions so he can't remove products");
             
            Assert.IsTrue(userServiceLayer1.Add_Store_Manager("mamma mia", "addManagerUser2", true, false, true));
@@ -71,7 +71,7 @@ namespace sadna192.Tests.AcceptanceTests
             int pre_amount1 = search1.Count;
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("chips potato", null, null, -1, -1, -1, -1);
             int pre_amount2 = search2.Count;
-            Assert.IsTrue(userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 9, new noDiscount(), new regularPolicy()));
+            Assert.IsTrue(userServiceLayer2.Update_Product_Store("mamma mia", "potato", "chips potato", "food", 30, 9, new noDiscount(), new RegularPolicy()));
             search1 = userServiceLayer2.GlobalSearch("potato", null, null, -1, -1, -1, -1);
             Assert.AreEqual(pre_amount1 - 1, search1.Count);
             search2 = userServiceLayer2.GlobalSearch("chips potato", null, null, -1, -1, -1, -1);

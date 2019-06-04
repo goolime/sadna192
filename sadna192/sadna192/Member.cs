@@ -7,14 +7,14 @@ namespace sadna192
     public class Member : Visitor
     {
         internal string name;
-        private string code;
+        private readonly string Code;
         internal List<Owner> owner;
 
 
         public Member(string name, string password) : base()
         {
             this.name = name;
-            this.code = this.Encrypt(this.name, password);
+            this.Code = this.Encrypt(this.name, password);
             this.owner = new List<Owner>();
         }
 
@@ -66,7 +66,7 @@ namespace sadna192
 
         internal bool check(string user_name, string user_pass)
         {
-            return (this.code == this.Encrypt(user_name, user_pass));
+            return (this.Code == this.Encrypt(user_name, user_pass));
         }
 
         internal Owner getUserStore(string store_name)

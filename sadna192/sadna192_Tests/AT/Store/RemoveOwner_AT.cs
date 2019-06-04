@@ -40,7 +40,7 @@ namespace sadna192.Tests.AcceptanceTests
                 if (userServiceLayer1.Login("removeOwnerUser", "1221YhnN"))
                     if (userServiceLayer1.Open_Store("shopit"))
                     {
-                        userServiceLayer1.Add_Product_Store("shopit", "cheese cake", "food", 28, 6, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("shopit", "cheese cake", "food", 28, 6, new noDiscount(), new RegularPolicy());
                         userServiceLayer1.Add_Store_Owner("shopit", "removeOwnerUser2");
                     }
             }
@@ -50,14 +50,14 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Remove_shop_owner_happyTests()
         {
-            Assert.IsTrue(userServiceLayer2.Add_Product_Store("shopit", "cola", "drink", 7, 10, new noDiscount(), new regularPolicy()));
-            Assert.IsTrue(userServiceLayer2.Update_Product_Store("shopit", "cola", "coca cola", "drink", 6.8, 19, new noDiscount(), new regularPolicy())); 
+            Assert.IsTrue(userServiceLayer2.Add_Product_Store("shopit", "cola", "drink", 7, 10, new noDiscount(), new RegularPolicy()));
+            Assert.IsTrue(userServiceLayer2.Update_Product_Store("shopit", "cola", "coca cola", "drink", 6.8, 19, new noDiscount(), new RegularPolicy())); 
             Assert.IsTrue(userServiceLayer2.Remove_Product_Store("shopit", "coca cola")); 
 
             Assert.IsTrue(userServiceLayer1.Remove_Store_Owner("shopit", "removeOwnerUser2"));
 
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("shopit", "cola", "drink", 7, 10, new noDiscount(), new regularPolicy()); }, "removeOwner_user2 is no longer an owner so he can't add product");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("shopit", "cheese cake", "cake", "food", 28, 9, new noDiscount(), new regularPolicy()); }, "removeOwner_user2 is no longer an owner so he can't update product");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_Product_Store("shopit", "cola", "drink", 7, 10, new noDiscount(), new RegularPolicy()); }, "removeOwner_user2 is no longer an owner so he can't add product");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Update_Product_Store("shopit", "cheese cake", "cake", "food", 28, 9, new noDiscount(), new RegularPolicy()); }, "removeOwner_user2 is no longer an owner so he can't update product");
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("shopit", "cheese cake"); }, "removeOwner_user2 is no longer an owner so he can't remove product");
         }
 
@@ -97,7 +97,7 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer4.Add_Store_Owner("shopit", "removeOwnerUser6");
 
             Assert.ThrowsException<Exception>(() => { userServiceLayer5.Remove_Store_Manager("shopit", "removeOwnerUser6"); }, "faild to remove owner that someonelse defined him to be an owner");
-            Assert.IsTrue(userServiceLayer6.Add_Product_Store("shopit", "chips", "food", 17, 50, new noDiscount(), new regularPolicy())); 
+            Assert.IsTrue(userServiceLayer6.Add_Product_Store("shopit", "chips", "food", 17, 50, new noDiscount(), new RegularPolicy())); 
             Assert.IsTrue(userServiceLayer4.Remove_Store_Owner("shopit", "removeOwnerUser6"));
             Assert.ThrowsException<Exception>(() => { userServiceLayer6.Remove_Product_Store("shopit", "cheese cake"); }, "removeOwner_user5 is no longer an owner so he can't remove product");
         }
@@ -116,11 +116,11 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer1.Add_Store_Owner("shopit", "removeOwnerUser3");
             userServiceLayer3.Add_Store_Owner("shopit", "removeOwnerUser7");
 
-            Assert.IsTrue(userServiceLayer7.Update_Product_Store("shopit", "cheese cake", "cheese cake", "desserts", 22, 26, new noDiscount(), new regularPolicy()));
+            Assert.IsTrue(userServiceLayer7.Update_Product_Store("shopit", "cheese cake", "cheese cake", "desserts", 22, 26, new noDiscount(), new RegularPolicy()));
 
             Assert.IsTrue(userServiceLayer1.Remove_Store_Owner("shopit", "removeOwnerUser3"));
-            Assert.ThrowsException<Exception>(() => { userServiceLayer7.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new regularPolicy()); }, "no longer owner because his definder has been removed and is no longer owner ");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new regularPolicy()); }, "no longer owner");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer7.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new RegularPolicy()); }, "no longer owner because his definder has been removed and is no longer owner ");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer3.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new RegularPolicy()); }, "no longer owner");
         }
 
 
@@ -136,7 +136,7 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer1.Add_Store_Owner("shopit", "removeOwnerUser8");
 
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Remove_Store_Manager("shopit", "removeOwnerUser8"); }, "only store owner can remove an owner from the store");
-            Assert.IsTrue(userServiceLayer8.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new regularPolicy()));
+            Assert.IsTrue(userServiceLayer8.Update_Product_Store("shopit", "cheese cake", "cheese cake", "cakes", 22, 26, new noDiscount(), new RegularPolicy()));
         }
 
         [TestCleanup]

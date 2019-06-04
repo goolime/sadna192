@@ -117,6 +117,7 @@ namespace WebApplication1.Models
         public bool Immidiate { get; set; }
         public bool Memebr { get; set; }
         public bool IncludeStorePolicy { get; set; }
+        public bool IsProductsPolicy { get; set; }
 
         public bool TotalPolicy { get; set; }
         public string TotalConstraint { get; set; }//Max, Min etc
@@ -125,9 +126,6 @@ namespace WebApplication1.Models
         public bool TotalInCartPolicy { get; set; }
         public string TotalInCartConstraint { get; set; }//Max, Min etc
         public int TotalInCartConstraintValue { get; set; }
-
-        public bool Product { get; set; }
-        public string ProductName { get; set; }
 
         public TimeSpanViewModel TimeSpan { get; set; }
 
@@ -151,6 +149,8 @@ namespace WebApplication1.Models
     public class ProductPolicyViewModel
     {
         public string Name { get; set; }
+        public string Constraint { get; set; }
+        public int Amount { get; set; }
 
     }
 

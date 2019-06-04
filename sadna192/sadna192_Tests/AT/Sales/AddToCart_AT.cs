@@ -40,8 +40,8 @@ namespace sadna192.Tests.AcceptanceTests
                 if (userServiceLayer1.Login("addToCartUser", "1221Xccv"))
                     if (userServiceLayer1.Open_Store("MiniGrocery"))
                     {
-                        userServiceLayer1.Add_Product_Store("MiniGrocery", "apple", "food", 4, 10, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("MiniGrocery", "cheese", "food", 8.6, 2, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("MiniGrocery", "apple", "food", 4, 10, new noDiscount(), new RegularPolicy());
+                        userServiceLayer1.Add_Product_Store("MiniGrocery", "cheese", "food", 8.6, 2, new noDiscount(), new RegularPolicy());
                     }
             }
             catch (Exception) { }
@@ -64,7 +64,7 @@ namespace sadna192.Tests.AcceptanceTests
         {
             if (userServiceLayer1.Open_Store("Mini Grocery2"))
             {
-                userServiceLayer1.Add_Product_Store("Mini Grocery2", "tea2", "food", 4, 10, new noDiscount(), new regularPolicy());
+                userServiceLayer1.Add_Product_Store("Mini Grocery2", "tea2", "food", 4, 10, new noDiscount(), new RegularPolicy());
             }
             List<ProductInStore> appleToBuy = userServiceLayer2.GlobalSearch("apple", null, null, -1, -1, -1, -1);
             List<ProductInStore> teaToBuy = userServiceLayer2.GlobalSearch("tea2", null, null, -1, -1, -1, -1);

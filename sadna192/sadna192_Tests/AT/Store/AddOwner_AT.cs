@@ -37,9 +37,9 @@ namespace sadna192.Tests.AcceptanceTests
                 {
                     if (userServiceLayer1.Open_Store("shopipi"))
                     {
-                        userServiceLayer1.Add_Product_Store("shopipi", "cake", "food", 25, 4, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("shopipi", "water", "drink", 9, 100, new noDiscount(), new regularPolicy());
-                        userServiceLayer1.Add_Product_Store("shopipi", "chips", "food", 17, 50, new noDiscount(), new regularPolicy());
+                        userServiceLayer1.Add_Product_Store("shopipi", "cake", "food", 25, 4, new noDiscount(), new RegularPolicy());
+                        userServiceLayer1.Add_Product_Store("shopipi", "water", "drink", 9, 100, new noDiscount(), new RegularPolicy());
+                        userServiceLayer1.Add_Product_Store("shopipi", "chips", "food", 17, 50, new noDiscount(), new RegularPolicy());
                     }
                 }
             }

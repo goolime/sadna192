@@ -39,9 +39,9 @@ namespace sadna192.Tests.AcceptanceTests
                 userServiceLayer_buyer.Login("watchCartUser2", "3456ZxcX");
                 if (userServiceLayer_seller.Open_Store("grocery store") && userServiceLayer_seller.Open_Store("zara"))
                 {
-                    userServiceLayer_seller.Add_Product_Store("grocery store", "suger", "food", 12, 50, new noDiscount(), new regularPolicy());
-                    userServiceLayer_seller.Add_Product_Store("grocery store", "salt", "food", 10, 25, new noDiscount(), new regularPolicy());
-                    userServiceLayer_seller.Add_Product_Store("zara", "shirt", "clothes", 75, 20, new noDiscount(), new regularPolicy());
+                    userServiceLayer_seller.Add_Product_Store("grocery store", "suger", "food", 12, 50, new noDiscount(), new RegularPolicy());
+                    userServiceLayer_seller.Add_Product_Store("grocery store", "salt", "food", 10, 25, new noDiscount(), new RegularPolicy());
+                    userServiceLayer_seller.Add_Product_Store("zara", "shirt", "clothes", 75, 20, new noDiscount(), new RegularPolicy());
                 }
                 List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("suger", null, null, -1, -1, -1, -1);
                 List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("shirt", null, null, -1, -1, -1, -1);
@@ -66,7 +66,7 @@ namespace sadna192.Tests.AcceptanceTests
         public void Watch_cart_when_not_existing_store_in_cart_happyTest()
         {
             if (userServiceLayer_seller.Open_Store("Bim Bam Bom"))
-                userServiceLayer_seller.Add_Product_Store("Bim Bam Bom", "polaroid camera", "electronic", 170, 20, new noDiscount(), new regularPolicy());
+                userServiceLayer_seller.Add_Product_Store("Bim Bam Bom", "polaroid camera", "electronic", 170, 20, new noDiscount(), new RegularPolicy());
 
             List<KeyValuePair<ProductInStore, int>> user_cart = userServiceLayer_buyer.Watch_Cart();
             int cart_amount = user_cart.Count;

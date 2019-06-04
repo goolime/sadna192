@@ -5,95 +5,131 @@ namespace sadna192
 {
     public interface Policy
     {
-        bool check(ProductInStore p, UserState u);
-        bool immidiate();
+
+        bool Check(ProductInStore p, UserState u);
+        bool Immidiate();
     }
 
-    public class regularPolicy: Policy
+    public abstract class DecoratorPolicy
     {
-        public bool check(ProductInStore p, UserState u)
+        public Policy Policy { get; set; }
+        public DecoratorPolicy()
+        {
+        }
+        public abstract bool MyCheck(ProductInStore p, UserState u);
+        public bool Immidiate()
+        {
+            return Policy.Immidiate();
+        }
+
+        public void AttachPolicy(Policy p)
+        {
+            Policy = p;
+        }
+
+        public bool Check(ProductInStore p, UserState u)
+        {
+            return MyCheck(p, u) && Policy.Check(p, u);
+        }
+    }
+
+    public class RegularPolicy: Policy
+    {
+
+        public bool Check(ProductInStore p, UserState u)
         {
             return true;
         }
 
-        public bool immidiate()
+        public bool Immidiate()
         {
             return false;
         }
     }
 
-    public class immidiatePolicy: Policy
+    public class ImmidiatePolicy: Policy
     {
-        public bool check(ProductInStore p, UserState u)
+        public bool Check(ProductInStore p, UserState u)
         {
             return true;
         }
        
-        public bool immidiate()
+        public bool Immidiate()
         {
             return true; 
         }
     }
 
-    public abstract class MultiplePolicy : Policy
+    public class BasicRegularDecoratorPolicy : DecoratorPolicy
     {
-        internal List<Policy> Policies;
-
-        public List<Policy> getPolicies()
+        public BasicRegularDecoratorPolicy()
         {
-            List<Policy> ans = new List<Policy>();
-            foreach (Policy p in this.Policies) ans.Add(p);
+            Policy = new RegularPolicy();
+        }
+
+        public override bool MyCheck(ProductInStore p, UserState u)
+        {
+            return Policy.Check(p, u);
+        }
+    }
+
+    public class BasicImmidiateDecoratorPolicy : DecoratorPolicy
+    {
+        public BasicImmidiateDecoratorPolicy()
+        {
+            Policy = new ImmidiatePolicy();
+        }
+
+        public override bool MyCheck(ProductInStore p, UserState u)
+        {
+            return Policy.Check(p, u);
+        }
+    }
+
+    public abstract class MultiplePolicy : DecoratorPolicy
+    {
+        internal List<DecoratorPolicy> Policies;
+
+        public MultiplePolicy()
+        {
+        }
+
+        public List<DecoratorPolicy> GetPolicies()
+        {
+            List<DecoratorPolicy> ans = new List<DecoratorPolicy>();
+            foreach (DecoratorPolicy p in this.Policies) ans.Add(p);
             return ans;
         }
-        public abstract bool check(ProductInStore p, UserState u);
-        public abstract bool immidiate();
     }
 
     public class OrPolicy : MultiplePolicy
     {
-        public OrPolicy(List<Policy> l):base()
+        public OrPolicy(List<DecoratorPolicy> l,Policy p)
         {
             this.Policies = l;
         }
-        public override bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
-            foreach (Policy poli in this.Policies)
+            foreach (DecoratorPolicy poli in this.Policies)
             {
-                if (poli.check(p, u)) return true;
+                if (poli.MyCheck(p, u)) return true;
             }
             return false;
         }
 
-        public override bool immidiate()
-        {
-            foreach (Policy poli in this.Policies)
-            {
-                if (poli.immidiate()) return true;
-            }
-            return false;
-        }
     }
 
     public class AndPolicy : MultiplePolicy
     {
-        public AndPolicy(List<Policy> l) : base()
+        public AndPolicy(List<DecoratorPolicy> l)
         {
             this.Policies = l;
         }
-        public override bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
-            foreach (Policy poli in this.Policies)
+            foreach (DecoratorPolicy poli in this.Policies)
             {
-                if (!poli.check(p, u)) return false;
-            }
-            return true;
-        }
-
-        public override bool immidiate()
-        {
-            foreach (Policy poli in this.Policies)
-            {
-                if (!poli.immidiate()) return false;
+                if (!poli.MyCheck(p, u)) return false;
             }
             return true;
         }
@@ -101,16 +137,16 @@ namespace sadna192
 
     public class XOrPolicy : MultiplePolicy
     {
-        public XOrPolicy(List<Policy> l) : base()
+        public XOrPolicy(List<DecoratorPolicy> l,Policy p) 
         {
             this.Policies = l;
         }
-        public override bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             bool ans = false;
-            foreach (Policy poli in this.Policies)
+            foreach (DecoratorPolicy poli in this.Policies)
             {
-                if (poli.check(p, u))
+                if (poli.MyCheck(p, u))
                 {
                     if (ans) return false;
                     else ans = true;
@@ -119,49 +155,26 @@ namespace sadna192
             }
             return ans;
         }
+    }
 
-        public override bool immidiate()
+    public class IncludeStorePolicy : DecoratorPolicy
+    {
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
-            bool ans = false;
-            foreach (Policy poli in this.Policies)
-            {
-                if (poli.immidiate())
-                {
-                    if (ans) return false;
-                    else ans = true;
-                }
-            }
-            return ans;
+            return p.getStore().GetPolicy().Check(p, u);
         }
     }
 
-    public class IncludeStorePolicy : Policy
+    public class MamberPolicy : DecoratorPolicy
     {
-        public bool check(ProductInStore p, UserState u)
-        {
-            return p.getStore().GetPolicy().check(p, u);
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class MamberPolicy : Policy
-    {
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return u.isMember();
         }
 
-        public bool immidiate()
-        {
-            return false;
-        }
     }
     
-    public class MinimumInCart:Policy
+    public class MinimumInCart:DecoratorPolicy
     {
         int min;
         public MinimumInCart(int i)
@@ -169,18 +182,13 @@ namespace sadna192
             this.min = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName()) >= this.min;
         }
-
-        public bool immidiate()
-        {
-            return false;
-        }
     }
 
-    public class MinimumProductInCart : Policy
+    public class MinimumProductInCart : DecoratorPolicy
     {
         int min;
         public MinimumProductInCart(int i)
@@ -188,18 +196,13 @@ namespace sadna192
             this.min = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName(),p.getName()) >= this.min;
         }
-
-        public bool immidiate()
-        {
-            return false;
-        }
     }
 
-    public class MaximumInCart : Policy
+    public class MaximumInCart : DecoratorPolicy
     {
         int max;
         public MaximumInCart(int i)
@@ -207,18 +210,14 @@ namespace sadna192
             this.max = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName()) <= this.max;
         }
 
-        public bool immidiate()
-        {
-            return false;
-        }
     }
 
-    public class MaximumProductInCart : Policy
+    public class MaximumProductInCart : DecoratorPolicy
     {
         int max;
         public MaximumProductInCart(int i)
@@ -226,18 +225,13 @@ namespace sadna192
             this.max = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.max;
         }
-
-        public bool immidiate()
-        {
-            return false;
-        }
     }
 
-    public class TimePolicy:Policy
+    public class TimePolicy:DecoratorPolicy
     {
         DateTime from;
         DateTime to;
@@ -247,30 +241,42 @@ namespace sadna192
             this.to = to;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             DateTime now = DateTime.Now;
             return this.from < now && now < this.to;
         }
-
-        public bool immidiate()
-        {
-            return false;
-        }
     }
 
-    public class ProductPolicy : Policy
+    public class ProductPolicy : DecoratorPolicy
     {
-        public string Product {get;set;}
+        public string Product { get; set; }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
             return Product == p.getName();
         }
+    }
 
-        public bool immidiate()
+    public class MaxProductPolicy : DecoratorPolicy
+    {
+        public string Product { get; set; }
+        public int Value { get; set; }
+
+        public override bool MyCheck(ProductInStore p, UserState u)
         {
-            return false;
+            return p.getName()!=Product || u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.Value;
+        }
+    }
+
+    public class MinProductPolicy : DecoratorPolicy
+    {
+        public string Product { get; set; }
+        public int Value { get; set; }
+
+        public override bool MyCheck(ProductInStore p, UserState u)
+        {
+            return p.getName() != Product || u.numOfItemsInCart(p.getStore().getName(), p.getName()) >= this.Value;
         }
     }
 }

@@ -74,6 +74,8 @@ namespace WebApplication1.Models
         public AddManagerViewModel AM { get; set; }
         public AddProductViewModel AP { get; set; }
         public AddDiscountViewModel AD { get; set; }
+        public int NumberOfDiscounts { get; set; }
+        public bool DiscountVisible { get; set; }
 
         public string DeleteOwnerConfig(string owner, string store)
         {
@@ -90,22 +92,25 @@ namespace WebApplication1.Models
 
     public class AddDiscountViewModel
     {
+        public bool IsProductsDiscount { get; set; }
         public string LogicConnection { get; set; }
-        public bool IsStoreDiscount { get; set; }
-        public bool IsProductDiscount { get; set; }
-        public string ProductName { get; set; }
-        public bool IsFixed { get; set; }
+        public List<DiscountViewModel> Discounts { get; set; }
 
+        public bool IsTimeLimited { get; set; }
         [DisplayName("Start Date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Start { get; set; }
-
         [DisplayName("Finish Date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Finish { get; set; }
+        public bool IsStoreDiscount { get; set; }
+    }
 
+    public class DiscountViewModel
+    {
+        public string ProductName { get; set; }
         public int Amount { get; set; }
         public int DiscountPercent { get; set; }
-
     }
+
 }

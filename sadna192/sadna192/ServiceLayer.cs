@@ -434,8 +434,8 @@ namespace sadna192
                     Tools.check_productNames(product_name) &&
                     Tools.check_productNames(product_new_name) &&
                     Tools.check_productCategory(product_new_category) &&
-                    Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount)
+                     Tools.check_price(product_new_price) &&
+                     Tools.check_amount(product_new_amount)
                     )
                 {
                     bool ans = false;

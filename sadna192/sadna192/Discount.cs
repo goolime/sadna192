@@ -115,9 +115,9 @@ namespace sadna192
     public class TimeDiscount : Discount
     {
         DateTime from, to;
-        double discount;
+        Discount discount;
 
-        public TimeDiscount(DateTime from, DateTime to, double discount)
+        public TimeDiscount(DateTime from, DateTime to, Discount discount)
         {
             this.from = from;
             this.to = to;
@@ -126,7 +126,7 @@ namespace sadna192
 
         public double calculate(ProductInStore p, UserState u)
         {
-            if (from<DateTime.Now && DateTime.Now<to) return this.discount;
+            if (from<DateTime.Now && DateTime.Now<to) return discount.calculate(p,u);
             else return 1;
         }
     }

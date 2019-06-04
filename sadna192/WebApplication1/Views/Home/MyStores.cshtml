@@ -60,7 +60,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-<button onclick="show_store_management_form()">Management</button>
+<button onclick="show_store_management_form()" id="manage">Management</button>
 <div id="storeOwnersDiv" style="visibility: hidden;">
     <table class="table">
         <thead>
@@ -122,7 +122,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     </table>
 </div>
 
-<button onclick="show_add_product_form()">Add Product</button>
+<button onclick="show_add_product_form()" id="addProdButton">Add Product</button>
 <div id="addProductDiv" style="visibility: @(((bool)ViewData["producterr"])?"visible":"hidden");">
     @if (ViewData["producterr"] != null && (bool)ViewData["producterr"])
     {
@@ -141,44 +141,89 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-<button onclick="show_add_discount_form()">Add Discount</button>
-<div id="addDiscount" style="visibility: @((ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]) || Model.DiscountVisible? "visible":"hidden")">
+<button onclick="show_add_discount_form()" id="addDiscountButton">Add Discount</button>
+<div id="addDiscount" style="visibility: @((ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]) || Model.AD.DiscountVisible? "visible":"hidden")">
     @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
     {
-        <font color="red"> could not add the discount to the product </font>
+        <font color="red"> could not add the discount to the store </font>
     }
     @using (Html.BeginForm("AddDiscountForm", "Home", FormMethod.Post))
     {
 
         @Html.HiddenFor(s => Model.S.StoreName)
         @Html.HiddenFor(s => Model.O.Name)
-        @Html.HiddenFor(s => Model.NumberOfDiscounts)
+        @Html.HiddenFor(s => Model.AD.NumberOfDiscounts)
         <font>Is Products Discount:</font>@Html.CheckBoxFor(s => s.AD.IsProductsDiscount, new { @id = "productsCheckBox", @onchange = "is_product_discount(this)" })
         <div id="productsDiscountForm" style="visibility:hidden">
             Select Logic Connection: @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>
-                () { "OR", "AND" }),new { @value="OR",@placeholder="OR"})
-                @for (int i = 0; i < Model.NumberOfDiscounts; i++)
-                {
-                    <br /><font color="blue">Discount Number #@(i + 1)</font><br />
-                    <br />
-                    @Html.DropDownListFor(s => s.AD.Discounts[i].ProductName, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "productname" + i, @placeholder = "Product name" })
-                    <br />
-                    @Html.TextBoxFor(s => s.AD.Discounts[i].Amount, new { @placeholder = "Amount" })
-                    @Html.TextBoxFor(s => s.AD.Discounts[i].DiscountPercent, new { @placeholder = "DiscountPercent" })
-                    <br />
-                }
+() { "OR", "AND" }),new { @value="OR",@placeholder="OR"})
+            @for (int i = 0; i < Model.AD.NumberOfDiscounts; i++)
+            {
+                <br /><font color="blue">Discount Number #@(i + 1)</font><br />
+                <br />
+                @Html.DropDownListFor(s => s.AD.Discounts[i].ProductName, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "productname" + i, @placeholder = "Product name" })
+                <br />
+                @Html.TextBoxFor(s => s.AD.Discounts[i].Amount, new { @placeholder = "Amount" })
+                @Html.TextBoxFor(s => s.AD.Discounts[i].DiscountPercent, new { @placeholder = "DiscountPercent" })
+                <br />
+            }
         </div>
         <div id="storeDiscount">
             @Html.TextBoxFor(s => s.AD.Discounts[0].Amount, new { @placeholder = "Amount" })
             @Html.TextBoxFor(s => s.AD.Discounts[0].DiscountPercent, new { @placeholder = "DiscountPercent" })
         </div>
         <br />
-        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.IsTimeLimited, new { @onchange = "show_time_range(this,\"timeDiv\")" })
+        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timeDiv\")" })
         <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
 
         <div id="timeDiv" style="visibility:hidden">
-            <font>Start:</font>@Html.TextBoxFor(s => s.AD.Start, new { @type = "date" })
-            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.Finish, new { @type = "date" })
+            <font>Start:</font>@Html.TextBoxFor(s => s.AD.TimeSpan.Start, new { @type = "date" })
+            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.TimeSpan.Finish, new { @type = "date" })
+        </div>
+        <button name="command" value="add" id="addDiscountButton" style="visibility:hidden">Add a Discount</button>
+        <button name="command" value="reset" id="resetDiscount" style="visibility:hidden">Reset Discounts</button>
+        <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Total Discount</button>
+    }
+</div>
+
+
+<button onclick="show_add_policy_form()" id="addPolicyButton">Add Policy</button>
+<div id="addpolicydiv">
+    @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
+    {
+        <font color="red"> could not add the policy to the store </font>
+    }
+    @using (Html.BeginForm("AddDiscountForm", "Home", FormMethod.Post))
+    {
+
+        @Html.HiddenFor(s => Model.S.StoreName)
+        @Html.HiddenFor(s => Model.O.Name)
+        @Html.HiddenFor(s => Model.APolicy.NumberOfPolicies)
+        <div id="productsPolicyForm">
+            Select Logic Connection: @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>
+                () { "OR", "AND" ,"XOR"}),new { @value="AND",@placeholder="AND",@style= Model.APolicy.NumberOfPolicies==1? "visibility:hidden": "visibility:visible" })
+            @for (int i = 0; i < Model.AD.NumberOfDiscounts; i++)
+            {
+                <br /><font color="blue">Policy Number #@(i + 1)</font><br />
+                <br />
+                @Html.DropDownListFor(s => s.APolicy.Policies[i].Name, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "policyproductname" + i, @placeholder = "Product name" })
+                <br />
+                @Html.TextBoxFor(s => s.AD.Discounts[i].Amount, new { @placeholder = "Amount" })
+                @Html.TextBoxFor(s => s.AD.Discounts[i].DiscountPercent, new { @placeholder = "DiscountPercent" })
+                <br />
+            }
+        </div>
+        <div id="storeDiscount">
+            @Html.TextBoxFor(s => s.AD.Discounts[0].Amount, new { @placeholder = "Amount" })
+            @Html.TextBoxFor(s => s.AD.Discounts[0].DiscountPercent, new { @placeholder = "DiscountPercent" })
+        </div>
+        <br />
+        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timeDiv\")" })
+        <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
+
+        <div id="timeDiv" style="visibility:hidden">
+            <font>Start:</font>@Html.TextBoxFor(s => s.AD.TimeSpan.Start, new { @type = "date" })
+            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.TimeSpan.Finish, new { @type = "date" })
         </div>
         <button name="command" value="add" id="addDiscountButton" style="visibility:hidden">Add a Discount</button>
         <button name="command" value="reset" id="resetDiscount" style="visibility:hidden">Reset Discounts</button>
@@ -190,13 +235,13 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
 {
     <div>
         <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
-    </div><br />
+    </div>
 }
 
 
 <script>
     document.getElementById("storeName").value = "@ViewData["storename"]";
-        @if (Model.DiscountVisible) {
+        @if (Model.AD.DiscountVisible) {
             <text>
     document.getElementById("productsCheckBox").checked = true;
     is_product_discount(document.getElementById("productsCheckBox"));
@@ -220,16 +265,22 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     function show_store_management_form() {
         var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
         document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
+        document.getElementById("manage").innerHTML = isHidden ? "Hide" : "Management";
+
     }
 
     function show_add_product_form() {
         var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
         document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
+        document.getElementById("addProdButton").innerHTML = isHidden ? "Hide" : "Add Product";
+
     }
 
     function show_add_discount_form() {
         var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
         document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
+        document.getElementById("addDiscountButton").innerHTML = isHidden ? "Hide" : "Add Discount";
+
     }
 
     function is_product_discount(obj) {
@@ -252,6 +303,12 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         } else {
             document.getElementById(domeName).style.visibility = "hidden";
         }
+    }
+
+     function show_add_policy_form() {
+         var isHidden = document.getElementById('addpolicydiv').style.visibility === 'hidden';
+         document.getElementById('addpolicydiv').style.visibility = isHidden ? 'visible' : 'hidden';
+         document.getElementById("addPolicyButton").innerHTML = isHidden ? "Hide" : "Add Policy";
     }
 </script>
 

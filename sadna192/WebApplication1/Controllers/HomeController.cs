@@ -88,7 +88,7 @@ namespace WebApplication1.Controllers
 
         }
 
-        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis)
         {
             I_User_ServiceLayer sl = this.validateConnection();
             Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
@@ -96,11 +96,25 @@ namespace WebApplication1.Controllers
             ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
             ViewData["producterr"] = producterr.HasValue ? producterr.Value : false;
+            ViewData["alertAddDiscount"] = alertdis.HasValue? alertdis.Value : false;
+
             ViewData["SL"] = sl;
             StoreViewModel Store = new StoreViewModel { StoreName = storename };
             Store_AddManagerViewModel model =
                 new Store_AddManagerViewModel()
-                { S = Store, AM = null, NumberOfDiscounts = disnum ?? 1, DiscountVisible = ((disnum ?? 1) > 1) || (resetdis ?? false) };
+                {
+                    S = Store,
+                    AM = null,
+                    AD = new AddDiscountViewModel()
+                    { NumberOfDiscounts = disnum ?? 1,
+                        DiscountVisible = ((disnum ?? 1) > 1) || (resetdis ?? false) },
+                    APolicy = new AddPolicyViewModel()
+                    {
+                        NumberOfPolicies = disnum ?? 1,
+                        IsPolicyVisible = ((disnum ?? 1)>1) || (resetpol ?? false),
+                    }
+                    
+                };
             if (storename != null)
             {
                 ViewData["storename"] = storename;
@@ -541,7 +555,7 @@ namespace WebApplication1.Controllers
             }
             else if (command.Equals("add"))
             {
-                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, disnum = vm.NumberOfDiscounts + 1 });
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, disnum = vm.AD.NumberOfDiscounts + 1 });
             }
             else if (command.Equals("reset"))
             {
@@ -565,8 +579,7 @@ namespace WebApplication1.Controllers
             {
 
             }
-            ViewData["alertAddDiscount"] = true;
-            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName ,alertdis =true});
         }
 
         private Discount GenerateDiscount(AddDiscountViewModel ad)
@@ -581,9 +594,9 @@ namespace WebApplication1.Controllers
                 dis = new ProductAmountInBasketDiscount(ad.Discounts[0].Amount, ((double)(ad.Discounts[0].DiscountPercent)) / 100);
                 
             }
-            if (ad.IsTimeLimited)
+            if (ad.TimeSpan.IsTimeLimited)
             {
-                dis = TimeDiscount(ad.Start, ad.Finish, dis);
+                dis = TimeDiscount(ad.TimeSpan.Start, ad.TimeSpan.Finish, dis);
             }
             dis = StoreDiscount(dis);
             return dis;
@@ -635,10 +648,27 @@ namespace WebApplication1.Controllers
 
         }
 
-        public IActionResult OnPostJoinListAsync(Store_AddManagerViewModel vm)
+        [HttpPost]
+        public ActionResult AddPolicyForm(Store_AddManagerViewModel vm, string command)
         {
+            if (command.Equals("finalize"))
+            {
+                return FinalizePolicies(vm);
+            }
+            else if (command.Equals("add"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, disnum = vm.APolicy.NumberOfPolicies + 1 });
+            }
+            else if (command.Equals("reset"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, resetpol = true });
+            }
             return new EmptyResult();
         }
 
+        private ActionResult FinalizePolicies(Store_AddManagerViewModel vm)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

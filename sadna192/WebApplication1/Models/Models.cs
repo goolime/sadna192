@@ -74,8 +74,8 @@ namespace WebApplication1.Models
         public AddManagerViewModel AM { get; set; }
         public AddProductViewModel AP { get; set; }
         public AddDiscountViewModel AD { get; set; }
-        public int NumberOfDiscounts { get; set; }
-        public bool DiscountVisible { get; set; }
+        public AddPolicyViewModel APolicy { get; set; }
+
 
         public string DeleteOwnerConfig(string owner, string store)
         {
@@ -96,14 +96,11 @@ namespace WebApplication1.Models
         public string LogicConnection { get; set; }
         public List<DiscountViewModel> Discounts { get; set; }
 
-        public bool IsTimeLimited { get; set; }
-        [DisplayName("Start Date")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime Start { get; set; }
-        [DisplayName("Finish Date")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
-        public DateTime Finish { get; set; }
+        public TimeSpanViewModel  TimeSpan { get; set; }
+
         public bool IsStoreDiscount { get; set; }
+        public int NumberOfDiscounts { get; set; }
+        public bool DiscountVisible { get; set; }
     }
 
     public class DiscountViewModel
@@ -112,5 +109,50 @@ namespace WebApplication1.Models
         public int Amount { get; set; }
         public int DiscountPercent { get; set; }
     }
+
+    public class AddPolicyViewModel
+    {
+        public bool IsPolicyVisible { get; set; }
+
+        public bool Immidiate { get; set; }
+        public bool Memebr { get; set; }
+        public bool IncludeStorePolicy { get; set; }
+
+        public bool TotalPolicy { get; set; }
+        public string TotalConstraint { get; set; }//Max, Min etc
+        public int TotalConstraintValue { get; set; }
+
+        public bool TotalInCartPolicy { get; set; }
+        public string TotalInCartConstraint { get; set; }//Max, Min etc
+        public int TotalInCartConstraintValue { get; set; }
+
+        public bool Product { get; set; }
+        public string ProductName { get; set; }
+
+        public TimeSpanViewModel TimeSpan { get; set; }
+
+        public string LogicConnection { get; set; }
+        public List<ProductPolicyViewModel> Policies { get; set; }
+        public int NumberOfPolicies { get; set; }
+
+    }
+
+    public class TimeSpanViewModel
+    {
+        public bool IsTimeLimited { get; set; }
+        [DisplayName("Start Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Start { get; set; }
+        [DisplayName("Finish Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Finish { get; set; }
+    }
+
+    public class ProductPolicyViewModel
+    {
+        public string Name { get; set; }
+
+    }
+
 
 }

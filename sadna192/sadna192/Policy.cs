@@ -258,4 +258,19 @@ namespace sadna192
             return false;
         }
     }
+
+    public class ProductPolicy : Policy
+    {
+        public string Product {get;set;}
+
+        public bool check(ProductInStore p, UserState u)
+        {
+            return Product == p.getName();
+        }
+
+        public bool immidiate()
+        {
+            return false;
+        }
+    }
 }

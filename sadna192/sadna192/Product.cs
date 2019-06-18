@@ -1,19 +1,25 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
+    [Table("Products")]
     public class Product
     {
+        [Key]
+        public int id { get; set; }
         private string name;
         private string category;
         private double rank;
         private List<string> keywords;
         private static List<Product> allProducts;
 
+
         public static Product getProduct(string name, string category, double rank)
         {
             if (allProducts == null) allProducts = new List<Product>();
-            foreach(Product p in allProducts)
+            foreach (Product p in allProducts)
             {
                 if (p.getName() == name)
                 {
@@ -21,15 +27,16 @@ namespace sadna192
                 }
             }
 
-            Product pr = new Product(name, category, rank);
+            Product pr = new Product(name, category, rank, 1);
             allProducts.Add(pr);
             return pr;
 
 
         }
 
-        private Product(string name, string category, double rank)
+        public Product(string name, string category, double rank, int id)
         {
+            this.id = id;
             this.name = name;
             this.category = category;
             this.rank = rank;

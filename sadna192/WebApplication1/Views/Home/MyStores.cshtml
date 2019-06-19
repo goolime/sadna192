@@ -141,7 +141,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-<button onclick="show_add_discount_form()" id="addDiscountButton">Add Discount</button>
+<button onclick="show_add_discount_form()" id="addDiscountFormButton">Add Discount</button>
 <div id="addDiscount" style="visibility: @((ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]) || Model.AD.DiscountVisible? "visible":"hidden")">
     @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
     {
@@ -188,7 +188,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
 
 
 <button onclick="show_add_policy_form()" id="addPolicyButton">Add Policy</button>
-<div id="addpolicydiv">
+<div id="addpolicydiv" style="visibility:@((ViewData["alertAddPolicy"]!=null && (bool)ViewData["alertAddPolicy"]) || Model.APolicy.IsPolicyVisible? "visible":"hidden")">
     @if (ViewData["alertAddPolicy"] != null && (bool)ViewData["alertAddPolicy"])
     {
         <font color="red"> could not add the policy to the store </font>
@@ -200,6 +200,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         @Html.HiddenFor(s => Model.O.Name)
         @Html.HiddenFor(s => Model.APolicy.NumberOfPolicies)
         <font>Is Products Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IsProductsPolicy, new { @id = "productsPolicyCheckBox", @onchange = "is_product_policy(this)" })
+        <font>Is Cart Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IsProductsPolicy, new { @id = "cartPolicyCheckBox", @onchange = "is_product_policy(this)" })
 
         <div id="productsPolicyForm" style="visibility:hidden">
             Select Logic Connection: @Html.DropDownListFor(s => s.APolicy.LogicConnection, new SelectList(new List<string>
@@ -230,9 +231,9 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
             <font>Start:</font>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Start, new { @type = "date" })
             <fon>Finish:</fon>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Finish, new { @type = "date" })
         </div>
-        <button name="command" value="add" id="addAPolicyDivButton" style="visibility:hidden">Add a Discount</button>
-        <button name="command" value="reset" id="resetPolicy" style="visibility:hidden">Reset Discounts</button>
-        <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Total Discount</button>
+        <button name="command" value="add" id="addAPolicyDivButton" style="visibility:hidden">Add a Policy</button>
+        <button name="command" value="reset" id="resetPolicy" style="visibility:hidden">Reset Policies</button>
+        <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Policy</button>
     }
 </div>
     Products:
@@ -244,7 +245,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
 }
 
 
-<script>
+    <script>
     document.getElementById("storeName").value = "@ViewData["storename"]";
         @if (Model.AD.DiscountVisible) {
             <text>
@@ -253,83 +254,94 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
 
             </text>
         }
-    function show_add_owner_form() {
-        var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
-        document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("addOwnerButton").innerHTML = isHidden ? "Hide" : "Add Owner";
+        @if (Model.APolicy.IsPolicyVisible)
+            {
+                        <text>
+        document.getElementById("cartPolicyCheckBox").checked = true;
+        is_product_policy(document.getElementById("cartPolicyCheckBox"));
 
-    }
+            </text>
+            }
+            function show_add_owner_form() {
+                var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
+                document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addOwnerButton").innerHTML = isHidden ? "Hide" : "Add Owner";
 
-    function show_add_manager_form() {
-        var isHidden = document.getElementById("addManagerDiv").style.visibility === "hidden";
-        document.getElementById("addManagerDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
+            }
 
-    }
+            function show_add_manager_form() {
+                var isHidden = document.getElementById("addManagerDiv").style.visibility === "hidden";
+                document.getElementById("addManagerDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
 
-    function show_store_management_form() {
-        var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
-        document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("manage").innerHTML = isHidden ? "Hide" : "Management";
+            }
 
-    }
+            function show_store_management_form() {
+                var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
+                document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("manage").innerHTML = isHidden ? "Hide" : "Management";
 
-    function show_add_product_form() {
-        var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
-        document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("addProdButton").innerHTML = isHidden ? "Hide" : "Add Product";
+            }
 
-    }
+            function show_add_product_form() {
+                var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
+                document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addProdButton").innerHTML = isHidden ? "Hide" : "Add Product";
 
-    function show_add_discount_form() {
-        var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
-        document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
-        document.getElementById("addDiscountButton").innerHTML = isHidden ? "Hide" : "Add Discount";
+            }
 
-    }
+            function show_add_discount_form() {
+                var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
+                document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
+                document.getElementById("addDiscountFormButton").innerHTML = isHidden ? "Hide" : "Add Discount";
 
-    function is_product_discount(obj) {
-        if (!($(obj).is(":checked"))) {
-            document.getElementById("productsDiscountForm").style.visibility = "hidden";
-            document.getElementById("storeDiscount").style.visibility = "visible";
-            document.getElementById("addDiscountButton").style.visibility = "hidden";
-            document.getElementById("resetDiscount").style.visibility = "hidden";
-        } else {
-            document.getElementById("productsDiscountForm").style.visibility = "visible";
-            document.getElementById("storeDiscount").style.visibility = "hidden";
-            document.getElementById("addDiscountButton").style.visibility = "visible";
-            document.getElementById("resetDiscount").style.visibility = "visible";
+            }
+
+
+            function is_product_discount(obj) {
+                if (!($(obj).is(":checked"))) {
+                document.getElementById("productsDiscountForm").style.visibility = "hidden";
+                document.getElementById("storeDiscount").style.visibility = "visible";
+                document.getElementById("addDiscountButton").style.visibility = "hidden";
+                document.getElementById("resetDiscount").style.visibility = "hidden";
+            } else {
+                document.getElementById("productsDiscountForm").style.visibility = "visible";
+                document.getElementById("storeDiscount").style.visibility = "hidden";
+                document.getElementById("addDiscountButton").style.visibility = "visible";
+                document.getElementById("resetDiscount").style.visibility = "visible";
+            }
         }
-    }
 
-    function is_product_policy(obj) {
-        if (!($(obj).is(":checked"))) {
-            document.getElementById("productsPolicyForm").style.visibility = "hidden";
-            document.getElementById("storePolicy").style.visibility = "visible";
-            document.getElementById("addAPolicyDivButton").style.visibility = "hidden";
-            document.getElementById("resetPolicy").style.visibility = "hidden";
-        } else {
-            document.getElementById("productsPolicyForm").style.visibility = "visible";
-            document.getElementById("storePolicy").style.visibility = "hidden";
-            document.getElementById("addAPolicyDivButton").style.visibility = "visible";
-            document.getElementById("resetPolicy").style.visibility = "visible";
+
+        function is_product_policy(obj) {
+            if (!($(obj).is(":checked"))) {
+                document.getElementById("productsPolicyForm").style.visibility = "hidden";
+                document.getElementById("storePolicy").style.visibility = "visible";
+                document.getElementById("addAPolicyDivButton").style.visibility = "hidden";
+                document.getElementById("resetPolicy").style.visibility = "hidden";
+            } else {
+                document.getElementById("productsPolicyForm").style.visibility = "visible";
+                document.getElementById("storePolicy").style.visibility = "hidden";
+                document.getElementById("addAPolicyDivButton").style.visibility = "visible";
+                document.getElementById("resetPolicy").style.visibility = "visible";
+            }
         }
-    }
 
-    function show_time_range(obj,domeName) {
-        if ($(obj).is(":checked")) {
-            document.getElementById(domeName).style.visibility = "visible";
-        } else {
-            document.getElementById(domeName).style.visibility = "hidden";
+        function show_time_range(obj, domeName) {
+            if ($(obj).is(":checked")) {
+                document.getElementById(domeName).style.visibility = "visible";
+            } else {
+                document.getElementById(domeName).style.visibility = "hidden";
+            }
         }
-    }
 
-     function show_add_policy_form() {
-         var isHidden = document.getElementById('addpolicydiv').style.visibility === 'hidden';
-         document.getElementById('addpolicydiv').style.visibility = isHidden ? 'visible' : 'hidden';
-         document.getElementById("addPolicyButton").innerHTML = isHidden ? "Hide" : "Add Policy";
-    }
-</script>
+        function show_add_policy_form() {
+            var isHidden = document.getElementById('addpolicydiv').style.visibility === 'hidden';
+            document.getElementById('addpolicydiv').style.visibility = isHidden ? 'visible' : 'hidden';
+            document.getElementById("addPolicyButton").innerHTML = isHidden ? "Hide" : "Add Policy";
+        }
+    
+    </script>
 
 
 

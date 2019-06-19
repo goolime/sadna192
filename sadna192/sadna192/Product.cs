@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,9 +10,9 @@ namespace sadna192
     {
         [Key]
         public int id { get; set; }
-        private string name;
-        private string category;
-        private double rank;
+        public string name { get; set; }
+        public string category { get; set; }
+        public double rank { get; set; }
         private List<string> keywords;
         private static List<Product> allProducts;
 
@@ -23,20 +24,32 @@ namespace sadna192
             {
                 if (p.getName() == name)
                 {
+                    Console.WriteLine("found product name " + name);
                     return p;
                 }
             }
-
-            Product pr = new Product(name, category, rank, 1);
+          //  Console.WriteLine("all pis o1k ");
+            Product pr = new Product(name, category, rank);
+          //  Console.WriteLine("allis o3k ");
             allProducts.Add(pr);
+        //    Console.WriteLine("all products is ok4 ");
+
+            using (var ctx = new sadna192.Model1())
+            {
+               // Console.WriteLine("%%%%%%%%%%%%%%");
+                ctx.Products.Add(pr);
+              //  Console.WriteLine("%%%%%%%%%%%%%%2");
+                ctx.SaveChanges();
+              //  Console.WriteLine("%%%%%%%%%%%%%%2");
+            }
             return pr;
 
 
         }
 
-        public Product(string name, string category, double rank, int id)
+        public Product(string name, string category, double rank)
         {
-            this.id = id;
+            
             this.name = name;
             this.category = category;
             this.rank = rank;

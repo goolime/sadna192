@@ -10,6 +10,7 @@
         public Model1()
             : base("name=Model1")
         {
+            Console.WriteLine("dfsdfsdfg#$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
         }
 
         public virtual DbSet<Product> Products { get; set; }

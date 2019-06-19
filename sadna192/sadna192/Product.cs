@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure;
+using System.Linq;
 
 namespace sadna192
 {
@@ -14,7 +15,19 @@ namespace sadna192
         public string name { get; set; }
         public string category { get; set; }
         public double rank { get; set; }
-        private List<string> keywords;
+        private List<String> keywords; 
+        public List<String> Keywords
+        {
+            get { return keywords; }
+            set { keywords = value; }
+        }
+
+        [Required]
+        public string KeywordsAsString
+        {
+            get { return String.Join(",", keywords); }
+            set => keywords = value.Split(',').ToList();
+        }
         private static List<Product> allProducts;
 
 
@@ -68,10 +81,10 @@ namespace sadna192
             this.name = name;
             this.category = category;
             this.rank = rank;
-            this.keywords = null;
+            this.keywords = new List<string>();
         }
 
-        private Product(string name, string category, double rank, List<string> keywords)
+        public Product(string name, string category, double rank, List<string> keywords)
         {
             this.name = name;
             this.category = category;

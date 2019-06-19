@@ -16,9 +16,22 @@ public class Program
         keywords.Add("keyword");
 
         Product p = new Product("aaaa", "qqqq", 5, keywords);
+        Member m = new Member("name12", "name12");
+        Owner o = new Owner(m, new Store("store"));
+        Owner o1 = new Owner(m, new Store("retsd"));
+        Member m1 = new Member("namerew43", "name12");
+        Owner o2 = new Owner(m1, new Store("retsd"));
+        Manager man = new Manager(m1, new Store("s"), true, false, true); 
+        o2.has_Apointed.Add(o1);
         using (var ctx = new sadna192.Model1())
         {
             ctx.Products.Add(p);
+            ctx.Members.Add(m);
+            ctx.Owners.Add(o);
+            ctx.Members.Add(m1);
+            ctx.Owners.Add(o1);
+            ctx.Owners.Add(o2);
+            ctx.Managers.Add(man); 
             ctx.SaveChanges();
         }
        // Product p2 = Product.getProduct("erty", "rhfss", 34);

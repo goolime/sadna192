@@ -6,9 +6,10 @@ namespace sadna192
 {
     public class Member : Visitor
     {
-        internal string name;
-        private string code;
-        internal List<Owner> owner;
+        public int id { get; set; }
+        public string name { get; set; }
+        public string code { get; set; }
+        public List<Owner> owner { get; set; }
 
 
         public Member(string name, string password) : base()

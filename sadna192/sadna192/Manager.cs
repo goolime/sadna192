@@ -1,14 +1,17 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("sadna192_Tests.Unit_Tests")]
 
 namespace sadna192
 {
+    [Table ("Manager")]
     public class Manager : Owner
     {
-        public bool permision_add { get; internal set; }
-        public bool permision_remove { get; internal set; }
-        public bool permision_update { get; internal set; }
+        public int id { set; get; }
+        public bool permision_add { get;  set; }
+        public bool permision_remove { get;  set; }
+        public bool permision_update { get;  set; }
 
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {

@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class Owner
     {
+        public int id { get; set; }
         private Store store;
-        private Member user;
-        private List<Owner> has_Apointed;
+        public int userRef { get; set; }
+        [ForeignKey("userRef")]
+        public Member user { get; set; }
+       
+        public List<Owner> has_Apointed { get; set; }
 
         public Owner(Member u, Store s){
             this.store = s;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure;
 
 namespace sadna192
 {
@@ -32,19 +33,33 @@ namespace sadna192
             Product pr = new Product(name, category, rank);
           //  Console.WriteLine("allis o3k ");
             allProducts.Add(pr);
-        //    Console.WriteLine("all products is ok4 ");
+            //    Console.WriteLine("all products is ok4 ");
+            if (!pr.saveProductToDB())
+                Console.WriteLine("could not save Product to DB  -TODO!!!!!");
 
-            using (var ctx = new sadna192.Model1())
-            {
-               // Console.WriteLine("%%%%%%%%%%%%%%");
-                ctx.Products.Add(pr);
-              //  Console.WriteLine("%%%%%%%%%%%%%%2");
-                ctx.SaveChanges();
-              //  Console.WriteLine("%%%%%%%%%%%%%%2");
-            }
             return pr;
 
 
+        }
+
+        private bool saveProductToDB()
+        {
+            try
+            {
+                using (var ctx = new sadna192.Model1())
+                {
+                    // Console.WriteLine("%%%%%%%%%%%%%%");
+                    ctx.Products.Add(this);
+                    //  Console.WriteLine("%%%%%%%%%%%%%%2");
+                    ctx.SaveChanges();
+                    //  Console.WriteLine("%%%%%%%%%%%%%%2");
+                    return true;
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                return false;
+            }
         }
 
         public Product(string name, string category, double rank)

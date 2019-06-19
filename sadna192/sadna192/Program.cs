@@ -12,14 +12,8 @@ public class Program
         Console.WriteLine(l.Distance("My string", "My dtring"));
         Console.WriteLine(l.Distance("My string", "My stttring"));
         //  Product p = new Product("Asfd2", "assdfd", 342234.435);
-        Product p = Product.getProduct("dfgdfdfgd", "dfgdfg", 342234.435);
-        using (var ctx = new sadna192.Model1())
-        {
-            Console.WriteLine("here");
-
-            ctx.Products.Add(p);
-            ctx.SaveChanges();
-        }
+        Product p = Product.getProduct("erty", "rhfss", 34);
+        
         Console.ReadKey();
     }
 }

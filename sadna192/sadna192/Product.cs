@@ -22,7 +22,7 @@ namespace sadna192
             set { keywords = value; }
         }
 
-        [Required]
+        
         public string KeywordsAsString
         {
             get { return String.Join(",", keywords); }
@@ -44,7 +44,7 @@ namespace sadna192
             }
             Product pr = new Product(name, category, rank);
             allProducts.Add(pr);
-            if (!pr.saveProductToDB())
+            if (!DBAccess.SaveToDB(pr))
                 Console.WriteLine("could not save Product to DB  -TODO!!!!!");
 
             return pr;
@@ -52,24 +52,7 @@ namespace sadna192
 
         }
 
-        private bool saveProductToDB()
-        {
-            try
-            {
-                using (var ctx = new sadna192.Model1())
-                {
-                    ctx.Products.Add(this);
-                    ctx.SaveChanges();
-                    return true;
-                }
-            }
-            catch (DbUpdateException e)
-            {
-                Console.WriteLine("save product to DB faild : " + e.ToString());
-                return false;
-            }
-        }
-
+       
         public Product(string name, string category, double rank)
         {
             

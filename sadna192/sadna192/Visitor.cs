@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class Visitor : UserState
     {
-        internal ShopingBasket shopingBasket;
+        public int shopingBaskRef { get; set; }
+        [ForeignKey("shopingBaskRef")]
+        public ShopingBasket shopingBasket { get; set; }
 
         public Visitor()
         {

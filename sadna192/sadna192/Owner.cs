@@ -54,6 +54,8 @@ namespace sadna192
                 Manager nm = new Manager(new_manager, this.store, permision_add, permission_remove, permission_update);
                 new_manager.owner.Add(nm);
                 this.has_Apointed.Add(nm);
+                if (!DBAccess.SaveToDB(nm))
+                    DBAccess.DBerror("could not save manager to DB");
                 return true;
             }
         }
@@ -63,6 +65,8 @@ namespace sadna192
             Owner nm = new Owner(new_owner, this.store);
             new_owner.owner.Add(nm);
             this.has_Apointed.Add(nm);
+            if (!DBAccess.SaveToDB(nm))
+                DBAccess.DBerror("could not save owner to DB");
             return true;
         }
 

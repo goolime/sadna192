@@ -98,7 +98,10 @@ namespace sadna192
         public override bool Open_Store(Store name)
         {
             if (this.owner == null) this.owner = new List<Owner>();
-            this.owner.Add(new Owner(this, name));
+            Owner owner = new Owner(this, name);
+            this.owner.Add(owner);
+            if (!DBAccess.SaveToDB(owner))
+                DBAccess.DBerror("could not save owner to DB");
             return true;
         }
 

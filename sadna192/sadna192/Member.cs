@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
+
 namespace sadna192
 {
+    [Table("Member")]
     public class Member : Visitor
     {
-        internal string name;
+        [Key]
+        public string name;
         private string code;
         internal List<Owner> owner;
 

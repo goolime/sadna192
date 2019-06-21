@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlClient;
 
 namespace sadna192
 {
@@ -28,19 +29,19 @@ namespace sadna192
                     return p;
                 }
             }
-          //  Console.WriteLine("all pis o1k ");
+            Console.WriteLine("all pis o1k ");
             Product pr = new Product(name, category, rank);
-          //  Console.WriteLine("allis o3k ");
+            Console.WriteLine("allis o3k ");
             allProducts.Add(pr);
-        //    Console.WriteLine("all products is ok4 ");
+            //    Console.WriteLine("all products is ok4 ");
 
-            using (var ctx = new sadna192.Model1())
+            using (var ctx = new sadna192.Model1(new SqlConnection("Data Source=132.73.195.209;Initial Catalog=Sadna;Integrated Security=False;User ID=sa; Password=rrr")))
             {
-               // Console.WriteLine("%%%%%%%%%%%%%%");
+                // Console.WriteLine("%%%%%%%%%%%%%%");
                 ctx.Products.Add(pr);
-              //  Console.WriteLine("%%%%%%%%%%%%%%2");
+                //  Console.WriteLine("%%%%%%%%%%%%%%2");
                 ctx.SaveChanges();
-              //  Console.WriteLine("%%%%%%%%%%%%%%2");
+                //  Console.WriteLine("%%%%%%%%%%%%%%2");
             }
             return pr;
 

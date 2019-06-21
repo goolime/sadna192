@@ -47,7 +47,14 @@ public class Program
         dl.Add(discount);
         dl.Add(d2);
         multipleDiscount md = new AndDiscount(dl);
-        ProductInStore ps = new ProductInStore(p, 40, 3, s, discount, mp); 
+        ProductInStore ps = new ProductInStore(p, 40, 3, s, discount, mp);
+        ItemsInCart items = new ItemsInCart(ps, 2);
+        List<ItemsInCart> itemsList = new List<ItemsInCart>();
+        itemsList.Add(items);
+        ShoppingCart sc = new ShoppingCart(s, itemsList);
+        List<ShoppingCart> scList = new List<ShoppingCart>();
+        scList.Add(sc);
+        ShopingBasket sb = new ShopingBasket(scList); 
         using (var ctx = new sadna192.Model1())
         {
             ctx.Products.Add(p);
@@ -70,7 +77,10 @@ public class Program
             ctx.Discounts.Add(discount);
             ctx.Discounts.Add(d2);
             ctx.MultipleDiscounts.Add(md);
-            ctx.ProductInStores.Add(ps); 
+            ctx.ProductInStores.Add(ps);
+            ctx.ItemsInCarts.Add(items);
+            ctx.ShoppingCarts.Add(sc);
+            ctx.ShopingBaskets.Add(sb);
             ctx.SaveChanges();
         }
         // Product p2 = Product.getProduct("erty", "rhfss", 34);

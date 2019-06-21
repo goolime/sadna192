@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Timers;
 
 namespace sadna192
 {
-    internal class ShopingBasket
+    public class ShopingBasket
     {
-        //private Member member;
-        private List<ShoppingCart> shoppingCarts;
+        public int id { get; set; }
+        public List<ShoppingCart> shoppingCarts { get; set; }
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> savedProducts;
         internal bool toBeRemoved;
 
@@ -42,8 +43,8 @@ namespace sadna192
             }
 
             //if there is no Shopping cart for this store, Opens new one
-            List<Pair<ProductInStore, int>> shoppingCartContent = new List<Pair<ProductInStore, int>>();
-            Pair<ProductInStore, int> productToAdd = new Pair<ProductInStore, int>(p, amount);
+            List<ItemsInCart> shoppingCartContent = new List<ItemsInCart>();
+            ItemsInCart productToAdd = new ItemsInCart(p, amount);
             shoppingCartContent.Add(productToAdd);
             ShoppingCart ShoppingCartToAdd = new ShoppingCart(p.getStore(), shoppingCartContent);
             shoppingCarts.Add(ShoppingCartToAdd);

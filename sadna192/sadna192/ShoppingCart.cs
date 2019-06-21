@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
-    internal class ShoppingCart
+    public class ShoppingCart
     {
-        private Store store;
-        private List<Pair<ProductInStore, int>> shoppingCartContent;
-        private ProductPurchaseType productPurchaseType;
+        public int shoppingCartID { get; set; }
+        public int storeID { get; set; }
+        [ForeignKey("storeID")]
+        public Store store{ get; set; }
+        public List<ItemsInCart> shoppingCartContent { get; set; }
 
-        public ShoppingCart(Store store, List<Pair<ProductInStore, int>> shoppingCartContent)
+        public ShoppingCart(Store store, List<ItemsInCart> shoppingCartContent)
         {
             this.store = store;
             this.shoppingCartContent = shoppingCartContent;
         }
+
 
         public Store getStore()
         {
@@ -23,9 +26,10 @@ namespace sadna192
 
         internal bool addProduct(ProductInStore p, int amount)
         {
-            Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
+            //Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
+            ItemsInCart producttoadd = new ItemsInCart(p, amount);
             //checking if the prouct exists in the current shopping cart
-                foreach(Pair<ProductInStore, int>  pro in shoppingCartContent)
+                foreach (ItemsInCart pro in shoppingCartContent)
                 {
                     if (pro.First.getName() == p.getName())
                     {
@@ -65,7 +69,7 @@ namespace sadna192
         internal bool editAmount(ProductInStore p, int amount)             //editAmount
         {
             if (amount == 0) return this.DeleteProduct(p, amount);
-            foreach (Pair<ProductInStore,int> v in shoppingCartContent)
+            foreach (ItemsInCart v in shoppingCartContent)
             {
 
                 if (v.First.getName() == p.getName())
@@ -86,16 +90,16 @@ namespace sadna192
         internal List<KeyValuePair<ProductInStore, int>> getCart()
         {
             List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();
-            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            foreach (ItemsInCart p in this.shoppingCartContent)
             {
                 ans.Add(new KeyValuePair<ProductInStore, int>(p.First, p.Second));
             }
             return ans;
         }
 
-        internal Pair<ProductInStore, int> FindProductInCart(String s)
+        internal ItemsInCart FindProductInCart(String s)
         {
-            foreach (Pair<ProductInStore, int> pro in shoppingCartContent)
+            foreach (ItemsInCart pro in shoppingCartContent)
             {
                 if (pro.First.getName() == s)
                 {
@@ -108,7 +112,7 @@ namespace sadna192
         internal int numOfItemsInCart()
         {
             int ans = 0;
-            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            foreach (ItemsInCart p in this.shoppingCartContent)
             {
                 ans += p.Second;
             }
@@ -117,7 +121,7 @@ namespace sadna192
 
         internal int numOfItemsInCart(string op)
         {
-            foreach (Pair<ProductInStore, int> p in this.shoppingCartContent)
+            foreach (ItemsInCart p in this.shoppingCartContent)
             {
                 if (op == p.First.getName()) return p.Second;
             }

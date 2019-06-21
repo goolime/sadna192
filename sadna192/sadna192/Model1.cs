@@ -23,6 +23,10 @@
         public virtual DbSet<Discount> Discounts { get; set; }
         public virtual DbSet<multipleDiscount> MultipleDiscounts { get; set; }
         public virtual DbSet<ProductInStore> ProductInStores { get; set; }
+        public virtual DbSet<ItemsInCart> ItemsInCarts { get; set; }
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual DbSet<ShopingBasket> ShopingBaskets { get; set; }
+
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -36,15 +40,20 @@
             .WithRequired(o => o.user)
             .HasForeignKey<int>(o => o.userRef);
             
-            modelBuilder.Entity<Store>()
+           modelBuilder.Entity<Store>()
           .HasMany<Owner>(s => s.owners)
           .WithRequired(o => o.store)
           .HasForeignKey<int>(o => o.storeRef);
 
-            modelBuilder.Entity<Store>()
+           modelBuilder.Entity<Store>()
           .HasMany<ProductInStore>(s => s.productInStores)
           .WithRequired(p => p.store)
           .HasForeignKey<int>(p => p.storeID);
+
+            modelBuilder.Entity<ShoppingCart>()
+          .HasMany<ItemsInCart>(s => s.shoppingCartContent)
+          .WithRequired(i => i.shopping)
+          .HasForeignKey<int>(i => i.shopCartRef);
 
             modelBuilder.Entity<Owner>().
               HasMany(o => o.has_Apointed).
@@ -55,6 +64,17 @@
                   o.MapLeftKey("ownerID");
                   o.MapRightKey("ApointedOwnerID");
               });
+
+            modelBuilder.Entity<ShopingBasket>().
+              HasMany(b => b.shoppingCarts).
+              WithMany()
+              .Map(c =>
+              {
+                  c.ToTable("shopingBasketDetailed");
+                  c.MapLeftKey("id");
+                  c.MapRightKey("shoppingCartID");
+              });
+
 
             modelBuilder.Entity<MultiplePolicy>().
              HasMany(p => p.Policies).

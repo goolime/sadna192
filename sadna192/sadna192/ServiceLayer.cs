@@ -92,8 +92,16 @@ namespace sadna192
                 t.AutoReset = true;
                 t.Enabled = true;
 
-                if (!Tools.check_username(admin_name) || !Tools.check_password(admin_pass)) throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
-                members.Add(new Admin(admin_name, admin_pass));
+                if (!Tools.check_username(admin_name) ||
+                    !Tools.check_password(admin_pass))
+                    throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
+                Admin admin = new Admin(admin_name, admin_pass);
+                members.Add(admin);
+                
+                if (!DBAccess.SaveToDB(admin))
+                {
+                    DBAccess.DBerror("could not save admin to DB");
+                }
             }
 
             internal I_User_ServiceLayer Connect()
@@ -158,6 +166,7 @@ namespace sadna192
                 if (Tools.check_storeName(Store_name) && Tools.check_username(new_manger_name))
                 {
                     if (!this.userState.isOwner(Store_name)) throw new Sadna192Exception("you are not an owner of this store", "(ServiceLayer) User_ServiceLayer", " Add_Store_Manager(1)");
+                    //Member other_user = DBAccess.getMemberFromDB(new_manger_name); 
                     Member other_user = this.GetMember(new_manger_name);
                     if (other_user == null) throw new Sadna192Exception("new Store manager was not found", "(ServiceLayer) User_ServiceLayer", "Add_Store_Manager(2)");
                     bool ans = this.userState.Add_Store_Manager(Store_name,other_user, permision_add, permission_remove, permission_update);
@@ -308,6 +317,8 @@ namespace sadna192
                     Store newstore = new Store(name);
                     bool ans = this.userState.Open_Store(newstore);
                     this.single_ServiceLayer.store.Add(newstore);
+                    if (!DBAccess.SaveToDB(newstore))
+                        DBAccess.DBerror("could not save Store to DB");
                     if (ans) this.Add_Log("opened new store named - " +name);
                     return ans;
                 }
@@ -365,7 +376,13 @@ namespace sadna192
                             }
                         }
                         if (ans) throw new Sadna192Exception("the user name is allready in use", "(ServiceLayer) User_ServiceLayer", "Register(1)");
-                        this.single_ServiceLayer.members.Add(new Member(user_name, user_pass));
+                        Member newMember = new Member(user_name, user_pass);
+                        this.single_ServiceLayer.members.Add(newMember);
+                        if (!DBAccess.SaveToDB(newMember))
+                        {
+                            DBAccess.DBerror("could not save member to DB ");
+                        }                    
+
                         this.Add_Log("Registerd new user with name '" + user_name + "'");
                         return true;
                     }

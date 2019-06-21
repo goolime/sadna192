@@ -8,9 +8,7 @@ namespace sadna192
 {
     public class Member : Visitor
     {
-        //public int id { get; set; }
-        [Index(IsUnique = true)]
-        [StringLength(4)]
+        public int id { get; set; }
         public string name { get; set; }
         public string code { get; set; }
         public List<Owner> owner { get; set; }

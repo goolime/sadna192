@@ -7,9 +7,9 @@ namespace sadna192
     public class Owner
     {
         public int id { get; set; }
-        //public string storeName { get; set; }
-        //[ForeignKey("storeName")]
-        private Store store { get; set; }
+        public int storeRef { get; set; }
+        [ForeignKey("storeRef")]
+        public Store store { get; set; }
         public int userRef { get; set; }
         [ForeignKey("userRef")]
         public Member user { get; set; }

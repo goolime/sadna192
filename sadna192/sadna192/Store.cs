@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using F23.StringSimilarity;
 
 
@@ -10,11 +11,16 @@ namespace sadna192
     {
         public int id { get; set; }
         public string name { get; set; }
-        private List<ProductInStore> productInStores= new List<ProductInStore>();
+        public List<ProductInStore> productInStores { get; set; }
         public List<Owner> owners { get; set; }
-        private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
-        private Policy storePolicy;
-        private Discount storeDiscount;
+        public int policyID { get; set; } 
+        [ForeignKey ("policyID")]
+        public Policy storePolicy { get; set; }
+        public int discountID { get; set; }
+        [ForeignKey("discountID")]
+        public Discount storeDiscount { get; set; }
+
+        
 
 
         public Store(string name)
@@ -195,6 +201,7 @@ namespace sadna192
         //Implementation of the searching methods
         private List<ProductInStore> SearchProductByName(string name, List<ProductInStore> list)
         {
+            NormalizedLevenshtein similarety = new NormalizedLevenshtein();
             List<ProductInStore> productsResult = new List<ProductInStore>();
             foreach(ProductInStore p in list)
             {
@@ -208,6 +215,7 @@ namespace sadna192
 
         private List<ProductInStore> SearchProductByCategory(string category, List<ProductInStore> list)
         {
+            NormalizedLevenshtein similarety = new NormalizedLevenshtein();
             List<ProductInStore> productsResult = new List<ProductInStore>();
             foreach (ProductInStore p in list)
             {

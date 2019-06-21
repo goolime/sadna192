@@ -1,23 +1,111 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
-    public interface Discount
+    public abstract class Discount
     {
-        double calculate(ProductInStore p, UserState u);
+        public int DiscountID { get; set; }
+        public abstract double calculate(ProductInStore p, UserState u);
     }
     public class noDiscount : Discount
     {
-        public double calculate(ProductInStore p, UserState u)
+        public override double calculate(ProductInStore p, UserState u)
         {
             return 1;
         }
     }
 
+    public class IncludeStoreDiscount : Discount
+    {
+        public override double calculate(ProductInStore p, UserState u)
+        {
+            return p.getStore().GetDiscount().calculate(p, u);
+        }
+    }
+
+    public class ProductAmountDiscount : Discount
+    {
+        public string product { get; set; }
+        [Column("amount")]
+        public int amount { get; set; }
+        [Column("discount")]
+        public double discount { get; set; }
+
+        public ProductAmountDiscount(string product, int i, double discount)
+        {
+            this.amount = i;
+            this.product = product;
+            this.discount = discount;
+        }
+
+        public override double calculate(ProductInStore p, UserState u)
+        {
+            if (u.numOfItemsInCart(p.getStore().getName(), this.product) >= this.amount) return this.discount;
+            else return 1;
+        }
+    }
+
+    public class ProductAmountInBasketDiscount : Discount
+    {
+        [Column("amount")]
+        public int amount { get; set; }
+        [Column("discount")]
+        public double discount { get; set; }
+
+        public ProductAmountInBasketDiscount(int i, double discount)
+        {
+            this.amount = i;
+            this.discount = discount;
+        }
+
+        public override double calculate(ProductInStore p, UserState u)
+        {
+            if (u.numOfItemsInCart(p.getStore().getName()) >= this.amount) return this.discount;
+            else return 1;
+        }
+    }
+
+    public class TimeDiscount : Discount
+    {
+        [Column("discount")]
+        public double discount { get; set; }
+        DateTime from, to;
+
+        public TimeDiscount(DateTime from, DateTime to, double discount)
+        {
+            this.from = from;
+            this.to = to;
+            this.discount = discount;
+        }
+
+        public override double calculate(ProductInStore p, UserState u)
+        {
+            if (from < DateTime.Now && DateTime.Now < to) return this.discount;
+            else return 1;
+        }
+    }
+
+    public class fixDiscount : Discount
+    {
+        [Column("discount")]
+        public double discount { get; set; }
+
+        public fixDiscount(double discount)
+        {
+            this.discount = discount;
+        }
+
+        public override double calculate(ProductInStore p, UserState u)
+        {
+            return this.discount;
+        }
+    }
+
     public abstract class multipleDiscount : Discount
     {
-        internal List<Discount> discount;
+        public List<Discount> discount { get; set; }
 
         public List<Discount> getDiscount()
         {
@@ -26,14 +114,13 @@ namespace sadna192
             return ans;
         }
 
-        public abstract double calculate(ProductInStore p, UserState u);
+       // public abstract double calculate(ProductInStore p, UserState u);
     }
 
     public class AndDiscount : multipleDiscount
     {
         public AndDiscount(List<Discount> l) : base()
         {
-            ServiceLayer SL = new ServiceLayer();
             this.discount = l;
         }
         public override double calculate(ProductInStore p, UserState u)
@@ -51,7 +138,6 @@ namespace sadna192
     {
         public XOrDiscount(List<Discount> l) : base()
         {
-            ServiceLayer SL = new ServiceLayer();
             this.discount = l;
         }
         public override double calculate(ProductInStore p, UserState u)
@@ -63,86 +149,6 @@ namespace sadna192
                 if (tmp < ans) ans = tmp;
             }
             return ans;
-        }
-    }
-
-    public class IncludeStoreDiscount : Discount
-    {
-        public double calculate(ProductInStore p, UserState u)
-        {
-            return p.getStore().GetDiscount().calculate(p, u);
-        }
-    }
-
-    public class ProductAmountDiscount : Discount
-    {
-        string product;
-        int amount;
-        double discount;
-
-        public ProductAmountDiscount(string product, int i,double discount)
-        {
-            this.amount = i;
-            this.product = product;
-            this.discount = discount;
-        }
-
-        public double calculate(ProductInStore p, UserState u)
-        {
-            if (u.numOfItemsInCart(p.getStore().getName(), this.product) >= this.amount) return this.discount;
-            else return 1;
-        }
-    }
-
-    public class ProductAmountInBasketDiscount : Discount
-    {
-        int amount;
-        double discount;
-
-        public ProductAmountInBasketDiscount(int i, double discount)
-        {
-            this.amount = i;
-            this.discount = discount;
-        }
-
-        public double calculate(ProductInStore p, UserState u)
-        {
-            if (u.numOfItemsInCart(p.getStore().getName()) >= this.amount) return this.discount;
-            else return 1;
-        }
-    }
-
-    public class TimeDiscount : Discount
-    {
-        DateTime from, to;
-        double discount;
-
-        public TimeDiscount(DateTime from, DateTime to, double discount)
-        {
-            this.from = from;
-            this.to = to;
-            this.discount = discount;
-        }
-
-        public double calculate(ProductInStore p, UserState u)
-        {
-            if (from<DateTime.Now && DateTime.Now<to) return this.discount;
-            else return 1;
-        }
-    }
-
-    public class fixDiscount:Discount
-    {
-        double discount;
-
-        public fixDiscount(double discount)
-        {
-            this.discount = discount;
-        }
-
-        public double calculate(ProductInStore p, UserState u)
-        {
-            return this.discount;
         }
     }
 }

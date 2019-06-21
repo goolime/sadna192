@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
-    public interface Policy
+    public abstract class Policy
     {
-        bool check(ProductInStore p, UserState u);
-        bool immidiate();
+        public int PolicyID { get; set; }
+        public abstract bool check(ProductInStore p, UserState u);
+        public abstract bool immidiate();
     }
 
     public class regularPolicy: Policy
     {
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return true;
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -24,20 +26,149 @@ namespace sadna192
 
     public class immidiatePolicy: Policy
     {
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return true;
         }
        
-        public bool immidiate()
+        public override bool immidiate()
         {
             return true; 
         }
     }
 
+
+    public class IncludeStorePolicy : Policy
+    {
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return p.getStore().GetPolicy().check(p, u);
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MamberPolicy : Policy
+    {
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return u.isMember();
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MinimumInCart : Policy
+    {
+        [Column("min")]
+        public int min { get; set; }
+        public MinimumInCart(int i)
+        {
+            this.min = i;
+        }
+
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName()) >= this.min;
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MinimumProductInCart : Policy
+    {
+        [Column("min")]
+        public int min { get; set; }
+        public MinimumProductInCart(int i)
+        {
+            this.min = i;
+        }
+
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName(), p.getName()) >= this.min;
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MaximumInCart : Policy
+    {
+        [Column("max")]
+        public int max { get; set; }
+        public MaximumInCart(int i)
+        {
+            this.max = i;
+        }
+
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName()) <= this.max;
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class MaximumProductInCart : Policy
+    {
+        [Column("max")]
+        public int max { get; set; }
+        public MaximumProductInCart(int i)
+        {
+            this.max = i;
+        }
+
+        public override bool check(ProductInStore p, UserState u)
+        {
+            return u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.max;
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
+    public class TimePolicy : Policy
+    {
+        public DateTime from { get; set; }
+        public DateTime to { get; set; }
+        public TimePolicy(DateTime from, DateTime to)
+        {
+            this.from = from;
+            this.to = to;
+        }
+
+        public override bool check(ProductInStore p, UserState u)
+        {
+            DateTime now = DateTime.Now;
+            return this.from < now && now < this.to;
+        }
+
+        public override bool immidiate()
+        {
+            return false;
+        }
+    }
+
     public abstract class MultiplePolicy : Policy
     {
-        internal List<Policy> Policies;
+        public List<Policy> Policies { get; set; }
 
         public List<Policy> getPolicies()
         {
@@ -45,8 +176,8 @@ namespace sadna192
             foreach (Policy p in this.Policies) ans.Add(p);
             return ans;
         }
-        public abstract bool check(ProductInStore p, UserState u);
-        public abstract bool immidiate();
+     //   public abstract bool check(ProductInStore p, UserState u);
+     //   public abstract bool immidiate();
     }
 
     public class OrPolicy : MultiplePolicy
@@ -135,127 +266,4 @@ namespace sadna192
         }
     }
 
-    public class IncludeStorePolicy : Policy
-    {
-        public bool check(ProductInStore p, UserState u)
-        {
-            return p.getStore().GetPolicy().check(p, u);
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class MamberPolicy : Policy
-    {
-        public bool check(ProductInStore p, UserState u)
-        {
-            return u.isMember();
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-    
-    public class MinimumInCart:Policy
-    {
-        int min;
-        public MinimumInCart(int i)
-        {
-            this.min = i;
-        }
-
-        public bool check(ProductInStore p, UserState u)
-        {
-            return u.numOfItemsInCart(p.getStore().getName()) >= this.min;
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class MinimumProductInCart : Policy
-    {
-        int min;
-        public MinimumProductInCart(int i)
-        {
-            this.min = i;
-        }
-
-        public bool check(ProductInStore p, UserState u)
-        {
-            return u.numOfItemsInCart(p.getStore().getName(),p.getName()) >= this.min;
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class MaximumInCart : Policy
-    {
-        int max;
-        public MaximumInCart(int i)
-        {
-            this.max = i;
-        }
-
-        public bool check(ProductInStore p, UserState u)
-        {
-            return u.numOfItemsInCart(p.getStore().getName()) <= this.max;
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class MaximumProductInCart : Policy
-    {
-        int max;
-        public MaximumProductInCart(int i)
-        {
-            this.max = i;
-        }
-
-        public bool check(ProductInStore p, UserState u)
-        {
-            return u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.max;
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
-
-    public class TimePolicy:Policy
-    {
-        DateTime from;
-        DateTime to;
-        public TimePolicy(DateTime from, DateTime to)
-        {
-            this.from = from;
-            this.to = to;
-        }
-
-        public bool check(ProductInStore p, UserState u)
-        {
-            DateTime now = DateTime.Now;
-            return this.from < now && now < this.to;
-        }
-
-        public bool immidiate()
-        {
-            return false;
-        }
-    }
 }

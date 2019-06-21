@@ -16,19 +16,30 @@
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Manager> Managers { get; set; }
         public virtual DbSet<Owner> Owners { get; set; }
-       // public virtual DbSet<Store> Stores { get; set; }
+        public virtual DbSet<Store> Stores { get; set; }
+        public virtual DbSet<Policy> Policies { get; set; }
+        public virtual DbSet<MultiplePolicy> MultiplePolicies { get; set; }
+        public virtual DbSet<Discount> Discounts { get; set; }
+        public virtual DbSet<multipleDiscount> MultipleDiscounts { get; set; }
+        public virtual DbSet<ProductInStore> ProductInStores { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
+        {       
             modelBuilder.Entity<Member>()
             .HasMany<Owner>(m => m.owner)
             .WithRequired(o => o.user)
             .HasForeignKey<int>(o => o.userRef);
-
-          /*  modelBuilder.Entity<Store>()
+            
+            modelBuilder.Entity<Store>()
           .HasMany<Owner>(s => s.owners)
           .WithRequired(o => o.store)
-          .HasForeignKey<string>(o => o.storeName);*/
+          .HasForeignKey<int>(o => o.storeRef);
+
+            modelBuilder.Entity<Store>()
+          .HasMany<ProductInStore>(s => s.productInStores)
+          .WithRequired(p => p.store)
+          .HasForeignKey<int>(p => p.storeID);
 
             modelBuilder.Entity<Owner>().
               HasMany(o => o.has_Apointed).
@@ -39,6 +50,29 @@
                   o.MapLeftKey("ownerID");
                   o.MapRightKey("ApointedOwnerID");
               });
+
+            modelBuilder.Entity<MultiplePolicy>().
+             HasMany(p => p.Policies).
+             WithMany()
+             .Map(p =>
+             {
+                 p.ToTable("MultiplePolicy");
+                 p.MapLeftKey("MultiplePolicyID");
+                 p.MapRightKey("PolicyID");
+             });
+
+            modelBuilder.Entity<multipleDiscount>().
+             HasMany(d => d.discount).
+             WithMany()
+             .Map(d =>
+             {
+                 d.ToTable("MultipleDiscount");
+                 d.MapLeftKey("MultipleDiscountID");
+                 d.MapRightKey("DiscountID");
+             });
+
+            
+
         }
     }
 }

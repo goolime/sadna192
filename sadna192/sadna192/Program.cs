@@ -17,16 +17,18 @@ public class Program
 
         Product p = new Product("aaaa", "qqqq", 5, keywords);
         Member m = new Member("name12", "name12");
+        Store s = new Store("s"); 
         Owner o = new Owner(m, new Store("store"));
-        Owner o1 = new Owner(m, new Store("retsd"));
+        Owner o1 = new Owner(m, s);
         Member m1 = new Member("namerew43", "name12");
         Owner o2 = new Owner(m1, new Store("retsd"));
-        Manager man = new Manager(m1, new Store("s"), true, false, true); 
+        Manager man = new Manager(m1,s, true, false, true); 
         o2.has_Apointed.Add(o1);
         using (var ctx = new sadna192.Model1())
         {
             ctx.Products.Add(p);
             ctx.Members.Add(m);
+          //  ctx.Stores.Add(s); 
             ctx.Owners.Add(o);
             ctx.Members.Add(m1);
             ctx.Owners.Add(o1);

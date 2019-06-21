@@ -8,9 +8,10 @@ namespace sadna192
 {
     public class Store
     {
-        private string name;
+        public int id { get; set; }
+        public string name { get; set; }
         private List<ProductInStore> productInStores= new List<ProductInStore>();
-        private List<Owner> owners;
+        public List<Owner> owners { get; set; }
         private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
         private Policy storePolicy;
         private Discount storeDiscount;

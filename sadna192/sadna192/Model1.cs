@@ -16,6 +16,7 @@
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<Manager> Managers { get; set; }
         public virtual DbSet<Owner> Owners { get; set; }
+       // public virtual DbSet<Store> Stores { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -23,6 +24,11 @@
             .HasMany<Owner>(m => m.owner)
             .WithRequired(o => o.user)
             .HasForeignKey<int>(o => o.userRef);
+
+          /*  modelBuilder.Entity<Store>()
+          .HasMany<Owner>(s => s.owners)
+          .WithRequired(o => o.store)
+          .HasForeignKey<string>(o => o.storeName);*/
 
             modelBuilder.Entity<Owner>().
               HasMany(o => o.has_Apointed).

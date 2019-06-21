@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
 {
     public class Member : Visitor
     {
-        public int id { get; set; }
+        //public int id { get; set; }
+        [Index(IsUnique = true)]
+        [StringLength(4)]
         public string name { get; set; }
         public string code { get; set; }
         public List<Owner> owner { get; set; }

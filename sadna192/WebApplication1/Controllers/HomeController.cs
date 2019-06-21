@@ -668,7 +668,85 @@ namespace WebApplication1.Controllers
 
         private ActionResult FinalizePolicies(Store_AddManagerViewModel vm)
         {
-            throw new NotImplementedException();
+            Policy policy = ConstructPolicy(vm.APolicy);
+            I_User_ServiceLayer SL = validateConnection();
+            if (SL.Update_Product_Store(vm.S.StoreName, vm.O.Name, null, null, -1, -1, null, policy)) ;
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+            }
+        }
+
+        private Policy ConstructPolicy(AddPolicyViewModel aPolicy)
+        {
+            if(aPolicy.PolicyKind!="Product" && aPolicy.PolicyKind != "Store")
+            {
+                throw new Exception("no option was chosen for product kind");
+            }
+            List<Policy> PoliciesToOr = new List<Policy>();
+            foreach(ProductPolicyViewModel pp in aPolicy.ProductPolicies)
+            {
+                List<Policy> PoliciesToAnd = GenerateOnePolicy(pp);
+                IsIncluded(aPolicy, pp, PoliciesToAnd);
+                MaxMinHandle(aPolicy, pp, PoliciesToAnd);
+                Policy AndPolicy = new AndPolicy(PoliciesToAnd);
+                PoliciesToOr.Add(AndPolicy);
+            }
+            return new OrPolicy(PoliciesToOr);
+        }
+
+        private static void IsIncluded(AddPolicyViewModel aPolicy, ProductPolicyViewModel pp, List<Policy> PoliciesToAnd)
+        {
+            if (aPolicy.PolicyKind == "Product" && pp.IncludeStorePolicy)
+            {
+                PoliciesToAnd.Add(new IncludeStorePolicy());
+            }
+        }
+
+        private static void MaxMinHandle(AddPolicyViewModel aPolicy, ProductPolicyViewModel pp, List<Policy> PoliciesToAnd)
+        {
+            if (pp.Constraint == "MAX" || pp.Constraint == "MIN")
+            {
+                if (aPolicy.PolicyKind == "Product")
+                {
+                    if (pp.Constraint == "MAX")
+                    {
+                        PoliciesToAnd.Add(new MaximumProductInCart(pp.Amount));
+                    }
+                    else //(pp.Constraint == "MIN")
+                    {
+                        PoliciesToAnd.Add(new MinimumProductInCart(pp.Amount));
+                    }
+                }
+                else //(pp.ProductKind == "Store")
+                {
+                    if (pp.Constraint == "MAX")
+                    {
+                        PoliciesToAnd.Add(new MaximumInCart(pp.Amount));
+                    }
+                    else //(pp.Constraint == "MIN")
+                    {
+                        PoliciesToAnd.Add(new MinimumInCart(pp.Amount));
+                    }
+                }
+            }
+        }
+
+        private List<Policy> GenerateOnePolicy(ProductPolicyViewModel pp)
+        {
+            List<Policy> PoliciesToAnd = new List<Policy>();
+            if (pp.Immidiate)
+            {
+                PoliciesToAnd.Add(new immidiatePolicy());
+            }
+            if (pp.Member)
+            {
+                PoliciesToAnd.Add(new MamberPolicy());
+            }
+            if (pp.Time.IsTimeLimited)
+            {
+                PoliciesToAnd.Add(new TimePolicy(pp.Time.Start, pp.Time.Finish));
+            }
+            return PoliciesToAnd;
         }
     }
 }

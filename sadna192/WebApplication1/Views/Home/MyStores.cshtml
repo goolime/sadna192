@@ -199,41 +199,33 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         @Html.HiddenFor(s => Model.S.StoreName)
         @Html.HiddenFor(s => Model.O.Name)
         @Html.HiddenFor(s => Model.APolicy.NumberOfPolicies)
-        <font>Is Products Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IsProductsPolicy, new { @id = "productsPolicyCheckBox", @onchange = "is_product_policy(this)" })
-        <font>Is Cart Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IsProductsPolicy, new { @id = "cartPolicyCheckBox", @onchange = "is_product_policy(this)" })
-
+        <font>Policy Kind:</font> @Html.DropDownListFor(s => s.APolicy.PolicyKind, new SelectList(new List<string>(){"Store", "Product" }), "Choose...", new { @id = "policyKindListBox", @onchange = "policy_kind(this.value)" })
         <div id="productsPolicyForm" style="visibility:hidden">
-            Select Logic Connection: @Html.DropDownListFor(s => s.APolicy.LogicConnection, new SelectList(new List<string>
-() { "OR", "AND" ,"XOR"}),new { @value="AND",@placeholder="AND",@style= Model.APolicy.NumberOfPolicies==1? "visibility:hidden": "visibility:visible" })
+            @Html.DropDownListFor(s => s.APolicy.Name, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "policyproductname", @placeholder = "Product name" })
             @for (int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
             {
                 <br /><font color="blue">Policy Number #@(i + 1)</font><br />
                 <br />
-                @Html.DropDownListFor(s => s.APolicy.Policies[i].Name, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "policyproductname" + i, @placeholder = "Product name" })
+                @Html.DropDownListFor(s => s.APolicy.ProductPolicies[i].Constraint, new SelectList(new List<string>() { "MAX", "MIN" }), "Choose MAX/Min...", new { @id = "policyconstraint" + i, @placeholder = "MAX/MIN" })
                 <br />
-                @Html.TextBoxFor(s => s.APolicy.Policies[i].Amount, new { @placeholder = "Amount" })
-                <br />
-                @Html.DropDownListFor(s => s.APolicy.Policies[i].Constraint, new SelectList(new List<string>() { "MAX", "MIN" }), new { @id = "policyconstraint" + i, @placeholder = "MAX/MIN" })
-
+                @Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Amount, new { @placeholder = "Amount" })
+                <div id=@("is_included" + i)><font>Is Included In Store Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].IncludeStorePolicy)</div>
+                <font>Member Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Member)
+                <font>Immidiate Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Immidiate)
+                <font>Is Time Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Time.IsTimeLimited, new { @onchange = "show_time_range(this,\"timePolicyDiv" + i + "\")" })
+                <div id=@("timePolicyDiv" + i) style="visibility:hidden">
+                    <font>Start:</font>@Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Time.Start, new { @type = "date" })
+                    <fon>Finish:</fon>@Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Time.Finish, new { @type = "date" })
+                </div>
             }
         </div>
-        <div id="storePolicy">
 
-        </div>
         <br />
-        <font>Is Included In Store Policy:</font>@Html.CheckBoxFor(s => s.APolicy.IncludeStorePolicy)
-        <font>Member Policy:</font>@Html.CheckBoxFor(s => s.APolicy.Memebr)
-        <font>Member Immidiate:</font>@Html.CheckBoxFor(s => s.APolicy.Immidiate)
-
-        <font>Is Time Policy:</font>@Html.CheckBoxFor(s => s.APolicy.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timePolicyDiv\")" })
-
-        <div id="timePolicyDiv" style="visibility:hidden">
-            <font>Start:</font>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Start, new { @type = "date" })
-            <fon>Finish:</fon>@Html.TextBoxFor(s => s.APolicy.TimeSpan.Finish, new { @type = "date" })
+        <div id="regularPolicyStuff" style="visibility:hidden">
+            <button name="command" value="add" id="addAPolicyDivButton">Add a Policy</button>
+            <button name="command" value="reset" id="resetPolicy">Reset Policies</button>
+            <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Policy</button>
         </div>
-        <button name="command" value="add" id="addAPolicyDivButton" style="visibility:hidden">Add a Policy</button>
-        <button name="command" value="reset" id="resetPolicy" style="visibility:hidden">Reset Policies</button>
-        <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Policy</button>
     }
 </div>
     Products:
@@ -257,8 +249,8 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         @if (Model.APolicy.IsPolicyVisible)
             {
                         <text>
-        document.getElementById("cartPolicyCheckBox").checked = true;
-        is_product_policy(document.getElementById("cartPolicyCheckBox"));
+        document.getElementById("policyKindListBox").value = "";
+        policy_kind("Store");
 
             </text>
             }
@@ -313,19 +305,45 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
         }
 
 
-        function is_product_policy(obj) {
-            if (!($(obj).is(":checked"))) {
-                document.getElementById("productsPolicyForm").style.visibility = "hidden";
-                document.getElementById("storePolicy").style.visibility = "visible";
-                document.getElementById("addAPolicyDivButton").style.visibility = "hidden";
-                document.getElementById("resetPolicy").style.visibility = "hidden";
-            } else {
+        function policy_kind(obj) {
+            if (obj == "Store") {
+                document.getElementById("regularPolicyStuff").style.visibility = "visible";
                 document.getElementById("productsPolicyForm").style.visibility = "visible";
-                document.getElementById("storePolicy").style.visibility = "hidden";
-                document.getElementById("addAPolicyDivButton").style.visibility = "visible";
-                document.getElementById("resetPolicy").style.visibility = "visible";
+                document.getElementById("policyproductname").style.visibility = "hidden";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "hidden"
+                    </text>
+                }
+            }
+            else if (obj == "Product") {
+                document.getElementById("regularPolicyStuff").style.visibility = "visible";
+                document.getElementById("productsPolicyForm").style.visibility = "visible";
+                document.getElementById("policyproductname").style.visibility = "visible";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "visible"
+                    </text>
+                }
+            }
+            else {
+                document.getElementById("regularPolicyStuff").style.visibility = "hidden";
+                document.getElementById("productsPolicyForm").style.visibility = "hidden";
+                document.getElementById("policyproductname").style.visibility = "hidden";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "hidden"
+                    </text>
+                }
             }
         }
+
 
         function show_time_range(obj, domeName) {
             if ($(obj).is(":checked")) {
@@ -339,6 +357,8 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
             var isHidden = document.getElementById('addpolicydiv').style.visibility === 'hidden';
             document.getElementById('addpolicydiv').style.visibility = isHidden ? 'visible' : 'hidden';
             document.getElementById("addPolicyButton").innerHTML = isHidden ? "Hide" : "Add Policy";
+            document.getElementById("regularPolicyStuff").style.visibility = "hidden";
+            document.getElementById("productsPolicyForm").style.visibility = "hidden";
         }
     
     </script>

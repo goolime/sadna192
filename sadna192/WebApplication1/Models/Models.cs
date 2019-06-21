@@ -113,21 +113,11 @@ namespace WebApplication1.Models
     public class AddPolicyViewModel
     {
         public bool IsPolicyVisible { get; set; }
-
-        public bool Immidiate { get; set; }
-        public bool Memebr { get; set; }
-        public bool IncludeStorePolicy { get; set; }
-        public bool IsProductsPolicy { get; set; }
-
-        public bool TotalInCartPolicy { get; set; }
-        public string TotalInCartConstraint { get; set; }//Max, Min etc
-        public int TotalInCartConstraintValue { get; set; }
-
-        public TimeSpanViewModel TimeSpan { get; set; }
-
-        public string LogicConnection { get; set; }
-        public List<ProductPolicyViewModel> Policies { get; set; }
+        public string PolicyKind { get; set; }//Store Product Policy
+        public List<ProductPolicyViewModel> ProductPolicies { get; set; }
         public int NumberOfPolicies { get; set; }
+        public string Name { get; set; }
+
 
     }
 
@@ -144,9 +134,12 @@ namespace WebApplication1.Models
 
     public class ProductPolicyViewModel
     {
-        public string Name { get; set; }
         public string Constraint { get; set; }
         public int Amount { get; set; }
+        public TimeSpanViewModel Time { get; set; }
+        public bool Member { get; set; }
+        public bool IncludeStorePolicy { get; set; }
+        public bool Immidiate { get; set; }
 
     }
 

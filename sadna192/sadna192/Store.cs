@@ -21,7 +21,7 @@ namespace sadna192
             this.name = name;
             this.productInStores = new List<ProductInStore>();
             this.owners = new List<Owner>();
-            this.storePolicy = new RegularPolicy();
+            this.storePolicy = new regularPolicy();
             this.storeDiscount = new noDiscount();
         }
 

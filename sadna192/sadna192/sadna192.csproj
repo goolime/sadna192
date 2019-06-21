@@ -48,6 +48,7 @@
     <Compile Include="DeliverySystem.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ImmediatePurchase.cs" />
+    <Compile Include="Alerter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Member.cs" />

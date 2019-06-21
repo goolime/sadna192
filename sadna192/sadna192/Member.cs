@@ -9,6 +9,7 @@ namespace sadna192
         internal string name;
         private string code;
         internal List<Owner> owner;
+        internal List<string> alerts;
 
 
         public Member(string name, string password) : base()
@@ -16,6 +17,7 @@ namespace sadna192
             this.name = name;
             this.code = this.Encrypt(this.name, password);
             this.owner = new List<Owner>();
+            this.alerts = new List<string>();
         }
 
         public override bool isVistor()

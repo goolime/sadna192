@@ -15,10 +15,10 @@ namespace sadna192
             // do nothing...
         }
 
-        public I_User_ServiceLayer Connect()
+        public I_User_ServiceLayer Connect(Alerter alerter)
         {
             if (singleton == null) throw new Sadna192Exception("the system dosn't exist" , "ServiceLayer" ,  "Connect");
-            return singleton.Connect();
+            return singleton.Connect(alerter);
         }
 
         public I_ServiceLayer Create_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
@@ -46,8 +46,7 @@ namespace sadna192
                 all.AddRange(singleton.members);
                 foreach (I_User_ServiceLayer u in singleton.users)
                 {
-                    //ToDo....
-                    //all.add((Visitor)u.)
+                    all.Add((Visitor)u.GetUser());
                 }
                 foreach (Visitor m in all)
                 {
@@ -67,9 +66,25 @@ namespace sadna192
                     }
                 }
             }
-            
         }
 
+        private static void OnTimedEvent2(Object source, ElapsedEventArgs e)
+        {
+            if (singleton != null)
+            {
+                foreach (I_User_ServiceLayer u in singleton.users)
+                {
+                    if (u.GetUser().isMember())
+                    {
+                        foreach(string s in ((Member)u.GetUser()).alerts)
+                        {
+                            u.alert(s);
+                        }
+                        ((Member)u.GetUser()).alerts.Clear();
+                    }
+                }
+            }
+        }
 
         private class single_ServiceLayer
         {
@@ -91,14 +106,18 @@ namespace sadna192
                 t.Elapsed += OnTimedEvent;
                 t.AutoReset = true;
                 t.Enabled = true;
+                Timer t1 = new Timer(1000 * 30 * 1);
+                t1.Elapsed += OnTimedEvent2;
+                t1.AutoReset = true;
+                t1.Enabled = true;
 
                 if (!Tools.check_username(admin_name) || !Tools.check_password(admin_pass)) throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
                 members.Add(new Admin(admin_name, admin_pass));
             }
 
-            internal I_User_ServiceLayer Connect()
+            internal I_User_ServiceLayer Connect(Alerter alerter)
             {
-                I_User_ServiceLayer ans = new User_ServiceLayer(this);
+                I_User_ServiceLayer ans = new User_ServiceLayer(this, alerter);
                 this.users.Add(ans);
                 return ans;
             }
@@ -113,18 +132,45 @@ namespace sadna192
                 store = null;
             }
 
+            internal bool alert_user(string name, string messege)
+            {
+                foreach (I_User_ServiceLayer u in users)
+                {
+                    if (u.GetUserState().isMember() && ((Member)u).name == name)
+                    {
+                        return u.alert(messege);
+                    }
+                }
+
+                foreach (Member m in members)
+                {
+                    if (m.name == name)
+                    {
+                        m.alerts.Add(messege);
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
        
         private class User_ServiceLayer:I_User_ServiceLayer
         {
             private single_ServiceLayer single_ServiceLayer;
-            private UserState userState;
+            public UserState userState;
+            private Alerter alerter;
             
-            public User_ServiceLayer(single_ServiceLayer single_ServiceLayer)
+            public User_ServiceLayer(single_ServiceLayer single_ServiceLayer, Alerter alerter)
             {
                 this.single_ServiceLayer = single_ServiceLayer;
                 this.userState = new Visitor();
+                this.alerter = alerter;
+            }
+
+            public UserState GetUser()
+            {
+                return this.userState;
             }
 
             public void Add_Log(string log)
@@ -275,6 +321,11 @@ namespace sadna192
                             this.userState = member;
                             single_ServiceLayer.members.Remove(member);
                             this.Add_Log("Logged In");
+                            foreach (string s in member.alerts)
+                            {
+                                alerter.AlertUser(s);
+                            }
+                            member.alerts.Clear();
                             return true;
                         }
                     }
@@ -449,10 +500,10 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) &&
                     Tools.check_productNames(product_name) &&
-                    Tools.check_productNames(product_new_name) &&
-                    Tools.check_productCategory(product_new_category) &&
-                    Tools.check_price(product_new_price) &&
-                    Tools.check_amount(product_new_amount)
+                    (Tools.check_productNames(product_new_name) || product_new_name==null) &&
+                    (Tools.check_productCategory(product_new_category) || product_new_category==null) &&
+                    (Tools.check_price(product_new_price) || product_new_price==-1) &&
+                    (Tools.check_amount(product_new_amount) || product_new_amount==-1)
                     )
                 {
                     bool ans = false;
@@ -495,6 +546,11 @@ namespace sadna192
             public List<Dictionary<string, dynamic>> usersStores()
             {
                 return this.userState.getMyShops();
+            }
+
+            public bool alert(string messege)
+            {
+                return this.alerter.AlertUser(messege);
             }
 
 

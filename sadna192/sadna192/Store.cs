@@ -127,6 +127,7 @@ namespace sadna192
             {
                 p.setPolicy(product_new_policy);
             }
+
             return true;
         }
         

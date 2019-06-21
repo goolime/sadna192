@@ -8,12 +8,21 @@ namespace sadna192
         private Store store;
         private Member user;
         private List<Owner> has_Apointed;
+        internal List<Owner> waiting_to_aprove;
 
         public Owner(Member u, Store s){
             this.store = s;
             this.user = u;
+            this.waiting_to_aprove = new List<Owner>();
+            
+            foreach (Owner o in s.GetOwners())
+            {
+                if (!o.isManger() && o.waiting_to_aprove.ToArray().Length==0)
+                {
+                    this.waiting_to_aprove.Add(o);
+                }
+            }
             s.addOwner(this);
-
             this.has_Apointed = new List<Owner>(); 
         }
 
@@ -22,13 +31,22 @@ namespace sadna192
             return this.store;
         }
 
+        internal bool are_assigned()
+        {
+            if (this.waiting_to_aprove.ToArray().Length == 0)
+                return true;
+            throw new Exception("you are still waiting for aproval from other owners of the store");
+        }
+
         internal virtual bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
+            this.are_assigned();
             return this.store.addProduct(product_name, product_category, product_price, product_amount, product_discount, product_policy);
         }
 
         internal virtual bool addManager(Member new_manager, bool permision_add, bool permission_remove, bool permission_update)
         {
+            this.are_assigned();
             try
             {
                 foreach (Owner o in new_manager.owner)
@@ -53,7 +71,13 @@ namespace sadna192
 
         internal virtual bool addOwner(string store_name, Member new_owner)
         {
+            this.are_assigned();
             Owner nm = new Owner(new_owner, this.store);
+            nm.waiting_to_aprove.Remove(this);
+            foreach (Owner o in nm.waiting_to_aprove)
+            {
+                o.user.alerts.Add(this.user.name + " wants to appoint " + new_owner + " as an owner and is waiting for your approval");
+            }
             new_owner.owner.Add(nm);
             this.has_Apointed.Add(nm);
             return true;
@@ -61,11 +85,13 @@ namespace sadna192
 
         internal virtual bool removeProduct(string product_name)
         {
+            this.are_assigned();
             return this.store.removeProduct(product_name);
         }
 
         private  bool removeMe()
         {
+            this.are_assigned();
             this.store.removeApointed(this);
             this.user.owner.Remove(this);
             foreach (Owner apointed in this.has_Apointed) apointed.removeMe();
@@ -74,12 +100,14 @@ namespace sadna192
 
         internal virtual bool removeApointed(Member other_Owner)
         {
+            this.are_assigned();
             Owner o = this.findOwner(other_Owner);
             return o.removeMe();
         }
 
         private Owner findOwner(Member other)
         {
+            this.are_assigned();
             if (this.user.isMe(other)) return this;
             foreach(Owner apointed in this.has_Apointed)
             {
@@ -94,11 +122,13 @@ namespace sadna192
 
         internal virtual bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
         {
+            this.are_assigned();
             return this.store.updateProduct(product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
         }
 
         internal virtual bool removeManager(Member other_Manager)
         {
+            this.are_assigned();
             Owner other = findOwner(other_Manager);
             if (other is Manager) return other.removeMe();
             throw new Sadna192Exception("the member is an owner of the shop", "Owner", "removeManager");
@@ -106,9 +136,13 @@ namespace sadna192
 
         internal virtual bool removeOwner(Member other_Owner)
         {
+            /*
+            this.are_assigned();
             Owner other = findOwner(other_Owner);
             if (other is Owner && !(other is Manager)) return other.removeMe();
             throw new Sadna192Exception("the member is an manager of the shop", "Owner", "removeOwner");
+            */
+            throw new Sadna192Exception("You can't remove Owners", "Owner", "removeOwner");
         }
 
         public virtual bool isManger() => false;
@@ -116,6 +150,49 @@ namespace sadna192
         public string GetUsername()
         {
             return user.name;
+        }
+
+        public List<string> waiting_for_owner_approval()
+        {
+            List<string> ans = new List<string>();
+            foreach(Owner o in this.store.GetOwners())
+            {
+                if (o.waiting_to_aprove.IndexOf(this) != -1)
+                    ans.Add(o.user.name);
+            }
+            return ans;
+        }
+
+        public bool approveAssignmet(string name, bool ans)
+        {
+            Owner toapprove = null;
+            foreach (Owner o in this.store.GetOwners())
+            {
+                if (o.user.name == name) toapprove = o;
+            }
+
+            if (toapprove == null) throw new Exception("user was not found");
+
+            if (ans)
+            {
+                toapprove.waiting_to_aprove.Remove(this);
+                if (toapprove.waiting_to_aprove.ToArray().Length == 0)
+                {
+                    if (toapprove.isManger())
+                        toapprove.user.alerts.Add("You where approved as Mannager in the store " + this.store.getName());
+                    else
+                        toapprove.user.alerts.Add("You where approved as Owner in the store " + this.store.getName());
+                }
+            }
+            else
+            {
+                foreach (Owner o in this.store.GetOwners())
+                {
+                    if (!o.isManger()) o.user.alerts.Add("the apointment of " + toapprove.user.name + " was disapproved by " + this.user.name);
+                }
+                toapprove.removeMe();
+            }
+            return true;
         }
     }
 }

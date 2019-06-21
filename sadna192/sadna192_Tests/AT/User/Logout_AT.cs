@@ -24,7 +24,7 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234Abcd");
             }
             catch (Exception) { }
-            userServiceLayer = serviceLayer.Connect();
+            userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer.Register("logoutuser", "1221Abcd");
@@ -49,7 +49,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Logout_happyTest2()
         {
-            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             if (userServiceLayer2.Register("logoutuser2", "2345Abcd"))
             { 
                 userServiceLayer2.Login("logoutuser2", "2345Abcd");                
@@ -68,7 +68,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Logout_sadTest()
         {
-            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { userServiceLayer3.Logout(); }, "visitors user cannot perfoem logout");
         }
 

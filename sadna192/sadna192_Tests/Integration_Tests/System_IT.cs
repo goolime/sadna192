@@ -20,7 +20,7 @@ namespace sadna192_Tests.Integration_Tests
             serviceLayer.Create_ServiceLayer(deliverySystem, paymentSystem, "adminTest", "1234Abcd");
             Assert.IsTrue(deliverySystem.Connect());
             Assert.IsTrue(paymentSystem.Connect());
-            I_User_ServiceLayer adminUser = serviceLayer.Connect();
+            I_User_ServiceLayer adminUser = serviceLayer.Connect(new Stub_Alerter());
             Assert.IsTrue(adminUser.Login("adminTest", "1234Abcd"));
             Assert.IsTrue(adminUser.GetUserState().isAdmin());
         }

@@ -2,6 +2,7 @@
 {
     internal class Admin : Member
     {
+        public Admin() { } 
         public Admin(string name, string password) : base(name, password)
         {
         }

@@ -9,7 +9,7 @@ namespace sadna192
 {
     public class Store
     {
-        public int id { get; set; }
+        public int storeID { get; set; }
         public string name { get; set; }
         public List<ProductInStore> productInStores { get; set; }
         public List<Owner> owners { get; set; }

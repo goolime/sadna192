@@ -1,16 +1,27 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class ProductInStore
     {
-        private Product product;
-        private int amount;
-        private double price;
-        private Store store;
-        private Discount discount;
-        private Policy policy;
+        public int id { get; set; }
+        public int productID { get; set; }
+        [ForeignKey("productID")]
+        public Product product { get; set; }
+        public int amount { get; set; }
+        public double price { get; set; }
+        public int storeID { get; set; }
+        [ForeignKey("storeID")]
+        public Store store { get; set; }
+        public int discountID { get; set; }
+        [ForeignKey("discountID")]
+        public Discount discount { get; set; }
+        public int policyID { get; set; }
+        [ForeignKey("policyID")]
+        public Policy policy { get; set; }
 
+        public ProductInStore() { }
         public ProductInStore(Product product, int amount, double price, Store store, Discount discount, Policy policy)
         {
             this.product = product;

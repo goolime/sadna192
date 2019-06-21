@@ -42,11 +42,8 @@ namespace sadna192
                     return p;
                 }
             }
-          //  Console.WriteLine("all pis o1k ");
             Product pr = new Product(name, category, rank);
-          //  Console.WriteLine("allis o3k ");
             allProducts.Add(pr);
-            //    Console.WriteLine("all products is ok4 ");
             if (!pr.saveProductToDB())
                 Console.WriteLine("could not save Product to DB  -TODO!!!!!");
 
@@ -61,16 +58,14 @@ namespace sadna192
             {
                 using (var ctx = new sadna192.Model1())
                 {
-                    // Console.WriteLine("%%%%%%%%%%%%%%");
                     ctx.Products.Add(this);
-                    //  Console.WriteLine("%%%%%%%%%%%%%%2");
                     ctx.SaveChanges();
-                    //  Console.WriteLine("%%%%%%%%%%%%%%2");
                     return true;
                 }
             }
             catch (DbUpdateException e)
             {
+                Console.WriteLine("save product to DB faild : " + e.ToString());
                 return false;
             }
         }

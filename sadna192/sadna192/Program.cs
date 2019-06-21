@@ -16,7 +16,7 @@ public class Program
         keywords.Add("keyword");
 
         Product p = new Product("aaaa", "qqqq", 5, keywords);
-        Member m = new Member("name12", "name12");
+        Member m = new Member("name12T", "name12T");
         Store s = new Store("s"); 
         Owner o = new Owner(m, new Store("store"));
         Owner o1 = new Owner(m, s);
@@ -47,12 +47,12 @@ public class Program
         dl.Add(discount);
         dl.Add(d2);
         multipleDiscount md = new AndDiscount(dl);
-       // ProductInStore ps = new ProductInStore(p, 40, 3, s, discount, mp); 
+        ProductInStore ps = new ProductInStore(p, 40, 3, s, discount, mp); 
         using (var ctx = new sadna192.Model1())
         {
             ctx.Products.Add(p);
             ctx.Members.Add(m);
-          //  ctx.Stores.Add(s); 
+            ctx.Stores.Add(s); 
             ctx.Owners.Add(o);
             ctx.Members.Add(m1);
             ctx.Owners.Add(o1);
@@ -70,11 +70,10 @@ public class Program
             ctx.Discounts.Add(discount);
             ctx.Discounts.Add(d2);
             ctx.MultipleDiscounts.Add(md);
-           // ctx.ProductInStores.Add(ps); 
+            ctx.ProductInStores.Add(ps); 
             ctx.SaveChanges();
         }
-       // Product p2 = Product.getProduct("erty", "rhfss", 34);
-        
-        Console.ReadKey();
+        // Product p2 = Product.getProduct("erty", "rhfss", 34);
+         Console.ReadKey();
     }
 }

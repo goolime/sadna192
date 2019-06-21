@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure;
 using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
@@ -13,7 +14,9 @@ namespace sadna192
         public string code { get; set; }
         public List<Owner> owner { get; set; }
 
-
+        public Member() : base()
+        {
+        }
         public Member(string name, string password) : base()
         {
             this.name = name;
@@ -157,5 +160,6 @@ namespace sadna192
 
             return ans;
         }
+
     }
 }

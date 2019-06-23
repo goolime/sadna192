@@ -81,6 +81,7 @@ namespace sadna192
             {
                 if (owner.getStore().isMe(store_name)) return owner;
             }
+
             throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
         }
 
@@ -115,6 +116,11 @@ namespace sadna192
         {
             Owner s = this.getUserStore(Store_name);
             return s.addOwner(Store_name, new_owner_name);
+        }
+
+        public override bool Add_To_ShopingBasket(ProductInStore p, int amount)
+        {
+            return this.shopingBasket.memberAddProduct(p, amount);
         }
 
         public override bool Remove_Product_Store(string Store_name, string product_name)

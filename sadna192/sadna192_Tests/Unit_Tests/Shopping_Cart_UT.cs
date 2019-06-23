@@ -16,7 +16,7 @@ namespace sadna192_Tests.Unit_Tests
         public void Init()
         {
             store = new Store("Maccabi");
-            shoppingCart = new ShoppingCart(store, new List<Pair<ProductInStore, int>>());
+            shoppingCart = new ShoppingCart(store, new List<ItemsInCart>());
             store.addProduct("T-shirt", "Clothes", 15, 20, new noDiscount(), new regularPolicy());
             store.addProduct("Shoes", "Clothes", 15, 20, new noDiscount(), new regularPolicy());
         }
@@ -27,8 +27,8 @@ namespace sadna192_Tests.Unit_Tests
             //checking if the cart is empty
             Assert.IsTrue(shoppingCart.getCart().Count == 0);
 
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6);
-            shoppingCart.addProduct(store.FindProductInStore("Shoes"), 3);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6 , false);
+            shoppingCart.addProduct(store.FindProductInStore("Shoes"), 3 , false);
             Assert.IsTrue(shoppingCart.getCart().Count == 2);
         }
 
@@ -36,8 +36,8 @@ namespace sadna192_Tests.Unit_Tests
         [TestMethod]
         public void Add_Same_Product_Test()
         {
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6);
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 3);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6, false);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 3, false);
             Assert.IsTrue(shoppingCart.getCart().Count == 1);
             Assert.IsTrue(shoppingCart.getCart()[0].Value == 9);
         }
@@ -45,7 +45,7 @@ namespace sadna192_Tests.Unit_Tests
         [TestMethod]
         public void Delete_Product_Test()
         {
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6, false);
             shoppingCart.DeleteProduct(store.FindProductInStore("T-shirt"), 3);
             Assert.IsTrue(shoppingCart.getCart().Count == 0);
         }
@@ -53,7 +53,7 @@ namespace sadna192_Tests.Unit_Tests
         [TestMethod]
         public void EditAmount_Test()
         {
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6, false);
             shoppingCart.editAmount(store.FindProductInStore("T-shirt"),3);
             Assert.IsTrue(shoppingCart.FindProductInCart("T-shirt").Second == 3);
         }
@@ -62,7 +62,7 @@ namespace sadna192_Tests.Unit_Tests
         public void FindProductInCart_Test()
         {
             Assert.ThrowsException<Exception>(() => { shoppingCart.FindProductInCart("Water"); }, "There is no such product called Water");
-            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6);
+            shoppingCart.addProduct(store.FindProductInStore("T-shirt"), 6, false);
             Assert.IsTrue(shoppingCart.FindProductInCart("T-shirt").Second==6);
         }
     }

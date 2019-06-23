@@ -34,25 +34,27 @@ namespace sadna192
         public static Product getProduct(string name, string category, double rank)
         {
             if (allProducts == null) allProducts = new List<Product>();
-            foreach (Product p in allProducts)
+            /*foreach (Product p in allProducts)
             {
                 if (p.getName() == name)
                 {
                     Console.WriteLine("found product name " + name);
                     return p;
                 }
+            }*/
+
+            Product pr = DBAccess.searchProduct(name, category, rank);
+            if (pr == null)
+            {
+                pr = new Product(name, category, rank);
+                allProducts.Add(pr);
+                if (!DBAccess.SaveToDB(pr))
+                    DBAccess.DBerror("could not save Product to DB");
             }
-            Product pr = new Product(name, category, rank);
-            allProducts.Add(pr);
-            if (!DBAccess.SaveToDB(pr))
-                Console.WriteLine("could not save Product to DB  -TODO!!!!!");
-
             return pr;
-
-
         }
+        public Product() { }
 
-       
         public Product(string name, string category, double rank)
         {
             

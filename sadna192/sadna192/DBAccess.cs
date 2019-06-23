@@ -53,47 +53,53 @@ namespace sadna192
            
         }
 
+        public static Member loginCheck(string memberName, string pass)
+        {
+            Member ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Members
+                        .Where(m => m.name == memberName)
+                        .FirstOrDefault();
+
+                    if (!ans.check(memberName, pass))
+                        ans = null;
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get member from DB faild : " + e.ToString());
+            }
+            return ans;
+        }
+
         public static void DBerror(String e)
         {
             Console.WriteLine("DB ERROR: "+e+" TODO!!!!!");
         }
-
-        public static bool saveProductToDB(Product p)
+ 
+/**************** Get from DB ****************/
+        public static Admin getAdminFromDB(string name)
         {
+            Admin ans = null;
             try
             {
                 using (var ctx = new Model1())
                 {
-                    ctx.Products.Add(p);
-                    ctx.SaveChanges();
-                    return true;
+                    ans = (Admin)ctx.Members
+                                    .Where(m => m.name == name)
+                                    .FirstOrDefault();
                 }
             }
             catch (DbUpdateException e)
             {
-                Console.WriteLine("save product to DB faild : " + e.ToString());
-                return false;
+                Console.WriteLine("get Admin from DB faild : " + e.ToString());
             }
+            return ans;
         }
 
-
-        public static bool saveMemberToDB(Member m)
-        {
-            try
-            {
-                using (var ctx = new Model1())
-                {
-                    ctx.Members.Add(m);
-                    ctx.SaveChanges();
-                    return true;
-                }
-            }
-            catch (DbUpdateException e)
-            {
-                Console.WriteLine("save member to DB faild : " + e.ToString());
-                return false;
-            }
-        }
 
         public static Member getMemberFromDB(string memberName)
         {
@@ -102,7 +108,6 @@ namespace sadna192
             {
                 using (var ctx = new Model1())
                 {
-                    // Query for the Blog named ADO.NET Blog
                     ans = ctx.Members
                                     .Where(m => m.name == memberName)
                                     .FirstOrDefault();
@@ -112,12 +117,171 @@ namespace sadna192
             {
                 Console.WriteLine("get member from DB faild : " + e.ToString());
             }
-            return ans; 
-
+            return ans;
         }
-                        // Query for all blogs with names starting with B
-                        /* var member = from b in ctx.Members
-                                     where b.Name.StartsWith("B")
-                                     select b;*/
-             }
-         }
+
+
+        public static ProductInStore findProductInStore(string store_name , string product_name)
+        {
+            ProductInStore ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.ProductInStores.Include("Product").Include("Store").Include("Discount").Include("Policy")
+                                    .Where(p => p.product.name == product_name && 
+                                    p.store.name == store_name)
+                                    .FirstOrDefault();
+                    return ans;
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get member from DB faild : " + e.ToString());
+            }
+            throw new Sadna192Exception("product not exsist in store", "DBAccess", "findProductInStore");
+            //return ans;
+        }      
+
+        public static List<ProductInStore> searchProductInStore
+            (string name, string Category, List<string> keywords, double price_min, double price_max, double product_rank)
+        {
+            List<ProductInStore> products = new List<ProductInStore>();
+
+            using (var ctx = new Model1())
+            {
+                var query = from i in ctx.ProductInStores.Include("Product").Include("Store") select i;                          
+                if (name != null)
+                    query = query.Where(q => q.product.name == name);
+                if (Category != null)
+                    query = query.Where(q => q.product.category == Category);
+                /* if (keywords != null)
+                     foreach (string word in keywords)
+                     {
+                         query = query.Where(q => q.product.KeywordsAsString.Contains(word));
+                     }*/
+                if (price_min != -1)
+                     query = query.Where(q => q.price > price_min);
+                 if (price_max != -1)
+                     query = query.Where(q => q.price < price_max);
+                 if (product_rank != -1)
+                     query = query.Where(q => q.product.rank >= product_rank);  
+
+                products = query.ToList();
+            }
+           
+            return products;
+        }
+
+        public static Product searchProduct (string name, string Category, double product_rank)
+        {
+            Product product = new Product();
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    product = ctx.Products
+                                    .Where(p => p.name == name 
+                                    && p.category == Category)
+                                    .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get member from DB faild : " + e.ToString());
+            }          
+
+            return product;
+        }
+
+
+        public static Product getProductByID (int id)
+        {
+            Product ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Products
+                        .Where(p => p.id == id)
+                        .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get product from DB faild : " + e.ToString());
+            }
+            return ans;
+        }
+
+        public static Store getStoreByID(int id)
+        {
+            Store ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Stores
+                        .Where(s => s.storeID == id)
+                        .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get product from DB faild : " + e.ToString());
+            }
+            return ans;
+        }
+
+        public static Discount getDiscountByID(int id)
+        {
+            Discount ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Discounts
+                        .Where(d => d.DiscountID == id)
+                        .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get Discount from DB faild : " + e.ToString());
+            }
+            return ans;
+        }
+
+/**************** Update DB ****************/ 
+
+        public static bool updateProductInStoreIfExist(string store_name ,string product_name, double product_price, int product_amount, Discount product_discount, Policy product_policy)
+        {
+            bool ans = false;
+
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    var res = ctx.ProductInStores.Include("Product").Include("Store").Include("Discount").Include("Policy")
+                                    .Where(p => p.product.name == product_name 
+                                    && p.store.name == store_name)
+                                    .FirstOrDefault();
+                    if (res == null)
+                        throw new Sadna192Exception("product not exsist in store", "DBAccess", "updateProductInStoreIfExist");
+                    res.setAmount(product_amount);
+                    res.setPrice(product_price);
+                    res.setDiscount(product_discount);
+                    res.setPolicy(product_policy);
+
+                    ctx.SaveChanges(); 
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get ProductInStore from DB & update him faild : " + e.ToString());
+            }
+
+            return ans;  
+        }
+    }
+}

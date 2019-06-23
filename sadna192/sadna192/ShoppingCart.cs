@@ -24,9 +24,8 @@ namespace sadna192
             return store;
         }
 
-        internal bool addProduct(ProductInStore p, int amount)
+        internal bool addProduct(ProductInStore p, int amount, bool isMember)
         {
-            //Pair<ProductInStore, int> producttoadd = new Pair<ProductInStore, int>(p, amount);
             ItemsInCart producttoadd = new ItemsInCart(p, amount);
             //checking if the prouct exists in the current shopping cart
                 foreach (ItemsInCart pro in shoppingCartContent)
@@ -40,6 +39,9 @@ namespace sadna192
                 try
                 {
                     shoppingCartContent.Add(producttoadd);
+                if(isMember)
+                    if (!DBAccess.SaveToDB(producttoadd))
+                        DBAccess.DBerror("could not save ProductInStore & amount to DB");
                 }
                 catch (Exception)
                 {

@@ -8,7 +8,7 @@ namespace sadna192
         public int id { get; set; }
         public int productID { get; set; }
         [ForeignKey("productID")]
-        public Product product { get; set; }
+        public virtual Product product { get; set; }
         public int amount { get; set; }
         public double price { get; set; }
         public int storeID { get; set; }

@@ -22,6 +22,14 @@ namespace sadna192
         {
             return false;
         }
+
+        public static regularPolicy creteRegularPolicy()
+        {
+            regularPolicy rgp = new regularPolicy();
+            if (!DBAccess.SaveToDB(rgp))
+                DBAccess.DBerror("could not save regular policy to DB ");
+            return rgp;
+        }
     }
 
     public class immidiatePolicy: Policy

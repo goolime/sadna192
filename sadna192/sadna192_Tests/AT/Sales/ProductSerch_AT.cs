@@ -29,21 +29,21 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer1 = serviceLayer.Connect();
             userServiceLayer2 = serviceLayer.Connect();
             userServiceLayer3 = serviceLayer.Connect();
-
+            noDiscount discount = noDiscount.creteNoDiscount();
             try
             {
                 if (userServiceLayer1.Register("productSearchuser", "1221Abcd"))
                     if (userServiceLayer1.Login("productSearchuser", "1221Abcd"))
                         if (userServiceLayer1.Open_Store("Grocery"))
-                            userServiceLayer1.Add_Product_Store("Grocery", "milk", "food", 4.5, 10, null, null);
+                            userServiceLayer1.Add_Product_Store("Grocery", "milk", "food", 4.5, 10, discount, regularPolicy.creteRegularPolicy());
 
 
                 if (userServiceLayer2.Register("productSearchuser2", "9876Abcd"))
                     if (userServiceLayer2.Login("productSearchuser2", "9876Abcd"))
                         if (userServiceLayer2.Open_Store("handm") && userServiceLayer2.Open_Store("Market"))
                         {
-                            userServiceLayer2.Add_Product_Store("handm", "dress", "clothes", 29.90, 5, null, null);
-                            userServiceLayer2.Add_Product_Store("Market", "milk", "food", 3, 6, null, null);
+                            userServiceLayer2.Add_Product_Store("handm", "dress", "clothes", 29.90, 5, discount, regularPolicy.creteRegularPolicy());
+                            userServiceLayer2.Add_Product_Store("Market", "milk", "food", 3, 6, discount, regularPolicy.creteRegularPolicy());
                         }
 
 

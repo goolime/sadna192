@@ -55,7 +55,7 @@ namespace sadna192
                     {
                         if (m.shopingBasket.savedProducts != null)
                         {
-                            m.shopingBasket.returnProducts();
+                            m.shopingBasket.returnProducts(m.isMember());
                             Sadna192Exception.AddToEventLog("SYSTEM : returned to store saved products of user '" + m.ToString() + "'");
 
                         }
@@ -95,13 +95,8 @@ namespace sadna192
                 if (!Tools.check_username(admin_name) ||
                     !Tools.check_password(admin_pass))
                     throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
-                Admin admin = new Admin(admin_name, admin_pass);
-                members.Add(admin);
-                
-                if (!DBAccess.SaveToDB(admin))
-                {
-                    DBAccess.DBerror("could not save admin to DB");
-                }
+                Admin admin = Admin.GetAdmin(admin_name, admin_pass);//new Admin(admin_name, admin_pass);
+                members.Add(admin); 
             }
 
             internal I_User_ServiceLayer Connect()
@@ -137,7 +132,7 @@ namespace sadna192
 
             public void Add_Log(string log)
             {
-                Sadna192Exception.AddToEventLog(this.userState.ToString() + ":" + log);
+                Sadna192Exception.AddToEventLog(this.userState.ToString() + ": " + log);
             }
 
             public bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -261,8 +256,11 @@ namespace sadna192
                     (Tools.check_price(product_rank) || product_rank==-1)
                     ) {
                     List<ProductInStore> ans = new List<ProductInStore>();
-                    foreach (Store store in this.single_ServiceLayer.store)
+                   /* foreach (Store store in this.single_ServiceLayer.store)
                         ans.AddRange(store.Search(name, Category, keywords, price_min, price_max, Store_rank, product_rank));
+                        */
+                    ans = DBAccess.searchProductInStore(name, Category, keywords, price_min, price_max, product_rank);
+                    Program.printList(ans);
                     string kw;
                     if (keywords == null) kw = "";
                     else kw = keywords.ToString();
@@ -277,17 +275,15 @@ namespace sadna192
                 if (!this.userState.isVistor()) throw new Sadna192Exception("you are already logedin", "(ServiceLayer) User_ServiceLayer", "Login(1)");
                 if (Tools.check_username(user_name) && Tools.check_password(user_pass))
                 {
-                    foreach (Member member in single_ServiceLayer.members)
-                    {
-                        if (member.check(user_name, user_pass))
+                    Member member = DBAccess.loginCheck(user_name, user_pass);
+                    if (member!= null)
                         {
                             this.userState = member;
                             single_ServiceLayer.members.Remove(member);
                             this.Add_Log("Logged In");
                             return true;
                         }
-                    }
-                    throw new Sadna192Exception("user not found", "(ServiceLayer) User_ServiceLayer", "Login(2)");
+                    else throw new Sadna192Exception("user not found", "(ServiceLayer) User_ServiceLayer", "Login(2)");
                 }
                 return false;
             }
@@ -317,7 +313,7 @@ namespace sadna192
                     Store newstore = new Store(name);
                     bool ans = this.userState.Open_Store(newstore);
                     this.single_ServiceLayer.store.Add(newstore);
-                    if (!DBAccess.SaveToDB(newstore))
+                    if (!(DBAccess.SaveToDB(newstore) && DBAccess.SaveToDB(newstore.GetPolicy()) && DBAccess.SaveToDB(newstore.GetDiscount())))
                         DBAccess.DBerror("could not save Store to DB");
                     if (ans) this.Add_Log("opened new store named - " +name);
                     return ans;
@@ -368,20 +364,19 @@ namespace sadna192
                                 }
                             }
                         }
-                        foreach (Member member in single_ServiceLayer.members)
-                        {
-                            if (member.isMe(user_name))
+                        /*    foreach (Member member in single_ServiceLayer.members)
                             {
-                                ans = true;
-                            }
-                        }
+                                if (member.isMe(user_name))
+                                {
+                                    ans = true;
+                                }
+                            }*/
+                        ans = DBAccess.getMemberFromDB(user_name) != null; 
                         if (ans) throw new Sadna192Exception("the user name is allready in use", "(ServiceLayer) User_ServiceLayer", "Register(1)");
                         Member newMember = new Member(user_name, user_pass);
                         this.single_ServiceLayer.members.Add(newMember);
-                        if (!DBAccess.SaveToDB(newMember))
-                        {
-                            DBAccess.DBerror("could not save member to DB ");
-                        }                    
+                        if (!(DBAccess.SaveToDB(newMember)&& DBAccess.SaveToDB(newMember.shopingBasket)))
+                            DBAccess.DBerror("could not save member and shopping basket to DB ");                 
 
                         this.Add_Log("Registerd new user with name '" + user_name + "'");
                         return true;
@@ -540,6 +535,7 @@ namespace sadna192
             {
                 try
                 {
+                    DBAccess.findProductInStore(p.store.name, p.product.name); 
                     p.getStore().FindProductInStore(p.getProduct().getName());
                 }
                 catch
@@ -578,7 +574,7 @@ namespace sadna192
 
             public bool canclePurch()
             {
-                ((Visitor)this.userState).shopingBasket.returnProducts();
+                ((Visitor)this.userState).shopingBasket.returnProducts(this.userState.isMember());
                 return true;
             }
 

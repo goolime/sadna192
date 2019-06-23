@@ -15,6 +15,15 @@ namespace sadna192
         {
             return 1;
         }
+
+        public static noDiscount creteNoDiscount()
+        {
+            noDiscount nod = new noDiscount();
+            if (!DBAccess.SaveToDB(nod))
+                DBAccess.DBerror("could not save noDiscount to DB ");
+            return nod;
+
+        }
     }
 
     public class IncludeStoreDiscount : Discount

@@ -36,9 +36,9 @@ namespace sadna192
             throw new Sadna192Exception("User must login to add a Owner to a store", "Visitor", "Add_Store_Owner");
         }
 
-        public bool Add_To_ShopingBasket(ProductInStore p, int amount)
+        public virtual bool Add_To_ShopingBasket(ProductInStore p, int amount)
         {
-            return this.shopingBasket.addProduct(p, amount);
+            return this.shopingBasket.visitorAddProduct(p, amount);
         }
 
         public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)

@@ -66,19 +66,16 @@ namespace sadna192
         {
             //checks if the product is already exists, if not - adds it.
             try
-            {
-                ProductInStore oldPr = FindProductInStore(product_name);
-                oldPr.setAmount (product_amount);
-                oldPr.setPrice(product_price);
-                oldPr.setDiscount(product_discount);
-                oldPr.setPolicy(product_policy);
-                return true;
+            {  
+                return DBAccess.updateProductInStoreIfExist(this.name, product_name, product_price, product_amount, product_discount, product_policy);
             }
             catch
             {
                 Product pr = Product.getProduct(product_name, product_category, product_price);
                 ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
                 this.productInStores.Add(P);
+                if (!DBAccess.SaveToDB(P))
+                    DBAccess.DBerror("could not save ProductInStore to DB");
                 return true;
             }
         }

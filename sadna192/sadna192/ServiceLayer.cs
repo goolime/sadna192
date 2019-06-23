@@ -482,7 +482,7 @@ namespace sadna192
 
             public List<KeyValuePair<ProductInStore, int>> Watch_Cart()
             {
-                List < KeyValuePair<ProductInStore, int> > ans = this.userState.Watch_Cart();
+                List <KeyValuePair<ProductInStore, int>> ans = this.userState.Watch_Cart();
                 ans.Sort(new cartOrder());
                 this.Add_Log("watched his cart");
                 return ans;
@@ -533,16 +533,17 @@ namespace sadna192
 
             private bool isProductInStore(ProductInStore p)
             {
+                
                 try
                 {
-                    DBAccess.findProductInStore(p.store.name, p.product.name); 
-                    p.getStore().FindProductInStore(p.getProduct().getName());
+                    ProductInStore pro = DBAccess.findProductInStore(p.store.name, p.product.name);
+                    return (pro != null);
                 }
                 catch
                 {
                     throw new Sadna192Exception("Product is not in the store", "(ServiceLayer) User_ServiceLayer", "isProductInStore");
                 }
-                return true;
+                
             }
 
             private Member GetMember(string Username)
@@ -580,6 +581,8 @@ namespace sadna192
 
             public ProductInStore GetProductFromStore(string productName,string storeName)
             {
+
+                /*
                 foreach (Store s in this.single_ServiceLayer.store)
                 {
                     if (s.getName() == storeName)
@@ -587,7 +590,9 @@ namespace sadna192
                         return s.getProductInStore().Find(t => t.getName() == productName);
                     }
                 }
-                return null;
+                */
+                return DBAccess.findProductInStore(storeName, productName);
+                //return null;
 
             }
         }

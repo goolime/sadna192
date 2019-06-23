@@ -8,9 +8,18 @@ namespace sadna192
     {
         public int DiscountID { get; set; }
         public abstract double calculate(ProductInStore p, UserState u);
+
+        public Discount()
+        {
+            
+        }
     }
     public class noDiscount : Discount
     {
+        public noDiscount()
+        {
+
+        }
         public override double calculate(ProductInStore p, UserState u)
         {
             return 1;
@@ -28,6 +37,11 @@ namespace sadna192
 
     public class IncludeStoreDiscount : Discount
     {
+
+        public IncludeStoreDiscount()
+        {
+
+        }
         public override double calculate(ProductInStore p, UserState u)
         {
             return p.getStore().GetDiscount().calculate(p, u);
@@ -36,6 +50,10 @@ namespace sadna192
 
     public class ProductAmountDiscount : Discount
     {
+        public ProductAmountDiscount()
+        {
+
+        }
         public string product { get; set; }
         [Column("amount")]
         public int amount { get; set; }
@@ -58,6 +76,12 @@ namespace sadna192
 
     public class ProductAmountInBasketDiscount : Discount
     {
+
+        public ProductAmountInBasketDiscount()
+        {
+
+        }
+
         [Column("amount")]
         public int amount { get; set; }
         [Column("discount")]
@@ -78,6 +102,12 @@ namespace sadna192
 
     public class TimeDiscount : Discount
     {
+
+        public TimeDiscount()
+        {
+
+        }
+
         [Column("discount")]
         public double discount { get; set; }
         DateTime from, to;
@@ -98,6 +128,12 @@ namespace sadna192
 
     public class fixDiscount : Discount
     {
+
+        public fixDiscount()
+        {
+
+        } 
+
         [Column("discount")]
         public double discount { get; set; }
 
@@ -114,6 +150,10 @@ namespace sadna192
 
     public abstract class multipleDiscount : Discount
     {
+
+        public multipleDiscount()
+        {
+        }
         public List<Discount> discount { get; set; }
 
         public List<Discount> getDiscount()
@@ -128,6 +168,10 @@ namespace sadna192
 
     public class AndDiscount : multipleDiscount
     {
+        public AndDiscount()
+        {
+        }
+
         public AndDiscount(List<Discount> l) : base()
         {
             this.discount = l;
@@ -145,6 +189,10 @@ namespace sadna192
 
     public class XOrDiscount : multipleDiscount
     {
+        public XOrDiscount()
+        {
+        }
+
         public XOrDiscount(List<Discount> l) : base()
         {
             this.discount = l;

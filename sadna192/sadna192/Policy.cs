@@ -13,6 +13,11 @@ namespace sadna192
 
     public class regularPolicy: Policy
     {
+
+        public  regularPolicy()
+        {
+
+        }
         public override bool check(ProductInStore p, UserState u)
         {
             return true;
@@ -34,6 +39,11 @@ namespace sadna192
 
     public class immidiatePolicy: Policy
     {
+        public immidiatePolicy()
+        {
+
+        }
+
         public override bool check(ProductInStore p, UserState u)
         {
             return true;
@@ -48,6 +58,12 @@ namespace sadna192
 
     public class IncludeStorePolicy : Policy
     {
+
+        public IncludeStorePolicy()
+        {
+
+        }
+
         public override bool check(ProductInStore p, UserState u)
         {
             return p.getStore().GetPolicy().check(p, u);
@@ -61,6 +77,12 @@ namespace sadna192
 
     public class MamberPolicy : Policy
     {
+
+        public MamberPolicy()
+        {
+
+        }
+
         public override bool check(ProductInStore p, UserState u)
         {
             return u.isMember();
@@ -74,6 +96,13 @@ namespace sadna192
 
     public class MinimumInCart : Policy
     {
+
+        public MinimumInCart()
+        {
+
+        }
+
+
         [Column("min")]
         public int min { get; set; }
         public MinimumInCart(int i)
@@ -94,6 +123,12 @@ namespace sadna192
 
     public class MinimumProductInCart : Policy
     {
+
+        public MinimumProductInCart()
+        {
+
+        }
+
         [Column("min")]
         public int min { get; set; }
         public MinimumProductInCart(int i)
@@ -114,6 +149,11 @@ namespace sadna192
 
     public class MaximumInCart : Policy
     {
+        public MaximumInCart()
+        {
+
+        }
+
         [Column("max")]
         public int max { get; set; }
         public MaximumInCart(int i)
@@ -134,6 +174,11 @@ namespace sadna192
 
     public class MaximumProductInCart : Policy
     {
+        public MaximumProductInCart()
+        {
+
+        }
+
         [Column("max")]
         public int max { get; set; }
         public MaximumProductInCart(int i)
@@ -154,6 +199,11 @@ namespace sadna192
 
     public class TimePolicy : Policy
     {
+
+        public TimePolicy()
+        {
+
+        }
         public DateTime from { get; set; }
         public DateTime to { get; set; }
         public TimePolicy(DateTime from, DateTime to)
@@ -176,6 +226,11 @@ namespace sadna192
 
     public abstract class MultiplePolicy : Policy
     {
+        public MultiplePolicy()
+        {
+
+        }
+
         public List<Policy> Policies { get; set; }
 
         public List<Policy> getPolicies()
@@ -190,6 +245,12 @@ namespace sadna192
 
     public class OrPolicy : MultiplePolicy
     {
+
+        public OrPolicy()
+        {
+
+        }
+
         public OrPolicy(List<Policy> l):base()
         {
             this.Policies = l;
@@ -215,6 +276,11 @@ namespace sadna192
 
     public class AndPolicy : MultiplePolicy
     {
+        public AndPolicy()
+        {
+
+        }
+
         public AndPolicy(List<Policy> l) : base()
         {
             this.Policies = l;
@@ -240,6 +306,11 @@ namespace sadna192
 
     public class XOrPolicy : MultiplePolicy
     {
+        public XOrPolicy()
+        {
+
+        }
+
         public XOrPolicy(List<Policy> l) : base()
         {
             this.Policies = l;

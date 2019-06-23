@@ -77,12 +77,17 @@ namespace sadna192
 
         internal Owner getUserStore(string store_name)
         {
-            foreach (Owner owner in this.owner)
+            Owner owner = null;
+            try
             {
-                if (owner.getStore().isMe(store_name)) return owner;
-            }
+                owner = DBAccess.getUserStore(store_name, this.name);
 
-            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
+            }
+            catch (Exception e)
+            {
+                throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
+            }
+            return owner;
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -151,6 +156,7 @@ namespace sadna192
         {
             return (this.name);
         }
+
 
         public override List<Dictionary<string, dynamic>> getMyShops()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
@@ -75,6 +76,8 @@ namespace sadna192
             return ans;
         }
 
+
+
         public static void DBerror(String e)
         {
             Console.WriteLine("DB ERROR: "+e+" TODO!!!!!");
@@ -141,7 +144,54 @@ namespace sadna192
             }
             throw new Sadna192Exception("product not exsist in store", "DBAccess", "findProductInStore");
             //return ans;
-        }      
+        }
+
+
+        public static Owner getUserStore(String store_name , string member_name)
+        {
+            Owner owner = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    owner = ctx.Owners.Include("Store").Include("member")
+                                    .Where(o => o.store.getName() == store_name && o.user.name==member_name
+                                    )
+                                    .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get User Store from DB faild : " + e.ToString());
+            }
+            return owner;
+
+        }
+
+        /*public static List<KeyValuePair<ProductInStore, int>> getBasket()
+        {
+            List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.ShoppingCarts.Include("Store").Include("member")
+                                    .Where(o => o.store.getName() == store_name
+                                    )
+                                    .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get User Basket from DB faild : " + e.ToString());
+            }
+            return ans;
+
+        }*/
+
+
+
+
 
         public static List<ProductInStore> searchProductInStore
             (string name, string Category, List<string> keywords, double price_min, double price_max, double product_rank)
@@ -283,5 +333,38 @@ namespace sadna192
 
             return ans;  
         }
+
+
+        // ********** Remove From DB *********** //
+        public static bool removeProductInStore(string store_name, string product_name)
+        {
+            bool ans = false;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    var res = ctx.ProductInStores.Include("Product").Include("Store")
+                                    .Where(p => p.product.name == product_name
+                                    && p.store.name == store_name)
+                                    .FirstOrDefault();
+                    if (res != null) {
+                        ctx.ProductInStores.Remove(res);
+                    }
+                
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get ProductInStore from DB & remove him faild : " + e.ToString());
+            }
+
+            return ans;
+        }
+
+
+
+
     }
 }

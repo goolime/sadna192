@@ -20,7 +20,11 @@ namespace sadna192
         [ForeignKey("discountID")]
         public Discount storeDiscount { get; set; }
 
-        
+
+        public Store()
+        {
+        }
+
 
 
         public Store(string name)
@@ -82,7 +86,24 @@ namespace sadna192
 
         internal bool removeProduct(string product_name)
         {
-            foreach(ProductInStore p in productInStores)
+          /*  try
+            {
+                return DBAccess.removeProductInStore(this.name, product_name);
+            }
+            catch
+            {
+                Product pr = Product.getProduct(product_name, product_category, product_price);
+                ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
+                this.productInStores.Add(P);
+                if (!DBAccess.SaveToDB(P))
+                    DBAccess.DBerror("could not save ProductInStore to DB");
+                return true;
+            }
+            */
+    
+
+
+            foreach (ProductInStore p in productInStores)
             {
                 if (p.getName() == product_name)
                 {

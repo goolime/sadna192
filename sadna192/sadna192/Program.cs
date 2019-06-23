@@ -11,19 +11,26 @@ public class Program
     {
         var l = new NormalizedLevenshtein();
 
-        Console.WriteLine(l.Distance("My string", "my string"));
-        Console.WriteLine(l.Distance("My string", "My dtring"));
-        Console.WriteLine(l.Distance("My string", "My stttring"));
-        List<String> keywords = new List<string>();
-        keywords.Add("keyword");
-        Product pr = Product.getProduct("apple", "food", 10);
-       
-        Store s = new Store("shepo");
-        DBAccess.SaveToDB(s);
-        ProductInStore ps = new ProductInStore(pr, 34, 5, s, noDiscount.creteNoDiscount(), regularPolicy.creteRegularPolicy());
-        DBAccess.SaveToDB(ps);
-        List<ProductInStore> lst = DBAccess.searchProductInStore(null, null, null, 2, 15, -1);
-        printList(lst);
+        //Console.WriteLine(l.Distance("My string", "my string"));
+        //Console.WriteLine(l.Distance("My string", "My dtring"));
+        //Console.WriteLine(l.Distance("My string", "My stttring"));
+        //List<String> keywords = new List<string>();
+        //keywords.Add("keyword");
+        //Product pr = Product.getProduct("apple", "food", 10);
+
+        //Store s = new Store("ggggepo");
+        //ProductInStore ps = new ProductInStore(pr, 34, 5, s, noDiscount.creteNoDiscount(), regularPolicy.creteRegularPolicy());
+        
+
+        DBAccess.removeProductInStore("ggggepo", "apple");
+
+
+
+
+
+        //DBAccess.SaveToDB(ps);
+        //List<ProductInStore> lst = DBAccess.searchProductInStore(null, null, null, 2, 15, -1);
+        //printList(lst);
         //  printList(searchPro(null, "food"));
         //  printList(searchPro("apple", "fruit" ));
         //  printList(searchPro("apple", null));

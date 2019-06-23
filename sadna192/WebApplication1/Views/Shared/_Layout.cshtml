@@ -33,6 +33,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Login" id="login">Login</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Basket">Basket</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Register" id="register">Register</a></li>
+                    <li id="notifications_li"></li>
                     <li>
                         <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm">
                             <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search" aria-label="Search">
@@ -79,6 +80,7 @@
         else {
             document.getElementById("login").innerHTML = "Logout";
             document.getElementById("register").innerHTML = "My Page";
+            document.getElementById("notifications_li").innerHTML = '<a id="DDD" href="/Home/Notifications">Notifications</a>';
         }
     </script>
 

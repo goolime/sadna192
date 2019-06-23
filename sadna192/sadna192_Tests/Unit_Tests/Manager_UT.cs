@@ -29,10 +29,10 @@ namespace sadna192_Tests.Unit_Tests
         public void add_Product_Positive_Test()
         {
             manager = new Manager(member, store, true, false, false);
-            Assert.IsTrue(manager.addProduct("banana", "food", 25, 4, new noDiscount(), new RegularPolicy()));
+            Assert.IsTrue(manager.addProduct("banana", "food", 25, 4, new noDiscount(), new regularPolicy()));
 
             manager = new Manager(member, store, false, false, true);
-            Assert.IsTrue(manager.updateProduct("banana", "banani","food", 25, 4, new noDiscount(), new RegularPolicy()));
+            Assert.IsTrue(manager.updateProduct("banana", "banani","food", 25, 4, new noDiscount(), new regularPolicy()));
 
             manager = new Manager(member, store, false, true, false);
             Assert.IsTrue(manager.removeProduct("banani"));
@@ -43,11 +43,11 @@ namespace sadna192_Tests.Unit_Tests
         public void add_Product_Negetive_Test()
         {
             manager = new Manager(member, store, false, false, false);
-            Assert.ThrowsException<Exception>(() => { manager.addProduct("banana", "food", 25, 4, new noDiscount(), new RegularPolicy()); }, "Add Product is not allowed for this manager");
+            Assert.ThrowsException<Exception>(() => { manager.addProduct("banana", "food", 25, 4, new noDiscount(), new regularPolicy()); }, "Add Product is not allowed for this manager");
 
             manager = new Manager(member, store, true, false, false);
-            manager.addProduct("banana", "food", 25, 4, new noDiscount(), new RegularPolicy());
-            Assert.ThrowsException<Exception>(() => { manager.updateProduct("banana", "banani", "food", 25, 4, new noDiscount(), new RegularPolicy()); }, "Update Product is not allowed for this manager");
+            manager.addProduct("banana", "food", 25, 4, new noDiscount(), new regularPolicy());
+            Assert.ThrowsException<Exception>(() => { manager.updateProduct("banana", "banani", "food", 25, 4, new noDiscount(), new regularPolicy()); }, "Update Product is not allowed for this manager");
             Assert.ThrowsException<Exception>(() => { manager.removeProduct("banana"); }, "Update Product is not allowed for this manager");
         }
 
@@ -70,7 +70,7 @@ namespace sadna192_Tests.Unit_Tests
         public void remove_Product_Positive_Test()
         {
             manager = new Manager(member, store, true, true, false);
-            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new RegularPolicy());
+            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new regularPolicy());
             Assert.IsTrue(manager.removeProduct("apple"));
         }
 
@@ -78,7 +78,7 @@ namespace sadna192_Tests.Unit_Tests
         public void remove_Product_Negetive_Test()
         {
             manager = new Manager(member, store, true, false, false);
-            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new RegularPolicy());
+            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new regularPolicy());
             Assert.ThrowsException<Exception>(() => { manager.removeProduct("apple"); }, "this manager isn't allowed to remove product");
         }
 
@@ -94,8 +94,8 @@ namespace sadna192_Tests.Unit_Tests
         public void updateProduct_Test()
         {
             manager = new Manager(member, store, true, true, true);
-            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new RegularPolicy());
-            Assert.IsTrue(manager.updateProduct("apple", "apple_new", "fruits", 10, 6, new noDiscount(), new RegularPolicy()));
+            manager.addProduct("apple", "food", 10, 6, new noDiscount(), new regularPolicy());
+            Assert.IsTrue(manager.updateProduct("apple", "apple_new", "fruits", 10, 6, new noDiscount(), new regularPolicy()));
             //Assert.IsTrue(manager.updateProduct("apple", "apple_new", "fruits", 10, 6, new noDiscount(), new regularPolicy()));
             Assert.IsTrue(store.FindProductInStore("apple_new").getCategory().Equals("fruits"));
         }

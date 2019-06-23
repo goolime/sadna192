@@ -39,8 +39,8 @@ namespace sadna192.Tests.AcceptanceTests
                 userServiceLayer1.Login("removeProductFromStoreUser", "1221Gbbv");
                 userServiceLayer2.Login("removeProductFromStoreUser2", "87654DFgh");
                 userServiceLayer1.Open_Store("our store");
-                userServiceLayer1.Add_Product_Store("our store", "pizza", "food", 29.9, 34, new noDiscount(), new RegularPolicy());
-                userServiceLayer1.Add_Product_Store("our store", "orbit", "food", 9.9, 70, new noDiscount(), new RegularPolicy());
+                userServiceLayer1.Add_Product_Store("our store", "pizza", "food", 29.9, 34, new noDiscount(), new regularPolicy());
+                userServiceLayer1.Add_Product_Store("our store", "orbit", "food", 9.9, 70, new noDiscount(), new regularPolicy());
 
             }
             catch (Exception) { }

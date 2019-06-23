@@ -39,9 +39,9 @@ namespace sadna192.Tests.AcceptanceTests
                 userServiceLayer_seller.Login("purchaseCartUser", "1221Qwer");
                     if (userServiceLayer_seller.Open_Store("Renuar") && userServiceLayer_seller.Open_Store("mike place"))
                     {
-                        userServiceLayer_seller.Add_Product_Store("Renuar", "red dress", "clothes", 45, 10, new noDiscount(), new RegularPolicy());
-                        userServiceLayer_seller.Add_Product_Store("Renuar", "pants", "clothes", 55, 5, new noDiscount(), new RegularPolicy());
-                        userServiceLayer_seller.Add_Product_Store("mike place", "soda", "drinks", 5, 50, new noDiscount(), new RegularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("Renuar", "red dress", "clothes", 45, 10, new noDiscount(), new regularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("Renuar", "pants", "clothes", 55, 5, new noDiscount(), new regularPolicy());
+                        userServiceLayer_seller.Add_Product_Store("mike place", "soda", "drinks", 5, 50, new noDiscount(), new regularPolicy());
                     }
                     List<ProductInStore> toBuy1 = userServiceLayer_buyer.GlobalSearch("red dress", null, null, -1, -1, -1, -1);
                     List<ProductInStore> toBuy2 = userServiceLayer_buyer.GlobalSearch("soda", null, null, -1, -1, -1, -1);

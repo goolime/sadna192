@@ -48,7 +48,7 @@ namespace sadna192_Tests.Integration_Tests
             Assert.IsTrue(storeOwner.GetUserState().isOwner("bigbug"));
             List<ProductInStore> appleSearch = storeOwner.GlobalSearch("apple", null, null, -1, -1, -1, -1);
             int preAmount = appleSearch.Count; 
-            Assert.IsTrue(storeOwner.Add_Product_Store("bigbug", "apple", "fruit", 4, 100, new noDiscount(), new RegularPolicy()));
+            Assert.IsTrue(storeOwner.Add_Product_Store("bigbug", "apple", "fruit", 4, 100, new noDiscount(), new regularPolicy()));
             appleSearch = storeOwner.GlobalSearch("apple", null, null, -1, -1, -1, -1);
             Assert.AreEqual(preAmount + 1, appleSearch.Count);
             bool ans = false;
@@ -69,15 +69,15 @@ namespace sadna192_Tests.Integration_Tests
             Store store1 = new Store("ginot");
             storeOwner.Open_Store(store1);
             Assert.ThrowsException<Exception>(() =>
-            {storeOwnerToBe.Add_Product_Store("ginot", "cherry", "fruit", 15, 60, new noDiscount(), new RegularPolicy()); }, "only store owner ang permission manager can add product to store");
+            {storeOwnerToBe.Add_Product_Store("ginot", "cherry", "fruit", 15, 60, new noDiscount(), new regularPolicy()); }, "only store owner ang permission manager can add product to store");
             Assert.ThrowsException<Exception>(() =>
             {storeOwnerToBe.Add_Store_Manager("ginot", storeManagerToBe , true, false , false) ; }, "only store owner ang permission manager can add product to store");         
             Assert.ThrowsException<Exception>(() => 
-            {storeManagerToBe.Add_Product_Store("ginot", "banana", "fruit", 5, 100, new noDiscount(), new RegularPolicy()) ; }, "only store owner ang permission manager can add product to store");
+            {storeManagerToBe.Add_Product_Store("ginot", "banana", "fruit", 5, 100, new noDiscount(), new regularPolicy()) ; }, "only store owner ang permission manager can add product to store");
             Assert.IsTrue(storeOwner.Add_Store_Owner("ginot", storeOwnerToBe));
-            Assert.IsTrue(storeOwnerToBe.Add_Product_Store("ginot", "cherry", "fruit", 15, 60, new noDiscount(), new RegularPolicy()));
+            Assert.IsTrue(storeOwnerToBe.Add_Product_Store("ginot", "cherry", "fruit", 15, 60, new noDiscount(), new regularPolicy()));
             Assert.IsTrue(storeOwnerToBe.Add_Store_Manager("ginot", storeManagerToBe, true, false, false));
-            Assert.IsTrue(storeManagerToBe.Add_Product_Store("ginot", "banana", "fruit", 5, 100, new noDiscount(), new RegularPolicy())); 
+            Assert.IsTrue(storeManagerToBe.Add_Product_Store("ginot", "banana", "fruit", 5, 100, new noDiscount(), new regularPolicy())); 
         }
     }
 }

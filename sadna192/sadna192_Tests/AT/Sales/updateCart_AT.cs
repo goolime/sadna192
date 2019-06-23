@@ -35,9 +35,9 @@ namespace sadna192.Tests.AcceptanceTests
                 userServiceLayer_buyer.Login("updateCartUser2", "97531ERty");
                 userServiceLayer_seller.Open_Store("MiniMarket");
                 userServiceLayer_seller.Open_Store("mtokim");
-                userServiceLayer_seller.Add_Product_Store("MiniMarket", "red apple", "food", 4, 10, new noDiscount(), new RegularPolicy());
-                userServiceLayer_seller.Add_Product_Store("mtokim", "muffin", "food", 3.5, 100, new noDiscount(), new RegularPolicy());
-                userServiceLayer_seller.Add_Product_Store("MiniMarket", "cheesecake", "food", 15, 5, new noDiscount(), new RegularPolicy());
+                userServiceLayer_seller.Add_Product_Store("MiniMarket", "red apple", "food", 4, 10, new noDiscount(), new regularPolicy());
+                userServiceLayer_seller.Add_Product_Store("mtokim", "muffin", "food", 3.5, 100, new noDiscount(), new regularPolicy());
+                userServiceLayer_seller.Add_Product_Store("MiniMarket", "cheesecake", "food", 15, 5, new noDiscount(), new regularPolicy());
                 List<ProductInStore> appleToBuy = userServiceLayer_buyer.GlobalSearch("red apple", null, null, -1, -1, -1, -1);
                 userServiceLayer_buyer.Add_To_ShopingBasket(appleToBuy[0], 2);
             }

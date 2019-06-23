@@ -138,6 +138,21 @@ namespace WebApplication1.Controllers
             }
         }
 
+        public IActionResult Notifications()
+        {
+            if (!IsLoggedIn())
+            {
+                this.validateConnection();
+                ViewData["Message"] = "Your application Register";
+
+                return RedirectToAction("index");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
         public IActionResult SearchResults(string key, string keys, string cat, double max, double min)
         {
             I_User_ServiceLayer SL = validateConnection();

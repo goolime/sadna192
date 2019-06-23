@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebApplication1.Hubs;
 
 namespace WebApplication1
 {
@@ -32,7 +33,7 @@ namespace WebApplication1
                 
             });
 
-
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -52,7 +53,10 @@ namespace WebApplication1
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ShopHub>("/ShopHub");
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

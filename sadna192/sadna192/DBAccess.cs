@@ -193,9 +193,6 @@ namespace sadna192
         }*/
 
 
-
-
-
         public static List<ProductInStore> searchProductInStore
             (string name, string Category, List<string> keywords, double price_min, double price_max, double product_rank)
         {
@@ -361,7 +358,6 @@ namespace sadna192
         // ********** Remove From DB *********** //
         public static bool removeProductInStore(string store_name, string product_name)
         {
-            bool ans = false;
             try
             {
                 using (var ctx = new Model1())
@@ -370,20 +366,22 @@ namespace sadna192
                                     .Where(p => p.product.name == product_name
                                     && p.store.name == store_name)
                                     .FirstOrDefault();
-                    if (res != null) {
-                        ctx.ProductInStores.Remove(res);
+                    if (res == null)
+                    {
+                        Console.WriteLine("trying to delete ProductInStore that is not exist");
+                        return false;
                     }
-                
-
+                    ctx.ProductInStores.Remove(res);
                     ctx.SaveChanges();
+                    return true;
                 }
             }
             catch (DbUpdateException e)
             {
-                Console.WriteLine("get ProductInStore from DB & remove him faild : " + e.ToString());
+                Console.WriteLine("remove ProductInStore from DB faild : " + e.ToString());
+                throw new Sadna192Exception("Connection to DB lost: remove ProductInStore from DB faild", "DBAccess", "removeProductInStore");
             }
-
-            return ans;
+            return false;
         }
 
         public static bool removeUserFromDB(string user_name)
@@ -399,7 +397,6 @@ namespace sadna192
                     if (res == null)
                     {
                         Console.WriteLine("trying to delete user that is not exist");
-                        //throw new Sadna192Exception("trying to delete user that is not exist", "DBAccess", "removeUserFromDB");
                         return false;
                     }
                     ans = true; 

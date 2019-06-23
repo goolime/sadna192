@@ -89,32 +89,10 @@ namespace sadna192
 
         internal bool removeProduct(string product_name)
         {
-          /*  try
-            {
-                return DBAccess.removeProductInStore(this.name, product_name);
-            }
-            catch
-            {
-                Product pr = Product.getProduct(product_name, product_category, product_price);
-                ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
-                this.productInStores.Add(P);
-                if (!DBAccess.SaveToDB(P))
-                    DBAccess.DBerror("could not save ProductInStore to DB");
-                return true;
-            }
-            */
-    
-
-
-            foreach (ProductInStore p in productInStores)
-            {
-                if (p.getName() == product_name)
-                {
-                    productInStores.Remove(p);
-                    return true;
-                }
-            }
-            throw new Sadna192Exception("Product to be removed was not found", "Store", "removeProduct");
+            bool ans = DBAccess.removeProductInStore(this.name, product_name); 
+            if (!ans)
+                throw new Sadna192Exception("Product to be removed was not found", "Store", "removeProduct");
+            return ans; 
             
         }
 

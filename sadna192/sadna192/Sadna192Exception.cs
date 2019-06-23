@@ -15,7 +15,7 @@ namespace sadna192
         public Sadna192Exception(String exc , String classLoc , String func ) 
         {
             log.Add("ERROR => " + exc + ".   <" + classLoc + " : " + func +">");
-            throw new Exception(exc); 
+           // throw new Exception(exc); 
         }
 
         public static void AddToEventLog (String str)

@@ -14,36 +14,38 @@ public class Program
         Console.WriteLine(l.Distance("My string", "my string"));
         Console.WriteLine(l.Distance("My string", "My dtring"));
         Console.WriteLine(l.Distance("My string", "My stttring"));
-        List<String> keywords = new List<string>();
-        keywords.Add("keyword");
-        Product pr = Product.getProduct("apple", "food", 10);
-       
-        Store s = new Store("shepo");
-        DBAccess.SaveToDB(s);
-        ProductInStore ps = new ProductInStore(pr, 34, 5, s, noDiscount.creteNoDiscount(), regularPolicy.creteRegularPolicy());
-        DBAccess.SaveToDB(ps);
-        List<ProductInStore> lst = DBAccess.searchProductInStore(null, null, null, 2, 15, -1);
-        printList(lst);
-        //  printList(searchPro(null, "food"));
-        //  printList(searchPro("apple", "fruit" ));
-        //  printList(searchPro("apple", null));
+        /*ember m = new Member("Banani983", "Banani983");
+        DBAccess.SaveToDB(m);
+       Member m2 = new Member("Banani983", "Banani983");
+        DBAccess.SaveToDB(m2);*/
 
-        /* Product pr1 = Product.getProduct("agg", "food", 11);
-        Product pr2 = Product.getProduct("dingdong", "food", 8);
-        Product pr3 = Product.getProduct("apple", "fruit", 6);
-         * I_ServiceLayer serviceLayer = new ServiceLayer();
-        try
-        {
-            serviceLayer.Create_ServiceLayer( new Stub_deliverySystem(),  new Stub_paymentSystem(), "admin123", "1234AsdF");
+        
+           I_ServiceLayer serviceLayer = new ServiceLayer();
+          try
+          {
+              serviceLayer.Create_ServiceLayer( new Stub_deliverySystem(),  new Stub_paymentSystem(), "admin123", "1234AsdF");
         }
-        catch (Exception) { }
-        I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
-        userServiceLayer1.Register("ASSdo300", "ASSdo300");
-        Console.WriteLine(userServiceLayer1.Login("ASSdo300", "ASSdo300"));
-        */
+        catch (Exception) { Console.WriteLine("66666666"); }
+        I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+      //  userServiceLayer2.Register("bobi", "9876ASdf");
+        Console.WriteLine(userServiceLayer2.Login("bobi", "9876ASdf"));
+        /* Console.WriteLine("11111111");
+           I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
+             // I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+             Console.WriteLine("22222222");
+           //  userServiceLayer1.Register("Banani983", "Banani983");
+          // userServiceLayer2.Register("Banani9832", "Banani9832");
+           Console.WriteLine("333333333");
+          // Console.WriteLine(userServiceLayer2.Login("Banani9832", "Banani9832"));
+           Console.WriteLine(userServiceLayer1.Login("Banani983", "Banani983"));
+             Console.WriteLine("4444444");
+             userServiceLayer1.Open_Store("naimig");
+             Console.WriteLine("55555555");
+             // userServiceLayer2.Open_Store("naimi");*/
 
 
 
+        Console.WriteLine("END"); 
         Console.ReadKey();
     }
 

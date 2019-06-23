@@ -11,19 +11,20 @@ namespace sadna192
     {
         public static bool SaveToDB(object o)
         {
+            Console.WriteLine("1: " + o.ToString());
             try
-            {
+            { 
                 using (var ctx = new sadna192.Model1())
                 {
                     if (o.GetType() == typeof(Product))
                         ctx.Products.Add((Product)o);
-                    else if (o is Member)
+                    else if (o is Member) 
                         ctx.Members.Add((Member)o);
                     else if (o.GetType() == typeof(Manager))
                         ctx.Managers.Add((Manager)o);
                     else if (o.GetType() == typeof(Owner))
                         ctx.Owners.Add((Owner)o);
-                    else if (o.GetType() == typeof(Store))
+                    else if (o is Store)
                         ctx.Stores.Add((Store)o);
                     else if (o is Policy)
                         ctx.Policies.Add((Policy)o);
@@ -55,6 +56,7 @@ namespace sadna192
 
         public static Member loginCheck(string memberName, string pass)
         {
+            Console.WriteLine("2: " + memberName);
             Member ans = null;
             try
             {
@@ -64,7 +66,7 @@ namespace sadna192
                         .Where(m => m.name == memberName)
                         .FirstOrDefault();
 
-                    if (!ans.check(memberName, pass))
+                    if (ans == null || !ans.check(memberName, pass))
                         ans = null;
                 }
             }
@@ -83,6 +85,7 @@ namespace sadna192
 /**************** Get from DB ****************/
         public static Admin getAdminFromDB(string name)
         {
+            Console.WriteLine("3: " + name );
             Admin ans = null;
             try
             {
@@ -91,18 +94,21 @@ namespace sadna192
                     ans = (Admin)ctx.Members
                                     .Where(m => m.name == name)
                                     .FirstOrDefault();
+
+                    return ans;
                 }
             }
             catch (DbUpdateException e)
             {
                 Console.WriteLine("get Admin from DB faild : " + e.ToString());
             }
-            return ans;
+            return null;
         }
 
 
         public static Member getMemberFromDB(string memberName)
         {
+            Console.WriteLine("4: " + memberName);
             Member ans=null;
             try
             {
@@ -223,6 +229,26 @@ namespace sadna192
                 {
                     ans = ctx.Stores
                         .Where(s => s.storeID == id)
+                        .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get product from DB faild : " + e.ToString());
+            }
+            return ans;
+        }
+
+        public static Store getStoreByName(string name)
+        {
+            Console.WriteLine("5: " + name);
+            Store ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Stores
+                        .Where(s => s.name == name)
                         .FirstOrDefault();
                 }
             }

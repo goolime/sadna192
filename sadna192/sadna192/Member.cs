@@ -10,6 +10,7 @@ namespace sadna192
     public class Member : Visitor
     {
         public int id { get; set; }
+        [Required]
         public string name { get; set; }
         public string code { get; set; }
         public List<Owner> owner { get; set; }
@@ -98,11 +99,14 @@ namespace sadna192
 
         public override bool Open_Store(Store name)
         {
-            if (this.owner == null) this.owner = new List<Owner>();
-            Owner owner = new Owner(this, name);
-            this.owner.Add(owner);
-            if (!DBAccess.SaveToDB(owner))
-                DBAccess.DBerror("could not save owner to DB");
+            Member m = DBAccess.getMemberFromDB(this.name);
+            if (m.owner == null)  m.owner = new List<Owner>();        
+            Owner owner = new Owner(m, name);
+            
+            m.owner.Add(owner); 
+           // this.owner.Add(owner);
+            //if (!DBAccess.SaveToDB(owner))
+             //   DBAccess.DBerror("could not save owner to DB");
             return true;
         }
 

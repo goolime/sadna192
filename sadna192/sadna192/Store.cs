@@ -21,11 +21,7 @@ namespace sadna192
         public Discount storeDiscount { get; set; }
 
 
-        public Store()
-        {
-        }
-
-
+        public Store() { } 
 
         public Store(string name)
         {
@@ -64,6 +60,11 @@ namespace sadna192
         internal void addOwner(Owner owner)
         {
             this.owners.Add(owner);
+        }
+
+        public override string ToString()
+        {
+            return (this.name);
         }
 
         internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)

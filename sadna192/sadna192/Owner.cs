@@ -18,7 +18,8 @@ namespace sadna192
 
         public Owner(Member u, Store s){
             this.store = s;
-            this.user = u;
+            //this.user = DBAccess.getMemberFromDB(u.name);
+            this.userRef = DBAccess.getMemberFromDB(u.name).id;
             s.addOwner(this);
 
             this.has_Apointed = new List<Owner>(); 

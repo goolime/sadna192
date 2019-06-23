@@ -95,7 +95,12 @@ namespace sadna192
                 if (!Tools.check_username(admin_name) ||
                     !Tools.check_password(admin_pass))
                     throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
-                Admin admin = Admin.GetAdmin(admin_name, admin_pass);//new Admin(admin_name, admin_pass);
+                Admin admin = Admin.GetAdmin(admin_name, admin_pass);
+                if (admin == null)
+                {
+                    admin = new Admin(admin_name, admin_pass);
+                    DBAccess.SaveToDB(admin);
+                }
                 members.Add(admin); 
             }
 
@@ -306,14 +311,18 @@ namespace sadna192
                 if (this.userState.isVistor()) throw new Sadna192Exception("you can't open the store if not logedin", "(ServiceLayer) User_ServiceLayer", "Open_Store(1)");
                 if (Tools.check_storeName(name))
                 {
-                    foreach (Store store in this.single_ServiceLayer.store)
+                    /*foreach (Store store in this.single_ServiceLayer.store)
                     {
                         if (store.isMe(name)) throw new Sadna192Exception("name is allready in use", "(ServiceLayer) User_ServiceLayer", "Open_Store(2)");
-                    }
+                    }*/
+                    if (DBAccess.getStoreByName(name) != null) throw new Sadna192Exception("name is allready in use", "(ServiceLayer) User_ServiceLayer", "Open_Store(2)");
                     Store newstore = new Store(name);
+                    Console.WriteLine("A: " + newstore.name); 
                     bool ans = this.userState.Open_Store(newstore);
+                    Console.WriteLine("B: " + ans);
                     this.single_ServiceLayer.store.Add(newstore);
-                    if (!(DBAccess.SaveToDB(newstore) && DBAccess.SaveToDB(newstore.GetPolicy()) && DBAccess.SaveToDB(newstore.GetDiscount())))
+                    Console.WriteLine("c: " + newstore.name);
+                    if (!(DBAccess.SaveToDB(newstore)))  //&& DBAccess.SaveToDB(newstore.GetPolicy()) && DBAccess.SaveToDB(newstore.GetDiscount()))
                         DBAccess.DBerror("could not save Store to DB");
                     if (ans) this.Add_Log("opened new store named - " +name);
                     return ans;
@@ -364,18 +373,11 @@ namespace sadna192
                                 }
                             }
                         }
-                        /*    foreach (Member member in single_ServiceLayer.members)
-                            {
-                                if (member.isMe(user_name))
-                                {
-                                    ans = true;
-                                }
-                            }*/
                         ans = DBAccess.getMemberFromDB(user_name) != null; 
                         if (ans) throw new Sadna192Exception("the user name is allready in use", "(ServiceLayer) User_ServiceLayer", "Register(1)");
                         Member newMember = new Member(user_name, user_pass);
                         this.single_ServiceLayer.members.Add(newMember);
-                        if (!(DBAccess.SaveToDB(newMember)&& DBAccess.SaveToDB(newMember.shopingBasket)))
+                        if (!(DBAccess.SaveToDB(newMember))) //&& DBAccess.SaveToDB(newMember.shopingBasket)
                             DBAccess.DBerror("could not save member and shopping basket to DB ");                 
 
                         this.Add_Log("Registerd new user with name '" + user_name + "'");

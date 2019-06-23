@@ -78,6 +78,8 @@ namespace sadna192
             {
                 Product pr = Product.getProduct(product_name, product_category, product_price);
                 ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
+                if (this.productInStores == null)
+                    this.productInStores = new List<ProductInStore>(); 
                 this.productInStores.Add(P);
                 if (!DBAccess.SaveToDB(P))
                     DBAccess.DBerror("could not save ProductInStore to DB");

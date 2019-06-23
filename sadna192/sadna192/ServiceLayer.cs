@@ -311,17 +311,10 @@ namespace sadna192
                 if (this.userState.isVistor()) throw new Sadna192Exception("you can't open the store if not logedin", "(ServiceLayer) User_ServiceLayer", "Open_Store(1)");
                 if (Tools.check_storeName(name))
                 {
-                    /*foreach (Store store in this.single_ServiceLayer.store)
-                    {
-                        if (store.isMe(name)) throw new Sadna192Exception("name is allready in use", "(ServiceLayer) User_ServiceLayer", "Open_Store(2)");
-                    }*/
                     if (DBAccess.getStoreByName(name) != null) throw new Sadna192Exception("name is allready in use", "(ServiceLayer) User_ServiceLayer", "Open_Store(2)");
                     Store newstore = new Store(name);
-                    Console.WriteLine("A: " + newstore.name); 
                     bool ans = this.userState.Open_Store(newstore);
-                    Console.WriteLine("B: " + ans);
                     this.single_ServiceLayer.store.Add(newstore);
-                    Console.WriteLine("c: " + newstore.name);
                     if (!(DBAccess.SaveToDB(newstore)))  //&& DBAccess.SaveToDB(newstore.GetPolicy()) && DBAccess.SaveToDB(newstore.GetDiscount()))
                         DBAccess.DBerror("could not save Store to DB");
                     if (ans) this.Add_Log("opened new store named - " +name);
@@ -504,6 +497,7 @@ namespace sadna192
             {
                 return this.userState;
             }
+
             public List<Dictionary<string, dynamic>> usersStores()
             {
                 return this.userState.getMyShops();

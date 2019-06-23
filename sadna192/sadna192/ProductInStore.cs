@@ -22,14 +22,19 @@ namespace sadna192
         public Policy policy { get; set; }
 
         public ProductInStore() { }
+
         public ProductInStore(Product product, int amount, double price, Store store, Discount discount, Policy policy)
         {
             this.product = product;
+            this.productID = product.id;
             this.amount = amount;
             this.price = price;
             this.store = store;
+            this.storeID = store.storeID; 
             this.discount = discount;
+            this.discountID = discount.DiscountID;
             this.policy = policy;
+            this.policyID = policy.PolicyID;
         }
 
         // ============================= //

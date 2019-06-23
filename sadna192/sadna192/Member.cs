@@ -78,16 +78,9 @@ namespace sadna192
 
         internal Owner getUserStore(string store_name)
         {
-            Owner owner = null;
-            try
-            {
-                owner = DBAccess.getUserStore(store_name, this.name);
-
-            }
-            catch (Exception e)
-            {
-                throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
-            }
+            Owner owner = DBAccess.getUserStore(store_name, this.name);
+            if (owner==null)
+                  throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
             return owner;
         }
 

@@ -16,6 +16,7 @@ namespace sadna192
        
         public List<Owner> has_Apointed { get; set; }
 
+        public Owner() { }
         public Owner(Member u, Store s){
             this.store = s;
             //this.user = DBAccess.getMemberFromDB(u.name);

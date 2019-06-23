@@ -13,6 +13,8 @@ namespace sadna192
         public bool permision_remove { get;  set; }
         public bool permision_update { get;  set; }
 
+        public Manager() { }
+
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {
             this.permision_add = permision_add;

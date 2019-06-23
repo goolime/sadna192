@@ -158,9 +158,9 @@ namespace sadna192
             {
                 using (var ctx = new Model1())
                 {
-                    owner = ctx.Owners.Include("Store").Include("member")
-                                    .Where(o => o.store.getName() == store_name && o.user.name==member_name
-                                    )
+                    owner = ctx.Owners.Include("Store").Include("user")
+                                    .Where(o => o.store.name == store_name 
+                                    && o.user.name==member_name)
                                     .FirstOrDefault();
                 }
             }
@@ -169,7 +169,6 @@ namespace sadna192
                 Console.WriteLine("get User Store from DB faild : " + e.ToString());
             }
             return owner;
-
         }
 
         /*public static List<KeyValuePair<ProductInStore, int>> getBasket()

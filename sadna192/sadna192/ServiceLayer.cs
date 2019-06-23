@@ -429,30 +429,28 @@ namespace sadna192
                     {
 
                         if (((Member)this.userState).isMe(other_user)) throw new Sadna192Exception("You can't remove yourself", "(ServiceLayer) User_ServiceLayer", "Remove_User(1)");
+                        Member tmp = DBAccess.getMemberFromDB(other_user); 
+                        if (tmp == null)
+                            throw new Sadna192Exception("user not found", "(ServiceLayer) User_ServiceLayer", "Remove_User(2)");
+                        if (!DBAccess.removeUserFromDB(other_user))
+                        {
+                            DBAccess.DBerror("remove  " + other_user + "from DB faild");
+                            return false;
+                        }
                         foreach (User_ServiceLayer user in single_ServiceLayer.users)
                         {
                             if (user.userState.isMember())
                             {
                                 if (((Member)user.userState).isMe(other_user))
                                 {
-                                    Member tmp = (Member)user.userState;
                                     user.Logout();
                                     single_ServiceLayer.members.Remove(tmp);
                                     this.Add_Log("removed '" + other_user + "' from the system");
-                                    return true;
+                                   
                                 }
                             }
                         }
-                        foreach (Member member in single_ServiceLayer.members)
-                        {
-                            if (member.isMe(other_user))
-                            {
-                                single_ServiceLayer.members.Remove(member);
-                                this.Add_Log("removed '" + other_user + "' from the system");
-                                return true;
-                            }
-                        }
-                        throw new Sadna192Exception("user not found", "(ServiceLayer) User_ServiceLayer", "Remove_User(2)");
+                        return true;   
                     }
                     throw new Sadna192Exception("the user is not an Admin", "(ServiceLayer) User_ServiceLayer", "Remove_User(3)");
                 }

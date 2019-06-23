@@ -78,8 +78,6 @@ namespace sadna192
             return ans;
         }
 
-
-
         public static void DBerror(String e)
         {
             Console.WriteLine("DB ERROR: "+e+" TODO!!!!!");
@@ -387,6 +385,35 @@ namespace sadna192
             }
 
             return ans;
+        }
+
+        public static bool removeUserFromDB(string user_name)
+        {
+            bool ans = false;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    var res = ctx.Members
+                                    .Where(m => m.name == user_name)
+                                    .FirstOrDefault();
+                    if (res == null)
+                    {
+                        Console.WriteLine("trying to delete user that is not exist");
+                        //throw new Sadna192Exception("trying to delete user that is not exist", "DBAccess", "removeUserFromDB");
+                        return false;
+                    }
+                    ans = true; 
+                    ctx.Members.Remove(res);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("remove user from DB faild : " + e.ToString());
+            }
+
+            return ans; 
         }
 
 

@@ -9,6 +9,7 @@ namespace sadna192
         internal string name;
         private readonly string Code;
         internal List<Owner> owner;
+        internal List<string> alerts;
 
 
         public Member(string name, string password) : base()
@@ -16,6 +17,7 @@ namespace sadna192
             this.name = name;
             this.Code = this.Encrypt(this.name, password);
             this.owner = new List<Owner>();
+            this.alerts = new List<string>();
         }
 
         public override bool isVistor()
@@ -134,7 +136,7 @@ namespace sadna192
 
         public override string ToString()
         {
-            return (System.DateTime.Now.ToString() + "| " +this.name);
+            return (this.name);
         }
 
         public override List<Dictionary<string, dynamic>> getMyShops()

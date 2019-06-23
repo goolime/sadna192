@@ -25,8 +25,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "123456Ui");
             }
             catch (Exception) { }
-            userServiceLayer_seller = serviceLayer.Connect();
-            userServiceLayer_buyer = serviceLayer.Connect();
+            userServiceLayer_seller = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer_buyer = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer_seller.Register("purchaseCartUser", "1221Qwer");
@@ -73,7 +73,7 @@ namespace sadna192.Tests.AcceptanceTests
                     Assert.AreEqual(redDress[i].getAmount(), 9);
         }
 
-        [TestMethod()]
+     /*   [TestMethod()]
         public void Canceled_purchaseCart_10MIN_happyTest()
         {
             int amount = userServiceLayer_buyer.Watch_Cart().Count;
@@ -94,7 +94,8 @@ namespace sadna192.Tests.AcceptanceTests
             for (int i = 0; i < sodaList.Count; i++)
                 if (sodaList[i].getStore().getName().Equals("mike place"))
                     Assert.AreEqual(sodaList[i].getAmount(), 50);       
-        }
+        }*/
+
         /*
         [TestMethod()]
         public void purchaseCart_address_details_wrong_test()
@@ -148,6 +149,8 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer_buyer.Logout();
             userServiceLayer_seller.Logout();
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
 
     }

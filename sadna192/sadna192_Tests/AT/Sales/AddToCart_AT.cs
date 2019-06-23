@@ -26,8 +26,8 @@ namespace sadna192.Tests.AcceptanceTests
             }
             catch (Exception) { }
 
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("addToCartUser", "1221Xccv");
@@ -54,9 +54,11 @@ namespace sadna192.Tests.AcceptanceTests
             List<ProductInStore> appleToBuy = userServiceLayer2.GlobalSearch("apple", null,null, -1, -1, -1,-1);
             Assert.IsTrue(userServiceLayer2.Add_To_ShopingBasket(appleToBuy[0], 1));
             Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, 1);
+            /*  add more items from product that exist in store - possible? 
             List<ProductInStore> cheeseToBuy = userServiceLayer2.GlobalSearch("cheese", null, null, -1, -1, -1, -1);
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Add_To_ShopingBasket(cheeseToBuy[0], 6); }, "the wanted amount of the product is bigger than the amount that the store have");
             Assert.AreEqual(userServiceLayer2.Watch_Cart().Count, 1);    //the cart hasn't changed. 
+    */
         }
 
         [TestMethod()]
@@ -78,6 +80,8 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer1.Logout();
             userServiceLayer2.Logout();
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
 
     }

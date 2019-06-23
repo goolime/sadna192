@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace sadna192
 {
@@ -44,7 +45,7 @@ namespace sadna192
             Console.WriteLine("writting...{0}" , str);
             using (this.streamWriter = new StreamWriter(this.file_path, true))
             {
-                streamWriter.WriteLine(str);
+                streamWriter.WriteLine(System.DateTime.Now.ToString() + "   "+str);
                 streamWriter.Close(); 
             }
         }

@@ -52,7 +52,6 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ShopHub>("/ShopHub");

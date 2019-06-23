@@ -25,8 +25,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234Abcd");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("loginuser", "1221Abcd");
@@ -57,5 +57,11 @@ namespace sadna192.Tests.AcceptanceTests
                 Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
         }
 
+        [TestCleanup]
+        public void CleanUp()
+        {
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
+        }
     }
 }

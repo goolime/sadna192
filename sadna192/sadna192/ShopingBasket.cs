@@ -23,9 +23,15 @@ namespace sadna192
             this.shoppingCarts = null;
         }
 
+        public List<ShoppingCart> getshoppingCarts()
+        {
+            return shoppingCarts;
+        }
+
         internal bool addProduct(ProductInStore p, int amount)
         {
             //checking if already there is a Shopping cart for this prodcut in the shopping basket
+            //in case that there is such store, adds the product to this store.
             foreach(ShoppingCart sc in shoppingCarts)
             {
                 if (sc.getStore()==p.getStore()){
@@ -34,7 +40,8 @@ namespace sadna192
                 }
 
             }
-            //if there is no Shopping cart for this store, add it
+
+            //if there is no Shopping cart for this store, Opens new one
             List<Pair<ProductInStore, int>> shoppingCartContent = new List<Pair<ProductInStore, int>>();
             Pair<ProductInStore, int> productToAdd = new Pair<ProductInStore, int>(p, amount);
             shoppingCartContent.Add(productToAdd);
@@ -92,8 +99,14 @@ namespace sadna192
 
         private void checkSaved(UserState u)
         {
-            // TODO-MICHAL
-            throw new NotImplementedException();
+            foreach (KeyValuePair<ProductInStore, KeyValuePair<int, double>> p in this.savedProducts)
+            {
+                if (!p.Key.GetPolicy().check(p.Key, u))
+                {
+                    this.returnProducts();
+                    throw new Sadna192Exception("you don't stand in the shop policy", "ShoppingBasket", "checkSaved");
+                }
+            }
         }
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
@@ -151,7 +164,7 @@ namespace sadna192
             {
                 ans.AddRange(sc.getCart());
             }
-            if (ans.Count == 0) throw new Sadna192Exception("there are no product in the store", "ShopingBasket", "get_basket");
+            if (ans.Count == 0) throw new Sadna192Exception("there are no product in the cart", "ShopingBasket", "get_basket");
             return ans;
         }
 
@@ -160,6 +173,7 @@ namespace sadna192
             foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> productToReturn in savedProducts)
             {
                 productToReturn.Key.setAmount(productToReturn.Key.getAmount() + productToReturn.Value.Key);
+                this.addProduct(productToReturn.Key, productToReturn.Value.Key);
             }
             savedProducts = null;
         }

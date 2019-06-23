@@ -25,8 +25,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "123489Op");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("openStoreUser", "1221LkkJ");
@@ -48,8 +48,15 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void OpenStore_visitor_state_sadTest()  
         {
-            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Open_Store("dig dig dog"); }, "only registered user can open stores");  //happy 2
+        }
+
+        [TestCleanup]
+        public void CleanUp()
+        {
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
 
     }

@@ -86,8 +86,10 @@ namespace sadna192
 
         public void SetRank(string rank) => this.rank = double.Parse(rank);
 
-
-
+        public void setKeywords(List<string> keywords)
+        {
+            this.keywords = keywords;
+        }
 
 
     }

@@ -22,8 +22,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234FgHY");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("addOwneruser", "1221Abcd");
@@ -61,7 +61,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void AddTheSameOwnerAgain_happyTest()
         {
-            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect(new Stub_Alerter());
             userServiceLayer3.Register("addOwneruser3", "9999Abcd");
 
             Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"));
@@ -72,10 +72,10 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void NotOwnerTryToAddOwner_sadTest()
         {
-            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
            tmp_userServiceLayer.Register("addOwnertmpuser", "11111Abcd");
 
-            I_User_ServiceLayer userServiceLayer4 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer4 = serviceLayer.Connect(new Stub_Alerter());
             if (userServiceLayer4.Register("addOwneruser4", "12345Abcd"))
                 userServiceLayer4.Login("addOwneruser4", "12345Abcd");
 
@@ -87,9 +87,10 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer1.Logout();
             userServiceLayer2.Logout();
-            serviceLayer = null;
             userServiceLayer1 = null;
             userServiceLayer2 = null;
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

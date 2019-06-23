@@ -12,6 +12,12 @@ namespace sadna192
             this.shopingBasket = new ShopingBasket(new List<ShoppingCart>());
         }
 
+        internal ShopingBasket GetShopingBasket()
+        {
+            return this.shopingBasket;
+        }
+
+
         public virtual bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             throw new Sadna192Exception("User must login to add a product to a store" , "Visitor", "Add_Product_Store" ); 
@@ -106,7 +112,8 @@ namespace sadna192
 
         public override string ToString()
         {
-            return (System.DateTime.Now.ToString() + "| Visitor");
+            //return (System.DateTime.Now.ToString() + "| Visitor");
+            return ("Visitor");
         }
 
         public virtual List<Dictionary<string, dynamic>> getMyShops()

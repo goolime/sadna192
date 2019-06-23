@@ -25,8 +25,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234ASdf");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("updateProductInStoreUser", "1221YhnJ");
@@ -98,7 +98,7 @@ namespace sadna192.Tests.AcceptanceTests
             Assert.AreEqual(pre_amount_brown_suger, search1.Count);
             Assert.AreEqual(pre_amount_suger, search2.Count);
 
-            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Update_Product_Store("my store", "brown suger", "suger", "food", 9, 8, new noDiscount(), new regularPolicy()); }, "only store owner or manager can update product in the store");
             search1 = userServiceLayer2.GlobalSearch("brown suger", "food", null, 0, 100, 0, 0);
             search2 = userServiceLayer2.GlobalSearch("suger", "food", null, 0, 100, 0, 0);
@@ -117,6 +117,8 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer1.Logout();
             userServiceLayer2.Logout();
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

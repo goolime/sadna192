@@ -25,8 +25,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234Gthy");
             }
             catch (Exception) { } 
-            userServiceLayer2 = serviceLayer.Connect();
-            userServiceLayer1 = serviceLayer.Connect();
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer2.Register("removeManagerUser2", "87654TyTy");
@@ -69,7 +69,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Remove_shop_manager_that_is_not_manager_happyTest()
         {
-            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer3 = serviceLayer.Connect(new Stub_Alerter());
             userServiceLayer3.Register("removeManagerUser3", "9999Jhhj");
 
             Assert.ThrowsException<Exception>(() => { userServiceLayer1.Remove_Store_Owner("shoes store", "removeManagerUser3"); }, "faild to remove manager that was not defined to be an manager");
@@ -78,12 +78,12 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Manager_try_to_remove_a_manager_happyTest()  
         {
-            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             tmp_userServiceLayer.Register("removeManagerTmpUser", "11111FfgG");
             tmp_userServiceLayer.Login("removeManagerTmpUser", "11111FfgG");
             userServiceLayer1.Add_Store_Manager("shoes store", "removeManagerTmpUser", true, true, true);
 
-            I_User_ServiceLayer userServiceLayer5 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer5 = serviceLayer.Connect(new Stub_Alerter());
             userServiceLayer5.Register("removeManagerUser5", "12345YhhY");
             userServiceLayer5.Login("removeManagerUser5", "12345YhhY");
             userServiceLayer1.Add_Store_Manager("shoes store", "removeManagerUser5", true, true, true);
@@ -98,10 +98,10 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Regular_user_try_to_remove_a_manager_sadTest() 
         {
-            I_User_ServiceLayer tmp_userServiceLayer2 = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             tmp_userServiceLayer2.Register("removeManagerTmpUser2", "11111AssA");
 
-            I_User_ServiceLayer userServiceLayer4 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer4 = serviceLayer.Connect(new Stub_Alerter());
             userServiceLayer4.Register("removeManagerUser4", "12345KkJj");
             userServiceLayer4.Login("removeManagerUser4", "12345KkJj");
             userServiceLayer1.Add_Store_Manager("shoes store", "removeManagerUser4", true, true, true);
@@ -115,9 +115,10 @@ namespace sadna192.Tests.AcceptanceTests
         {
             userServiceLayer1.Logout();
             userServiceLayer2.Logout();
-            serviceLayer = null;
             userServiceLayer1 = null;
             userServiceLayer2 = null;
+            serviceLayer.CleanUpSystem();
+            serviceLayer = null;
         }
     }
 }

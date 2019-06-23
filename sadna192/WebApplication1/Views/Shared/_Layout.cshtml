@@ -39,11 +39,12 @@
                             <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search" aria-label="Search">
                             <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
                         </form>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
-                            Advanced Search
-                        </button>
+                        
 
                     </li>
+                    <li><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+    Advanced Search
+</button></li>
                 </ul>
             </div>
         </div>
@@ -73,6 +74,7 @@
     </div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script>
+
         if ("@ViewData["state"]" == "Visitor") {
             document.getElementById("login").innerHTML = "Login";
             document.getElementById("register").innerHTML = "Register";

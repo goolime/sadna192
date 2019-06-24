@@ -81,14 +81,14 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Product_search_sadTest()
         {       
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("", "food", null, 0, -2, 0, 0); }, "searching with wrong type of product name");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk‚Î", null, null, 0, 20, 0, 0); }, "searching with wrong type of catagory");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", null, null, -2, 0, 0, 0); }, "searching with wrong type of keywords list");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 40, 20, 0, 0); }, "searching with min price > max price");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, -2, 20, 0, 0); }, "searching with wrong type of min price");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, -5, 0, 0); }, "searching with wrong type of max price");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, 20, -0.5, 0); }, "searching with wrong type of store rank");
-            Assert.ThrowsException<Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, 20, 0, -1.3); }, "searching with wrong type of product rank");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("", "food", null, 0, -2, 0, 0); }, "searching with wrong type of product name");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk‚Î", null, null, 0, 20, 0, 0); }, "searching with wrong type of catagory");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", null, null, -2, 0, 0, 0); }, "searching with wrong type of keywords list");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 40, 20, 0, 0); }, "searching with min price > max price");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, -2, 20, 0, 0); }, "searching with wrong type of min price");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, -5, 0, 0); }, "searching with wrong type of max price");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, 20, -0.5, 0); }, "searching with wrong type of store rank");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer3.GlobalSearch("milk", "food", null, 0, 20, 0, -1.3); }, "searching with wrong type of product rank");
         }
 
         [TestCleanup]

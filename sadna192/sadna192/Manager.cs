@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace sadna192
 {
-    [Table ("Manager")]
+    
     public class Manager : Owner
     {
         public int id { set; get; }

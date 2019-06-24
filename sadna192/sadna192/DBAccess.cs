@@ -19,10 +19,11 @@ namespace sadna192
                 {
                     if (o.GetType() == typeof(Product))
                         ctx.Products.Add((Product)o);
-                    else if (o is Member) 
+                    else if (o is Member)
                         ctx.Members.Add((Member)o);
                     else if (o.GetType() == typeof(Manager))
-                        ctx.Managers.Add((Manager)o);
+                        ctx.Owners.Add((Owner)o);
+                    //ctx.Managers.Add((Manager)o);
                     else if (o.GetType() == typeof(Owner))
                         ctx.Owners.Add((Owner)o);
                     else if (o is Store)
@@ -54,29 +55,6 @@ namespace sadna192
             }           
         }
 
-        public static bool saveOwnerToDB(Owner o, Member m)
-        {
-            try
-            {
-                using (var ctx = new sadna192.Model1())
-                {
-                    ctx.Entry(m).State = EntityState.Detached;
-                    //ctx.Owners.Add(o);
-                    var entry = ctx.Entry(o);
-                   
-                 /*   ctx.Members.Attach(m);
-                    var entry = ctx.Entry(m);
-                    entry.Property(m => m.)*/
-                    ctx.SaveChanges();
-                    return true;
-                }
-            }
-            catch (DbUpdateException e)
-            {
-                Console.WriteLine("save product to DB faild : " + e.ToString());
-                return false;
-            }
-        }
 
         public static void DBerror(String e)
         {
@@ -501,6 +479,32 @@ namespace sadna192
             }
 
             return ans; 
+        }
+
+        public static bool removeOwnerFromDB(int id)//Owner toRemove)
+        {
+            bool ans = false;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    var res = ctx.Owners.Find(id); 
+                        
+                    if (res == null)
+                    {
+                        Console.WriteLine("trying to delete user that is not owner");
+                        return false;
+                    }
+                    ans = true;
+                    ctx.Owners.Remove(res);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("remove user from DB faild : " + e.ToString());
+            }
+            return ans;
         }
 
         public static void removeDuplicatUserFromDB(string user_name)

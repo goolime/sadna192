@@ -80,10 +80,10 @@ namespace sadna192
 
         private  bool removeMe()
         {
-            this.store.removeApointed(this);
+            
             this.user.owner.Remove(this);
-            foreach (Owner apointed in this.has_Apointed) apointed.removeMe();
-            return true;
+            this.store.owners.Remove(this);
+            return DBAccess.removeOwnerFromDB(this.id);
         }
 
         internal virtual bool removeApointed(Member other_Owner)

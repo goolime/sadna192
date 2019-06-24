@@ -15,7 +15,7 @@
 
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Member> Members { get; set; }
-        public virtual DbSet<Manager> Managers { get; set; }
+        //public virtual DbSet<Manager> Managers { get; set; }
         public virtual DbSet<Owner> Owners { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
         public virtual DbSet<Policy> Policies { get; set; }

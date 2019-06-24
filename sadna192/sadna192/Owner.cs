@@ -13,18 +13,14 @@ namespace sadna192
         public int userRef { get; set; }
         [ForeignKey("userRef")]
         public Member user { get; set; }
-       
-        public List<Owner> has_Apointed { get; set; }
+
+        private List<Owner> has_Apointed; 
 
         public Owner() { }
-        public Owner(Member u, Store s){
-            this.store = s;
-            this.storeRef = s.storeID; 
-            //this.user = DBAccess.getMemberFromDB(u.name);
-            this.userRef = DBAccess.getMemberFromDB(u.name).id;
+        public Owner(Member u, Store s){          
+            this.storeRef = s.storeID;           
+            this.userRef = u.id;         
             s.addOwner(this);
-
-            this.has_Apointed = new List<Owner>(); 
         }
 
         internal Store getStore()
@@ -65,24 +61,14 @@ namespace sadna192
 
         internal virtual bool addOwner(string store_name, Member new_owner)
         {
-            Console.WriteLine("add owner 1: " + new_owner.name +" | "+ new_owner.isMember() + " | " + new_owner.isOwner(store_name));
             Owner nm = new Owner(new_owner, this.store);
             if (new_owner.owner == null)
                 new_owner.owner = new List<Owner>();
-            new_owner.owner.Add(nm);
-            Console.WriteLine("add owner 2: " + new_owner.isMember() +" | " + new_owner.isOwner(store_name));
-               if (this.has_Apointed == null)
-                 this.has_Apointed = new List<Owner>();
-            Console.WriteLine(this.user.name + " =>check DB (new owner is there? bobi is 2? )");
-            Console.ReadKey();
-            
-            //if (nm.has_Apointed == null)
-            //    nm.has_Apointed = new List<Owner>();
-            // nm.has_Apointed.Add(this);
+            new_owner.owner.Add(nm);       
             if (!DBAccess.SaveToDB(nm))
-              DBAccess.DBerror("could not save owner to DB");
-            Console.WriteLine(this.user.name + " =>check DB (new owner is there? bobi is 2? )");
-            Console.ReadKey();
+                DBAccess.DBerror("could not save owner to DB");
+            if (this.has_Apointed == null)
+                this.has_Apointed = new List<Owner>();
             this.has_Apointed.Add(nm);
             return true;
         }

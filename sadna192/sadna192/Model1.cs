@@ -55,7 +55,7 @@
           .WithRequired(i => i.shopping)
           .HasForeignKey<int>(i => i.shopCartRef);
 
-            modelBuilder.Entity<Owner>().
+           /* modelBuilder.Entity<Owner>().
               HasMany(o => o.has_Apointed).
               WithMany()
               .Map(o =>
@@ -63,7 +63,7 @@
                   o.ToTable("ownerApointed");
                   o.MapLeftKey("ownerID");
                   o.MapRightKey("ApointedOwnerID");
-              });
+              });*/
 
             modelBuilder.Entity<ShopingBasket>().
               HasMany(b => b.shoppingCarts).

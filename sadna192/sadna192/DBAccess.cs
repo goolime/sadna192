@@ -12,7 +12,7 @@ namespace sadna192
     {
         public static bool SaveToDB(object o)
         {
-            Console.WriteLine("1: " + o.ToString());
+            Console.WriteLine("saveToDB: " + o.ToString());
             try
             { 
                 using (var ctx = new sadna192.Model1())
@@ -51,8 +51,31 @@ namespace sadna192
             {
                 Console.WriteLine("save product to DB faild : " + e.ToString());
                 return false;
+            }           
+        }
+
+        public static bool saveOwnerToDB(Owner o, Member m)
+        {
+            try
+            {
+                using (var ctx = new sadna192.Model1())
+                {
+                    ctx.Entry(m).State = EntityState.Detached;
+                    //ctx.Owners.Add(o);
+                    var entry = ctx.Entry(o);
+                   
+                 /*   ctx.Members.Attach(m);
+                    var entry = ctx.Entry(m);
+                    entry.Property(m => m.)*/
+                    ctx.SaveChanges();
+                    return true;
+                }
             }
-           
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("save product to DB faild : " + e.ToString());
+                return false;
+            }
         }
 
         public static void DBerror(String e)
@@ -62,7 +85,7 @@ namespace sadna192
         /**************** check ****************/
         public static Member loginCheck(string memberName, string pass)
         {
-            Console.WriteLine("2: " + memberName);
+            Console.WriteLine("loginCheck: " + memberName);
             Member ans = null;
             try
             {
@@ -126,7 +149,7 @@ namespace sadna192
 
         public static Member getMemberFromDB(string memberName)
         {
-            Console.WriteLine("4: " + memberName);
+            Console.WriteLine("get MemberFromDB: " + memberName);
             Member ans=null;
             try
             {
@@ -163,6 +186,7 @@ namespace sadna192
             }
             return ans;
         }
+
         public static ProductInStore findProductInStore(string store_name , string product_name)
         {
             ProductInStore ans = null;
@@ -477,6 +501,31 @@ namespace sadna192
             }
 
             return ans; 
+        }
+
+        public static void removeDuplicatUserFromDB(string user_name)
+        {
+            Member ans = null;
+            using (var ctx = new Model1())
+            {
+                ans = ctx.Members
+                         .Where(m => m.name == user_name)
+                         .FirstOrDefault();
+                if (ans != null)
+                {
+                    int def_id = ans.id;
+                    var res = ctx.Members
+                                    .Where(m => m.name == user_name && m.id > def_id)
+                                    .ToList();
+                    foreach (Member tmp in res)
+                    {
+                        var del = ctx.Members.Find(tmp.id);
+                        ctx.Members.Remove(del);
+                    }
+                    ctx.SaveChanges();
+                }
+                else Console.WriteLine(" ~~~~~ there is just one"); 
+            }   
         }
 
 

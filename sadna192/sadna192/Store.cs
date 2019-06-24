@@ -98,10 +98,10 @@ namespace sadna192
 
         internal bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
         {
-            
-            ProductInStore p = this.FindProductInStore(product_name);
+            return DBAccess.updateProductInStore(this.name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy); 
+            //ProductInStore p = this.FindProductInStore(product_name);
 
-            if(product_new_name != null)
+           /* if(product_new_name != null)
             {
                 Product newProductWithName = Product.getProduct(product_new_name, p.getCategory(), p.getRank());
                 p.setProduct(newProductWithName);
@@ -132,8 +132,7 @@ namespace sadna192
             if (product_new_policy != null)
             {
                 p.setPolicy(product_new_policy);
-            }
-            return true;
+            }*/          
         }
         
         //

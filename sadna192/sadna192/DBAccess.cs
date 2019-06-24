@@ -55,6 +55,11 @@ namespace sadna192
            
         }
 
+        public static void DBerror(String e)
+        {
+            Console.WriteLine("DB ERROR: "+e+" TODO!!!!!");
+        }
+        /**************** check ****************/
         public static Member loginCheck(string memberName, string pass)
         {
             Console.WriteLine("2: " + memberName);
@@ -77,16 +82,29 @@ namespace sadna192
             }
             return ans;
         }
-
-        public static void DBerror(String e)
+        
+        public static bool MemberIsOwner(string member_name , string store_name)
         {
-            Console.WriteLine("DB ERROR: "+e+" TODO!!!!!");
+            Owner ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Owners.Include("Store").Include("user")
+                                    .Where(o => o.store.name == store_name
+                                    && o.user.name == member_name)
+                                    .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("check if member is store owner faild : " + e.ToString());
+            }
+            return ans!= null;
         }
- 
-/**************** Get from DB ****************/
+        /**************** Get from DB ****************/
         public static Admin getAdminFromDB(string name)
         {
-            Console.WriteLine("3: " + name );
             Admin ans = null;
             try
             {
@@ -95,7 +113,6 @@ namespace sadna192
                     ans = (Admin)ctx.Members
                                     .Where(m => m.name == name)
                                     .FirstOrDefault();
-
                     return ans;
                 }
             }
@@ -103,7 +120,7 @@ namespace sadna192
             {
                 Console.WriteLine("get Admin from DB faild : " + e.ToString());
             }
-            return null;
+            return ans;
         }
 
 
@@ -127,7 +144,25 @@ namespace sadna192
             return ans;
         }
 
-
+        public static Owner getOwnerByNameAndStore(string user_name , string store_name)
+        {
+            Owner ans = null;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    ans = ctx.Owners.Include("Store").Include("user")
+                                    .Where(o => o.store.name == store_name
+                                    && o.user.name == user_name)
+                                    .FirstOrDefault();
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("check if member is store owner faild : " + e.ToString());
+            }
+            return ans;
+        }
         public static ProductInStore findProductInStore(string store_name , string product_name)
         {
             ProductInStore ans = null;
@@ -327,7 +362,6 @@ namespace sadna192
         public static bool updateProductInStoreIfExist(string store_name ,string product_name, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             bool ans = false;
-
             try
             {
                 using (var ctx = new Model1())
@@ -342,7 +376,6 @@ namespace sadna192
                     res.setPrice(product_price);
                     res.setDiscount(product_discount);
                     res.setPolicy(product_policy);
-
                     ctx.SaveChanges(); 
                 }
             }
@@ -350,8 +383,43 @@ namespace sadna192
             {
                 Console.WriteLine("get ProductInStore from DB & update him faild : " + e.ToString());
             }
-
             return ans;  
+        }
+
+        public static bool updateProductInStore(string store_name, string prev_product_name, string product_name, string product_category , double product_price, int product_amount, Discount product_discount, Policy product_policy)
+        {
+            bool ans = false;
+            try
+            {
+                using (var ctx = new Model1())
+                {
+                    var res = ctx.ProductInStores.Include("Product").Include("Store").Include("Discount").Include("Policy")
+                                    .Where(p => p.product.name == prev_product_name
+                                    && p.store.name == store_name)
+                                    .FirstOrDefault();
+                    if (res == null)
+                        throw new Sadna192Exception("product not exsist in store", "DBAccess", "updateProductInStore");
+                    if (product_name != null)
+                        res.product.name = product_name;
+                    if (product_category != null)
+                        res.product.category = product_category;
+                    if (product_amount != -1)
+                        res.amount=product_amount;
+                    if (product_price != -1)
+                        res.price = product_price;
+                    if (product_discount != null)
+                        res.setDiscount(product_discount);
+                    if (product_policy != null)
+                        res.setPolicy(product_policy); 
+                    ctx.SaveChanges();
+                    return true; 
+                }
+            }
+            catch (DbUpdateException e)
+            {
+                Console.WriteLine("get ProductInStore from DB & update him faild : " + e.ToString());
+            }
+            return ans;
         }
 
 
@@ -381,7 +449,6 @@ namespace sadna192
                 Console.WriteLine("remove ProductInStore from DB faild : " + e.ToString());
                 throw new Sadna192Exception("Connection to DB lost: remove ProductInStore from DB faild", "DBAccess", "removeProductInStore");
             }
-            return false;
         }
 
         public static bool removeUserFromDB(string user_name)

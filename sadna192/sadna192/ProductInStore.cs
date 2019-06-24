@@ -105,6 +105,7 @@ namespace sadna192
         public void setProduct(Product p)
         {
             this.product = p;
+            this.productID = p.id;
         }
 
         public void setPrice(double price)
@@ -115,11 +116,13 @@ namespace sadna192
         public void setDiscount(Discount discount)
         {
             this.discount = discount;
+            this.discountID = discount.DiscountID; 
         }
 
         public void setPolicy(Policy policy)
         {
             this.policy = policy;
+            this.policyID = policy.PolicyID;
         }
 
         

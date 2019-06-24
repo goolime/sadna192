@@ -95,12 +95,7 @@ namespace sadna192
                 if (!Tools.check_username(admin_name) ||
                     !Tools.check_password(admin_pass))
                     throw new Sadna192Exception("invalid admin details", "(ServiceLayer) single_ServiceLayer", "single_ServiceLayer(2)");
-                Admin admin = Admin.GetAdmin(admin_name, admin_pass);
-                if (admin == null)
-                {
-                    admin = new Admin(admin_name, admin_pass);
-                    DBAccess.SaveToDB(admin);
-                }
+                Admin admin = Admin.GetAdmin(admin_name, admin_pass);               
                 members.Add(admin); 
             }
 
@@ -180,9 +175,11 @@ namespace sadna192
             {
                 if (Tools.check_username(new_owner_name) && Tools.check_storeName(Store_name))
                 {
-                    Member other_user = this.GetMember(new_owner_name);
-                    if (other_user.isOwner(Store_name)) throw new Sadna192Exception(new_owner_name+ "is allready owner of the store", "(ServiceLayer) User_ServiceLayer", "Add_Store_Owner(1)");
-                    if (other_user == null) throw new Sadna192Exception("new Store owner was not found", "(ServiceLayer) User_ServiceLayer", "Add_Store_Owner(2)");
+                    Member other_user = DBAccess.getMemberFromDB(new_owner_name); //this.GetMember(new_owner_name);
+                    if (other_user == null)
+                        throw new Sadna192Exception("new Store owner was not found", "(ServiceLayer) User_ServiceLayer", "Add_Store_Owner(2)");
+                    if (DBAccess.MemberIsOwner(other_user.name, Store_name)) //(other_user.isOwner(Store_name)) 
+                        throw new Sadna192Exception(new_owner_name+ "is allready owner of the store", "(ServiceLayer) User_ServiceLayer", "Add_Store_Owner(1)");                    
                     bool ans= this.userState.Add_Store_Owner(Store_name, other_user);
                     if (ans) this.Add_Log("added the user " + new_owner_name +" as owner in the store " + Store_name);
                     return ans;

@@ -14,34 +14,36 @@ public class Program
         Console.WriteLine(l.Distance("My string", "my string"));
         Console.WriteLine(l.Distance("My string", "My dtring"));
         Console.WriteLine(l.Distance("My string", "My stttring"));
+
+        
         /*ember m = new Member("Banani983", "Banani983");
         DBAccess.SaveToDB(m);
        Member m2 = new Member("Banani983", "Banani983");
         DBAccess.SaveToDB(m2);*/
 
-        
-           I_ServiceLayer serviceLayer = new ServiceLayer();
-          try
-          {
-              serviceLayer.Create_ServiceLayer( new Stub_deliverySystem(),  new Stub_paymentSystem(), "admin123", "1234AsdF");
-        }
-        catch (Exception) { Console.WriteLine("66666666"); }
-        I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-      //  userServiceLayer2.Register("bobi", "9876ASdf");
-        Console.WriteLine(userServiceLayer2.Login("bobi", "9876ASdf"));
-        /* Console.WriteLine("11111111");
-           I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
-             // I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
-             Console.WriteLine("22222222");
-           //  userServiceLayer1.Register("Banani983", "Banani983");
-          // userServiceLayer2.Register("Banani9832", "Banani9832");
-           Console.WriteLine("333333333");
-          // Console.WriteLine(userServiceLayer2.Login("Banani9832", "Banani9832"));
-           Console.WriteLine(userServiceLayer1.Login("Banani983", "Banani983"));
-             Console.WriteLine("4444444");
-             userServiceLayer1.Open_Store("naimig");
-             Console.WriteLine("55555555");
-             // userServiceLayer2.Open_Store("naimi");*/
+
+          I_ServiceLayer serviceLayer = new ServiceLayer();
+         try
+         {
+             serviceLayer.Create_ServiceLayer( new Stub_deliverySystem(),  new Stub_paymentSystem(), "admin123", "1234AsdF");
+       }
+       catch (Exception) { Console.WriteLine("66666666"); }
+       I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+       userServiceLayer2.Register("bobi", "9876ASdf");
+       Console.WriteLine(userServiceLayer2.Login("bobi", "9876ASdf"));
+        userServiceLayer2.Open_Store("the store");
+        //Console.WriteLine(userServiceLayer2.Add_Product_Store("the store", "eggs", "food", 13.4, 63, noDiscount.creteNoDiscount(), regularPolicy.creteRegularPolicy()));
+        //
+        //Console.WriteLine(userServiceLayer2.Update_Product_Store("the store", "eggs", "organic eggs", "food", 8.9, 90, null, null));
+         I_User_ServiceLayer userServiceLayer1 = serviceLayer.Connect();
+        // I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+          userServiceLayer1.Register("Banani983", "Banani983");
+        // userServiceLayer2.Register("Banani9832", "Banani9832");
+         // Console.WriteLine(userServiceLayer2.Login("Banani9832", "Banani9832"));
+          Console.WriteLine(userServiceLayer1.Login("Banani983", "Banani983"));
+        Console.ReadKey();
+        Console.WriteLine(userServiceLayer2.Add_Store_Owner("the store", "Banani983")); 
+            //userServiceLayer1.Open_Store("naimig");
 
 
 

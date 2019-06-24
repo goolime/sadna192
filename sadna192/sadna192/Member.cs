@@ -37,11 +37,12 @@ namespace sadna192
 
         public override bool isOwner(string store_name)
         {
-            foreach (Owner o in this.owner)
+            /*foreach (Owner o in this.owner)
             {
                 if (o.getStore().isMe(store_name)) return true;
             }
-            return false;
+            return false;*/
+            return DBAccess.MemberIsOwner(this.name, store_name);
         }
 
         public bool isMe(string other)

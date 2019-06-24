@@ -16,7 +16,7 @@ namespace WebApplication1.Models
             if (!Sessions.ContainsKey(ip))
             {
                 I_ServiceLayer tmp_sl = new sadna192.ServiceLayer();
-                Sessions[ip] = tmp_sl.Connect();
+              //  Sessions[ip] = tmp_sl.Connect(stu);
             }
             return Sessions[ip];
         }

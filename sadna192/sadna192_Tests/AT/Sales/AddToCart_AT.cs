@@ -26,8 +26,8 @@ namespace sadna192.Tests.AcceptanceTests
             }
             catch (Exception) { }
 
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("addToCartUser", "1221Xccv");

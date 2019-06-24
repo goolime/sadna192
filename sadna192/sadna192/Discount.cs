@@ -6,12 +6,18 @@ namespace sadna192
     public interface Discount
     {
         double calculate(ProductInStore p, UserState u);
+        Discount Copy();
     }
     public class noDiscount : Discount
     {
         public double calculate(ProductInStore p, UserState u)
         {
             return 1;
+        }
+
+        public Discount Copy()
+        {
+            return new noDiscount();
         }
     }
 
@@ -27,13 +33,13 @@ namespace sadna192
         }
 
         public abstract double calculate(ProductInStore p, UserState u);
+        public abstract Discount Copy();
     }
 
     public class AndDiscount : multipleDiscount
     {
         public AndDiscount(List<Discount> l) : base()
         {
-            ServiceLayer SL = new ServiceLayer();
             this.discount = l;
         }
         public override double calculate(ProductInStore p, UserState u)
@@ -44,6 +50,18 @@ namespace sadna192
                 ans = ans * d.calculate(p, u);
             }
             return ans;
+        }
+
+        public override Discount Copy()
+        {
+            List<Discount> tmp = new List<Discount>();
+
+            foreach (Discount d in base.discount)
+            {
+                tmp.Add(d.Copy());
+            }
+
+            return new AndDiscount(tmp);
         }
     }
 
@@ -64,6 +82,17 @@ namespace sadna192
             }
             return ans;
         }
+        public override Discount Copy()
+        {
+            List<Discount> tmp = new List<Discount>();
+
+            foreach (Discount d in base.discount)
+            {
+                tmp.Add(d.Copy());
+            }
+
+            return new XOrDiscount(tmp);
+        }
     }
 
     public class IncludeStoreDiscount : Discount
@@ -71,6 +100,11 @@ namespace sadna192
         public double calculate(ProductInStore p, UserState u)
         {
             return p.getStore().GetDiscount().calculate(p, u);
+        }
+
+        public Discount Copy()
+        {
+            return new IncludeStoreDiscount();
         }
     }
 
@@ -92,6 +126,11 @@ namespace sadna192
             if (u.numOfItemsInCart(p.getStore().getName(), this.product) >= this.amount) return this.discount;
             else return 1;
         }
+
+        public Discount Copy()
+        {
+            return new ProductAmountDiscount("" + this.product, this.amount, this.discount);
+        }
     }
 
     public class ProductAmountInBasketDiscount : Discount
@@ -109,6 +148,11 @@ namespace sadna192
         {
             if (u.numOfItemsInCart(p.getStore().getName()) >= this.amount) return this.discount;
             else return 1;
+        }
+
+        public Discount Copy()
+        {
+            return new ProductAmountInBasketDiscount(this.amount, this.discount);
         }
     }
 
@@ -129,6 +173,11 @@ namespace sadna192
             if (from<DateTime.Now && DateTime.Now<to) return this.discount;
             else return 1;
         }
+
+        public Discount Copy()
+        {
+            return new TimeDiscount(new DateTime(this.from.Ticks), new DateTime(this.to.Ticks), this.discount);
+        }
     }
 
     public class fixDiscount:Discount
@@ -143,6 +192,11 @@ namespace sadna192
         public double calculate(ProductInStore p, UserState u)
         {
             return this.discount;
+        }
+
+        public Discount Copy()
+        {
+            return new fixDiscount(this.discount);
         }
     }
 }

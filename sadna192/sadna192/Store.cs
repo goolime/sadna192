@@ -15,7 +15,6 @@ namespace sadna192
         private Policy storePolicy;
         private Discount storeDiscount;
 
-
         public Store(string name)
         {
             this.name = name;
@@ -23,6 +22,23 @@ namespace sadna192
             this.owners = new List<Owner>();
             this.storePolicy = new regularPolicy();
             this.storeDiscount = new noDiscount();
+        }
+
+        public Store(Store store)
+        {
+            this.name = "" + store.name;
+            this.productInStores = new List<ProductInStore>();
+            this.owners = new List<Owner>();
+            foreach(ProductInStore p in store.productInStores)
+            {
+                this.productInStores.Add(new ProductInStore(p,this));
+            }
+            foreach (Owner o in store.owners)
+            {
+                this.owners.Add(o);
+            }
+            this.storePolicy = store.storePolicy.Copy();
+            this.storeDiscount = store.storeDiscount.Copy();
         }
 
         public Policy GetPolicy()
@@ -43,6 +59,17 @@ namespace sadna192
         public List<ProductInStore> getProductInStore()
         {
             return productInStores;
+        }
+
+        public ProductInStore getProductInStore(string name)
+        {
+            ProductInStore ans = null;
+            foreach (ProductInStore p in this.productInStores)
+            {
+                if (name == p.getProduct().name) ans = p;
+            }
+
+            return ans;
         }
 
         internal bool isMe(string name)
@@ -127,6 +154,7 @@ namespace sadna192
             {
                 p.setPolicy(product_new_policy);
             }
+
             return true;
         }
         

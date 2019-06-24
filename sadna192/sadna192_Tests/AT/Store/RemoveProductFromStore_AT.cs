@@ -26,8 +26,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234GfrT");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
-            userServiceLayer2 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("removeProductFromStoreUser", "1221Gbbv");
@@ -79,7 +79,7 @@ namespace sadna192.Tests.AcceptanceTests
             search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount, search1.Count);
 
-            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Remove_Product_Store("our store", "pizza"); }, "only store owner or manager can remove product to the store");
             search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount, search1.Count);

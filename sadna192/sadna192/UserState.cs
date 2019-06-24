@@ -27,5 +27,6 @@ namespace sadna192
         List<Dictionary<string, dynamic>> getMyShops();
         int numOfItemsInCart(string store);
         int numOfItemsInCart(string v, string p);
+        UserState Copy();
     }
 }

@@ -18,13 +18,13 @@ namespace sadna192_Tests.Integration_Tests
         {
             serviceLayer = new ServiceLayer();
             serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234Abcd");
-            storeOwner = serviceLayer.Connect();
+            storeOwner = serviceLayer.Connect(new Stubs.Stub_Alerter());
             storeOwner.Register("storeOwner", "storeOwner1");
             storeOwner.Login("storeOwner", "storeOwner1");
             storeOwner.Open_Store("shufersal");
             storeOwner.Add_Product_Store("shufersal", "apple", "fruit", 4.8, 80, new noDiscount(), new regularPolicy());
 
-            testUser = serviceLayer.Connect();
+            testUser = serviceLayer.Connect(new Stubs.Stub_Alerter());
             testUser.Register("testUser", "1234Rtyu");
             testUser.Login("testUser", "1234Rtyu");
         }
@@ -32,7 +32,7 @@ namespace sadna192_Tests.Integration_Tests
         [TestMethod]
         public void RegisterAndLoginTest()
         {
-            I_User_ServiceLayer testUser1 = serviceLayer.Connect();
+            I_User_ServiceLayer testUser1 = serviceLayer.Connect(new Stubs.Stub_Alerter());
             Assert.IsTrue(testUser1.GetUserState().isVistor());
             Assert.ThrowsException<Exception>(() =>
             { testUser1.Login("testUser1", "69375Abcd"); },
@@ -67,7 +67,7 @@ namespace sadna192_Tests.Integration_Tests
         [TestMethod]
         public void VisitorSearchingAndManageCart()
         {
-            I_User_ServiceLayer testUser2 = serviceLayer.Connect();
+            I_User_ServiceLayer testUser2 = serviceLayer.Connect(new Stubs.Stub_Alerter());
             List<ProductInStore> appleSearch = testUser2.GlobalSearch("apple", null, null, -1, -1, -1, -1);
             Assert.AreEqual(appleSearch.Count, 1);
             Assert.AreEqual(-1, testUser2.GetUserState().numOfItemsInCart("shufersal"));
@@ -90,7 +90,7 @@ namespace sadna192_Tests.Integration_Tests
         [TestMethod]
         public void OpenStoreTest()
         {
-            I_User_ServiceLayer visitorUser = serviceLayer.Connect();
+            I_User_ServiceLayer visitorUser = serviceLayer.Connect(new Stubs.Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { visitorUser.Open_Store("renuar"); }, "only registered user can open store");
             Assert.ThrowsException<Exception>(() => { visitorUser.GetUserState().getMyShops(); }, "visitor cannot have stores");
             Assert.AreEqual(testUser.GetUserState().getMyShops().Count, 0);
@@ -151,6 +151,7 @@ namespace sadna192_Tests.Integration_Tests
               Assert.IsTrue(storeOwner.Add_Store_Owner("market", storeOwnerToBe));
               Assert.IsTrue(storeOwnerToBe.Add_Product_Store("market", "cherry", "fruit", 15, 60, new noDiscount(), new regularPolicy()));
               Assert.IsTrue(storeOwnerToBe.Add_Store_Manager("market", storeManagerToBe, true, false, false));
+              
               Assert.IsTrue(storeManagerToBe.Add_Product_Store("market", "banana", "fruit", 5, 100, new noDiscount(), new regularPolicy())); 
           }
 
@@ -160,7 +161,7 @@ namespace sadna192_Tests.Integration_Tests
             Assert.IsTrue(testUser.Open_Store("testStore"));
             testUser.Add_Product_Store("testStore", "eggs", "food", 12, 59, new noDiscount(), new regularPolicy());
             Assert.IsNotNull(testUser.GetProductFromStore("eggs", "testStore")); 
-            I_User_ServiceLayer admin = serviceLayer.Connect();
+            I_User_ServiceLayer admin = serviceLayer.Connect(new Stubs.Stub_Alerter());
             admin.Login("admin", "1234Abcd");
             Assert.IsTrue(admin.Remove_User("testUser"));
             Assert.ThrowsException<Exception>(() =>

@@ -19,13 +19,14 @@ namespace sadna192
         /// represent a connection to a single user in the system. needed for later parallel conection.
         /// </summary>
         /// <returns>a connection to a single user in the system</returns>
-        I_User_ServiceLayer Connect();
+        I_User_ServiceLayer Connect(Alerter alerter);
 
         void CleanUpSystem();
     }
 
     public interface I_User_ServiceLayer
     {
+        UserState GetUser();
         // UC 2.2
         bool Register(string user_name, string user_pass);
         // UC 2.3
@@ -89,6 +90,8 @@ namespace sadna192
         bool canclePurch();
 
          ProductInStore GetProductFromStore(string productName, string storeName);
+
+        bool alert(string messege);
     }
     
 

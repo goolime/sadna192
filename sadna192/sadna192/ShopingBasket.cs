@@ -23,6 +23,17 @@ namespace sadna192
             this.shoppingCarts = null;
         }
 
+        public ShopingBasket(ShopingBasket shopingBasket, UserState u)
+        {
+            this.savedProducts = null;
+            this.toBeRemoved = false;
+            this.shoppingCarts = new List<ShoppingCart>();
+            foreach(ShoppingCart sc in shopingBasket.shoppingCarts)
+            {
+                this.shoppingCarts.Add(new ShoppingCart(sc,u));
+            }
+        }
+
         public List<ShoppingCart> getshoppingCarts()
         {
             return shoppingCarts;

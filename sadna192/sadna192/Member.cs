@@ -9,6 +9,7 @@ namespace sadna192
         internal string name;
         private string code;
         internal List<Owner> owner;
+        internal List<string> alerts;
 
 
         public Member(string name, string password) : base()
@@ -16,6 +17,7 @@ namespace sadna192
             this.name = name;
             this.code = this.Encrypt(this.name, password);
             this.owner = new List<Owner>();
+            this.alerts = new List<string>();
         }
 
         public override bool isVistor()
@@ -144,7 +146,7 @@ namespace sadna192
             foreach(Owner o in this.owner)
             {
                 Dictionary<string, dynamic> tmp = new Dictionary<string, dynamic>();
-                tmp["store"] = o.getStore();
+                tmp["store"] = new Store(o.getStore());
                 tmp["isManager"] = typeof(Manager) == o.GetType();
                 tmp["permision_add"] = !tmp["isManager"] || ((Manager)o).permision_add;
                 tmp["permision_remove"] = !tmp["isManager"] || ((Manager)o).permision_remove;

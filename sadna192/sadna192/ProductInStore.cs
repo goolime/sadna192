@@ -21,6 +21,16 @@ namespace sadna192
             this.policy = policy;
         }
 
+        public ProductInStore(ProductInStore p,Store s)
+        {
+            this.product = new Product(p.product);
+            this.amount = p.amount;
+            this.price = p.price;
+            this.store = s;
+            this.discount = p.discount.Copy();
+            this.policy = p.policy.Copy();
+        }
+
         // ============================= //
         // ========== Getters ========== //
         // ============================= //

@@ -20,7 +20,7 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "123456Ui");
             }
             catch (Exception) { }
-            userServiceLayer1 = serviceLayer.Connect();
+            userServiceLayer1 = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer1.Register("registerUser", "1221zxcV");
@@ -31,7 +31,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Register_happyTest()
         {
-            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("bobi", "9876ASdf"); }, "try to log in with user name that not exist");
             Assert.IsTrue(userServiceLayer2.Register("bobi", "9876ASdf"));
             Assert.IsTrue(userServiceLayer2.Login("bobi", "9876ASdf"));
@@ -40,7 +40,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Register_sadTest1()
         {
-            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { userServiceLayer2.Register("registerUser", "69375LOpo"); }, "this user name is not avilable");
 
         }
@@ -48,7 +48,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Register_sadTest2()
         {
-            I_User_ServiceLayer userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("", "3456Sdfg"); }, "user name is mandatory field");
             Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("Alice", ""); }, "password is mandatory field");
         }

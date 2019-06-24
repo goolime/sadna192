@@ -66,5 +66,13 @@ namespace sadna192_Tests
 
             }
         }
+
+        public class Stub_Alerter : sadna192.Alerter
+        {
+            public bool AlertUser(string messege)
+            {
+                return true;
+            }
+        }
     }
 }

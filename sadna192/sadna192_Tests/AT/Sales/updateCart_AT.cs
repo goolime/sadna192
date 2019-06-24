@@ -21,8 +21,8 @@ namespace sadna192.Tests.AcceptanceTests
                 serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "admin", "1234DFgh");
             }
             catch (Exception) { }
-            userServiceLayer_seller = serviceLayer.Connect();
-            userServiceLayer_buyer = serviceLayer.Connect();
+            userServiceLayer_seller = serviceLayer.Connect(new Stub_Alerter());
+            userServiceLayer_buyer = serviceLayer.Connect(new Stub_Alerter());
             try
             {
                 userServiceLayer_seller.Register("updateCartUser", "1221THyu");

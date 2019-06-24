@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
 
 namespace sadna192
 {
     public class Product
     {
-        private string name;
+        public int id { get; set; }
+        public string name { get; set; }
         private string category;
         private double rank;
         private List<string> keywords;
@@ -42,6 +44,18 @@ namespace sadna192
             this.category = category;
             this.rank = rank;
             this.keywords = keywords;
+        }
+
+        public Product(Product product)
+        {
+            this.name = "" + product.name;
+            this.category = "" + product.category;
+            this.rank = product.rank;
+            this.keywords = new List<string>();
+            foreach( string s in product.keywords)
+            {
+                this.keywords.Add("" + s);
+            }
         }
 
 

@@ -8,12 +8,21 @@ namespace sadna192
     {
         private Store store;
         private List<Pair<ProductInStore, int>> shoppingCartContent;
-        private ProductPurchaseType productPurchaseType;
 
         public ShoppingCart(Store store, List<Pair<ProductInStore, int>> shoppingCartContent)
         {
             this.store = store;
             this.shoppingCartContent = shoppingCartContent;
+        }
+
+        public ShoppingCart(ShoppingCart sc, UserState u)
+        {
+            this.store = new Store(sc.store);
+            this.shoppingCartContent = new List<Pair<ProductInStore, int>>();
+            foreach (Pair<ProductInStore, int> p in sc.shoppingCartContent)
+            {
+                this.shoppingCartContent.Add(new Pair<ProductInStore, int>(this.store.getProductInStore(p.First.getProduct().name), p.Second));
+            }
         }
 
         public Store getStore()

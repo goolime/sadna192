@@ -12,6 +12,11 @@ namespace sadna192
             this.shopingBasket = new ShopingBasket(new List<ShoppingCart>());
         }
 
+        public Visitor(Visitor visitor)
+        {
+            this.shopingBasket = new ShopingBasket(visitor.shopingBasket, this);
+        }
+
         internal ShopingBasket GetShopingBasket()
         {
             return this.shopingBasket;
@@ -129,6 +134,11 @@ namespace sadna192
         public int numOfItemsInCart(string store, string p)
         {
             return this.shopingBasket.numOfItemsInCart(store,p);
+        }
+
+        public virtual UserState Copy()
+        {
+            return new Visitor(this);
         }
     }
 }

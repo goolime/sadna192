@@ -38,7 +38,7 @@ namespace sadna192.Tests.AcceptanceTests
         {
             serviceLayer = new ServiceLayer();
             serviceLayer.Create_ServiceLayer(new Stub_deliverySystem(), new Stub_paymentSystem(), "adminTest", "1234Abcd");
-            I_User_ServiceLayer userServiceLayer = serviceLayer.Connect();
+            I_User_ServiceLayer userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
             Assert.IsTrue(userServiceLayer.Login("adminTest", "1234Abcd"));
         }
 

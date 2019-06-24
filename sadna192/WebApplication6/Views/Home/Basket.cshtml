@@ -1,0 +1,93 @@
+﻿@using sadna192;
+@{
+    ViewData["Title"] = "Basket";
+}
+
+<script>
+    function delete_row(s) {
+        var table = document.getElementById(s);
+        //var row = table.getElementById(p);
+        table.remove();
+    }
+
+    function update_row(s, p) {
+        //var table = document.getElementById('bla');
+        //var newAmount = prompt("change amount to:", table.innerHTML);
+        //alert(document.getElementById(bla).innerText);
+        var table = document.getElementById('form_' + p + s);
+        table.style.visibility = "hidden";
+        table = document.getElementById('update_' + p + s);
+        table.style.visibility = "visible";
+    }
+
+    function show_form(a, s, p, l) {
+        var table = document.getElementById(a + p + s);
+        table.style.visibility = "visible";
+        table = document.getElementById(l + p + s);
+        table.style.visibility = "hidden";
+    }
+
+/**/</script>
+
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+
+@if (ViewData["Error"].ToString().Length == 0)
+{
+    foreach (string s in ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"]).Keys)
+    {
+        double total = 0;
+        List<KeyValuePair<ProductInStore, int>> store = ((Dictionary<string, List<KeyValuePair<ProductInStore, int>>>)ViewData["cart"])[s];
+        <h4>@s</h4>
+        <table style="width:100%" id="@s">
+            <tr>
+                <th>Product Name</th>
+                <th>Amount</th>
+                <th>price per unit</th>
+            </tr>
+            @foreach (KeyValuePair<ProductInStore, int> pr in store)
+            {
+                total += pr.Key.getPrice() * pr.Value;
+                <tr id="@(pr.Key.getName() + s)">
+                    <th>@pr.Key.getName()</th>
+                    <th>@pr.Value</th>
+                    <th>@pr.Key.getPrice()$</th>
+
+                    <!--<th><button onclick="delete_row('@(pr.Key.getName()+s)')" uiactions="">remove</button></th>-->
+                    <th>
+                        <button id="br_@(pr.Key.getName()+s)" onclick="show_form('remove_','@s','@pr.Key.getName()','br_')">remove</button>
+                        <form action="update_product_inCart" id="remove_@(pr.Key.getName()+s)" style="visibility:hidden" method="post">
+                            Are you sure you wants to remove the item from your cart? <br />
+                            <input type="submit" value="remove">
+                            <input type="hidden" name="newAmount" value="0"/>
+                            <input type="hidden" value="@s" name="store" />
+                            <input type="hidden" value="@pr.Key.getName()" name="product" />
+                        </form>
+                    </th>
+                    <th>
+                        <button id="update_@(pr.Key.getName()+s)" onclick="show_form('form_','@s','@pr.Key.getName()','update_')">update</button>
+                        <form action="update_product_inCart" id="form_@(pr.Key.getName()+s)" style="visibility:hidden" method="post">
+                            please enter the new amount of products: <br />
+                            <input type="number" name="newAmount" min="0" value="@pr.Value"/>
+                            <input type="submit" value="update">
+                            <input type="hidden" value="@s" name="store" />
+                            <input type="hidden" value="@pr.Key.getName()" name="product" />
+
+                        </form>
+                    </th>
+                </tr>
+            }
+        </table>
+        <h5>the store toal is @total$</h5>
+        <form action="Buy_from_store_form"  method="post">
+            <input type="submit" value="Buy From Store">
+            <input type="text" style="visibility:hidden" value="@s" name="Store" />
+        </form>
+
+    }
+}
+else
+{
+    <h4>your cart is empty</h4>
+}

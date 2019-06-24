@@ -1,46 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
-    public interface Policy
+    public abstract class Policy
     {
-        bool check(ProductInStore p, UserState u);
-        bool immidiate();
-        Policy Copy();
+        public int PolicyID { get; set; }
+        public abstract bool check(ProductInStore p, UserState u);
+        public abstract bool immidiate();
+        public abstract Policy Copy();
     }
 
     public class regularPolicy: Policy
     {
-        public bool check(ProductInStore p, UserState u)
+
+    public regularPolicy() {}
+    public override bool check(ProductInStore p, UserState u)
         {
             return true;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new regularPolicy();
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
+        }
+
+        public static regularPolicy creteRegularPolicy()
+        {
+            regularPolicy rgp = new regularPolicy();
+            if (!DBAccess.SaveToDB(rgp))
+                DBAccess.DBerror("could not save regular policy to DB ");
+            return rgp;
         }
     }
 
     public class immidiatePolicy: Policy
     {
-        public bool check(ProductInStore p, UserState u)
+
+    public immidiatePolicy() { }
+
+    public override bool check(ProductInStore p, UserState u)
         {
             return true;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new immidiatePolicy();
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return true; 
         }
@@ -48,7 +63,10 @@ namespace sadna192
 
     public abstract class MultiplePolicy : Policy
     {
-        internal List<Policy> Policies;
+
+    public MultiplePolicy() { }
+
+    public List<Policy> Policies { get; set; }
 
         public List<Policy> getPolicies()
         {
@@ -56,14 +74,13 @@ namespace sadna192
             foreach (Policy p in this.Policies) ans.Add(p);
             return ans;
         }
-        public abstract bool check(ProductInStore p, UserState u);
-        public abstract bool immidiate();
-        public abstract Policy Copy();
     }
 
     public class OrPolicy : MultiplePolicy
     {
-        public OrPolicy(List<Policy> l):base()
+    public OrPolicy() { }
+
+    public OrPolicy(List<Policy> l):base()
         {
             this.Policies = l;
         }
@@ -98,7 +115,9 @@ namespace sadna192
 
     public class AndPolicy : MultiplePolicy
     {
-        public AndPolicy(List<Policy> l) : base()
+    public AndPolicy() { }
+
+    public AndPolicy(List<Policy> l) : base()
         {
             this.Policies = l;
         }
@@ -132,7 +151,9 @@ namespace sadna192
 
     public class XOrPolicy : MultiplePolicy
     {
-        public XOrPolicy(List<Policy> l) : base()
+    public XOrPolicy() { }
+
+    public XOrPolicy(List<Policy> l) : base()
         {
             this.Policies = l;
         }
@@ -178,17 +199,19 @@ namespace sadna192
 
     public class IncludeStorePolicy : Policy
     {
-        public bool check(ProductInStore p, UserState u)
+    public IncludeStorePolicy() { }
+
+    public override bool  check(ProductInStore p, UserState u)
         {
             return p.getStore().GetPolicy().check(p, u);
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new IncludeStorePolicy();
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -196,17 +219,19 @@ namespace sadna192
 
     public class MamberPolicy : Policy
     {
-        public bool check(ProductInStore p, UserState u)
+    public MamberPolicy() { }
+
+    public override bool check(ProductInStore p, UserState u)
         {
             return u.isMember();
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new MamberPolicy();
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -214,23 +239,27 @@ namespace sadna192
     
     public class MinimumInCart:Policy
     {
-        int min;
+        [Column("min")]
+        public int min { get; set; }
+        public MinimumInCart() { }
+
+    
         public MinimumInCart(int i)
         {
             this.min = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName()) >= this.min;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new MinimumInCart(this.min);
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -238,24 +267,28 @@ namespace sadna192
 
     public class MinimumProductInCart : Policy
     {
-        int min;
-        public MinimumProductInCart(int i)
+        [Column("min")]
+        public int min { get; set; }
+
+        public MinimumProductInCart() { }
+
+    public MinimumProductInCart(int i)
         {
             this.min = i;
         }
 
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName(),p.getName()) >= this.min;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new MaximumProductInCart(this.min);
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -263,23 +296,27 @@ namespace sadna192
 
     public class MaximumInCart : Policy
     {
-        int max;
+        [Column("max")]
+        public int max { get; set; }
+
+        public MaximumInCart() { }
+
         public MaximumInCart(int i)
         {
             this.max = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName()) <= this.max;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new MaximumInCart(this.max);
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -287,23 +324,27 @@ namespace sadna192
 
     public class MaximumProductInCart : Policy
     {
-        int max;
-        public MaximumProductInCart(int i)
+        [Column("max")]
+        public int max { get; set; }
+
+        public MaximumProductInCart() { }
+
+    public MaximumProductInCart(int i)
         {
             this.max = i;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             return u.numOfItemsInCart(p.getStore().getName(), p.getName()) <= this.max;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new MaximumProductInCart(this.max);
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }
@@ -311,26 +352,28 @@ namespace sadna192
 
     public class TimePolicy:Policy
     {
-        DateTime from;
-        DateTime to;
-        public TimePolicy(DateTime from, DateTime to)
+        public DateTime from { get; set; }
+        public DateTime to { get; set; }
+        public TimePolicy() { }
+
+    public TimePolicy(DateTime from, DateTime to)
         {
             this.from = from;
             this.to = to;
         }
 
-        public bool check(ProductInStore p, UserState u)
+        public override bool check(ProductInStore p, UserState u)
         {
             DateTime now = DateTime.Now;
             return this.from < now && now < this.to;
         }
 
-        public Policy Copy()
+        public override Policy Copy()
         {
             return new TimePolicy(new DateTime(this.from.Ticks), new DateTime(this.to.Ticks));
         }
 
-        public bool immidiate()
+        public override bool immidiate()
         {
             return false;
         }

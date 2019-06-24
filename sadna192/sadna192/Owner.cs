@@ -1,18 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class Owner
     {
-        private Store store;
-        private Member user;
+
+        public int id { get; set; }
+        public int storeRef { get; set; }
+        [ForeignKey("storeRef")]
+        public Store store { get; set; }
+        public int userRef { get; set; }
+        [ForeignKey("userRef")]
+        public Member user { get; set; }
+
         private List<Owner> has_Apointed;
         internal List<Owner> waiting_to_aprove;
 
+        public Owner() { }
+
         public Owner(Member u, Store s){
-            this.store = s;
-            this.user = u;
+            this.storeRef = s.storeID;
+            this.userRef = u.id;
             this.waiting_to_aprove = new List<Owner>();
             
             foreach (Owner o in s.GetOwners())
@@ -47,26 +57,30 @@ namespace sadna192
         internal virtual bool addManager(Member new_manager, bool permision_add, bool permission_remove, bool permission_update)
         {
             this.are_assigned();
+            //the manager already exists for the current store
             try
             {
-                foreach (Owner o in new_manager.owner)
-                {
-                    if (o.store.isMe(this.store.getName()) && o is Manager){
-                        ((Manager)o).permision_add = ((Manager)o).permision_add || permision_add;
-                        ((Manager)o).permision_remove = ((Manager)o).permision_remove || permission_remove;
-                        ((Manager)o).permision_update = ((Manager)o).permision_update || permission_update;
-                        return true;
-                    }
-                }
+                return DBAccess.updateManager(new_manager, this.store, permision_add, permission_remove, permission_update);
                 throw new Sadna192Exception("add manager faild", "Owner", "addManager");
             }
             catch
             {
                 Manager nm = new Manager(new_manager, this.store, permision_add, permission_remove, permission_update);
-                new_manager.owner.Add(nm);
-                this.has_Apointed.Add(nm);
+                if (new_manager.owner == null)
+                {
+                    new_manager.owner = new List<Owner>();
+                    new_manager.owner.Add(nm);
+                }
+                else
+                {
+                    new_manager.owner.Add(nm);
+                }
+                // this.has_Apointed.Add(nm);
+                if (!DBAccess.SaveToDB(nm))
+                    DBAccess.DBerror("could not save manager to DB");
                 return true;
             }
+       
         }
 
         internal virtual bool addOwner(string store_name, Member new_owner)
@@ -78,7 +92,13 @@ namespace sadna192
             {
                 o.user.alerts.Add(this.user.name + " wants to appoint " + new_owner + " as an owner and is waiting for your approval");
             }
+            if (new_owner.owner == null)
+                new_owner.owner = new List<Owner>();
             new_owner.owner.Add(nm);
+            if (!DBAccess.SaveToDB(nm))
+                DBAccess.DBerror("could not save owner to DB");
+            if (this.has_Apointed == null)
+                this.has_Apointed = new List<Owner>();
             this.has_Apointed.Add(nm);
             return true;
         }
@@ -95,7 +115,7 @@ namespace sadna192
             this.store.removeApointed(this);
             this.user.owner.Remove(this);
             foreach (Owner apointed in this.has_Apointed) apointed.removeMe();
-            return true;
+            return DBAccess.removeOwnerFromDB(this.id);
         }
 
         internal virtual bool removeApointed(Member other_Owner)
@@ -109,7 +129,7 @@ namespace sadna192
         {
             this.are_assigned();
             if (this.user.isMe(other)) return this;
-            foreach(Owner apointed in this.has_Apointed)
+            foreach(Owner apointed in this.store.GetOwners())
             {
                 try
                 {

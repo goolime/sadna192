@@ -6,9 +6,12 @@ namespace sadna192
 {
     public class Manager : Owner
     {
-        public bool permision_add { get; internal set; }
-        public bool permision_remove { get; internal set; }
-        public bool permision_update { get; internal set; }
+        public int id { set; get; }
+        public bool permision_add { get;  set; }
+        public bool permision_remove { get;  set; }
+        public bool permision_update { get;  set; }
+
+        public Manager() { }
 
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {

@@ -1,41 +1,56 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace sadna192
 {
+
     public class Product
     {
+
         public int id { get; set; }
         public string name { get; set; }
-        private string category;
-        private double rank;
-        private List<string> keywords;
+        public string category { get; set; }
+        public double rank { get; set; }
+        private List<String> keywords;
+        public List<String> Keywords
+        {
+            get { return keywords; }
+            set { keywords = value; }
+        }
+
+
+        public string KeywordsAsString
+        {
+            get { return String.Join(",", keywords); }
+            set => keywords = value.Split(',').ToList();
+        }
         private static List<Product> allProducts;
 
         public static Product getProduct(string name, string category, double rank)
         {
             if (allProducts == null) allProducts = new List<Product>();
-            foreach(Product p in allProducts)
+            Product pr = DBAccess.searchProduct(name, category, rank);
+            if (pr == null)
             {
-                if (p.getName() == name)
-                {
-                    return p;
-                }
+                pr = new Product(name, category, rank);
+                allProducts.Add(pr);
+                if (!DBAccess.SaveToDB(pr))
+                    DBAccess.DBerror("could not save Product to DB");
             }
-
-            Product pr = new Product(name, category, rank);
-            allProducts.Add(pr);
             return pr;
 
 
         }
+
+        public Product() { }
 
         private Product(string name, string category, double rank)
         {
             this.name = name;
             this.category = category;
             this.rank = rank;
-            this.keywords = null;
+            this.keywords = new List<string>();
         }
 
         private Product(string name, string category, double rank, List<string> keywords)

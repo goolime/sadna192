@@ -1,0 +1,45 @@
+﻿@using sadna192;
+@{
+    ViewData["Title"] = "Recipt";
+}
+
+<h2>Recipt</h2>
+
+<table style="width:100%">
+    <tr>
+        <th>Product Name</th>
+        <th>Amount</th>
+        <th>Toatl Price</th>
+    </tr>
+    @{
+        double sum = 0;
+    }
+    @foreach (KeyValuePair<ProductInStore, KeyValuePair<int, double>> pr in (List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>>)ViewData["recipt"])
+    {
+        <tr>
+            <th>@pr.Key.getName()</th>
+            <th>@pr.Value.Key</th>
+            <th>@pr.Value.Value$</th>
+            @{ 
+                sum += pr.Value.Value;
+            }
+        </tr>
+    }
+</table><br />
+The total amount is @sum$
+<table style="width:100%">
+    <tr>
+        <th>
+            <form action="return_to_cart" method="post">
+                <input type="submit" value="back to cart">
+            </form>
+        </th>
+        <th>
+            <form action="finalize" method="post">
+                Payment deatails: <input type="text" name="payment" /><br />
+                Shipping Addres: <input type="text" name="shipping" /><br />
+                <input type="submit" value="check out">
+            </form>
+        </th>
+    </tr>
+</table>

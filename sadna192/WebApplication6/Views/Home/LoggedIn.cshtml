@@ -1,0 +1,77 @@
+﻿@using sadna192
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "LoggedIn";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <h2>My Page</h2>
+
+    @if (ViewData["state"].ToString() == "admin")
+    {
+        <form action="/Home/RemoveUserForm" method="post">
+            <font color="black">Username: </font>
+            <input type="text" name="name" title="user name" />
+            <input type="submit" value="Remove" />
+        </form>
+    }
+        <button onclick="show_open_store_form()" id="AddStoresButton">
+            @if (ViewData["storeerr"] != null && (bool)ViewData["storeerr"])
+            {
+                <font>Hide</font>
+            }
+            else
+            {
+                <font>Add Store</font>
+
+            }
+        </button>
+    <div id="addStoreDiv" name="openstorediv" style="visibility: @(((bool)ViewData["storeerr"])?"visible":"hidden");">
+        @if (ViewData["storeerr"] != null && (bool)ViewData["storeerr"])
+        {
+            <font color="red">could not add store</font>
+        }
+        <form action="/Home/OpenStoreForm" method="post">
+            <font color="black">Open Store: </font>
+            <input type="text" name="storeName" title="storeName" />
+            <input type="submit" />
+        </form>
+    </div>
+
+    <script>
+        function show_open_store_form() {
+            var isHidden = document.getElementById("addStoreDiv").style.visibility === "hidden";
+            document.getElementById("addStoreDiv").style.visibility = isHidden ? "visible" : "hidden";
+            document.getElementById("AddStoresButton").innerHTML = isHidden ? "Hide" : "Add Store";
+
+        }
+    </script>
+
+    <!--
+        dictionery keys
+
+        store -> object Store
+        isManager -> bool
+        permision_add -> bool
+        permision_remove -> bool
+        permision_update -> bool
+        
+    -->
+    My Stores:
+    @foreach (Dictionary<string, dynamic> storeDict in (List<Dictionary<string, dynamic>>)ViewData["stores"])
+    {
+        Store store = storeDict["store"];
+    <div>
+            <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="MyStores" asp-route-storename="@store.getName()">@store.getName()</a>
+    </div><br />
+    }
+</body>
+</html>
+
+
+

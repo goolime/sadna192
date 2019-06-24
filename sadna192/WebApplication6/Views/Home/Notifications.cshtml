@@ -1,0 +1,39 @@
+﻿
+<h2>Notifications</h2>
+<div class="container">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            User..........<input type="text" id="userInput" />
+            <br />
+            Message...<input type="text" id="messageInput" />
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+</div>
+<script>
+    @if (ViewData["LastNotifications"] != null)
+    {
+        @foreach(string notif in (List<string>)ViewData["LastNotifications"])
+        {
+            <text>
+    var li = document.createElement("li");
+    li.textContent = @notif;
+    document.getElementById("messagesList").appendChild(li);
+            </text>
+        }
+    }
+</script>
+

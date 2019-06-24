@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
 {
     public class Member : Visitor
     {
-        internal string name;
-        private readonly string Code;
-        internal List<Owner> owner;
+        public int id { get; set; }
+        [Required]
+        public string name { get; set; }
+        public string Code { get; set; }
+        public List<Owner> owner { get; set; }
+
         internal List<string> alerts;
+
+        public Member() : base()
+        {
+        }
 
 
         public Member(string name, string password) : base()
@@ -32,11 +40,12 @@ namespace sadna192
 
         public override bool isOwner(string store_name)
         {
-            foreach (Owner o in this.owner)
+            /*foreach (Owner o in this.owner)
             {
                 if (o.getStore().isMe(store_name)) return true;
             }
-            return false;
+            return false;*/
+            return DBAccess.MemberIsOwner(this.name, store_name);
         }
 
         public bool isMe(string other)
@@ -73,11 +82,10 @@ namespace sadna192
 
         internal Owner getUserStore(string store_name)
         {
-            foreach (Owner owner in this.owner)
-            {
-                if (owner.getStore().isMe(store_name)) return owner;
-            }
-            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
+            Owner owner = DBAccess.getUserStore(store_name, this.name);
+            if (owner == null)
+                throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
+            return owner;
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
@@ -93,8 +101,14 @@ namespace sadna192
 
         public override bool Open_Store(Store name)
         {
-            if (this.owner == null) this.owner = new List<Owner>();
-            this.owner.Add(new Owner(this, name));
+            Member m = DBAccess.getMemberFromDB(this.name);
+            if (m.owner == null) m.owner = new List<Owner>();
+            Owner owner = new Owner(m, name);
+
+            m.owner.Add(owner);
+            // this.owner.Add(owner);
+            //if (!DBAccess.SaveToDB(owner))
+            //   DBAccess.DBerror("could not save owner to DB");
             return true;
         }
 
@@ -138,6 +152,7 @@ namespace sadna192
         {
             return (this.name);
         }
+
 
         public override List<Dictionary<string, dynamic>> getMyShops()
         {

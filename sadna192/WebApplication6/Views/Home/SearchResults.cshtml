@@ -1,0 +1,41 @@
+﻿@using sadna192
+
+@{
+    ViewData["Title"] = "SearchResults";
+}
+
+<h2>SearchResults</h2>
+@if (((List<ProductInStore>)ViewData["products"]).Count == 0)
+{
+    <font color="blue"><b>no Product was found for - @ViewData["keyword"]</b></font>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Store Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in (List<ProductInStore>)ViewData["products"])
+            {
+
+            <tr>
+                <td>@product.getName()</td>
+                <td>@product.getPrice()</td>
+                <td>@product.getStore().getName()</td>
+                <td>
+                    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(product.getStore().getName())" asp-route-productname="@product.getName()">View @product.getName() Page</a>
+                    <!--<input />-->
+                </td>
+            </tr>
+            }
+
+        <tbody />
+    </table>
+}
+
+

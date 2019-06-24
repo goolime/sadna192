@@ -63,7 +63,7 @@ namespace sadna192.Tests.AcceptanceTests
                 sum = sum + buying[i].Value.Value;
             }
             Assert.AreEqual(sum, 45);
-            Assert.IsTrue(userServiceLayer_buyer.Finalize_Purchase("address buyer 1", "paymnent 1234")); 
+            Assert.IsTrue(userServiceLayer_buyer.Finalize_Purchase("address buyer 1", "1234",5,2020,"israel","333","12345678","israel","beersheva","1231233")); 
             Assert.AreEqual(userServiceLayer_buyer.Watch_Cart().Count, amount - 1);  // the products from renuar has been removed from the cart
             Assert.ThrowsException<Exception>(() => { userServiceLayer_buyer.Purchase_Store_cart("Renuar"); }, "the buyer has no item in the cart from this store");
 

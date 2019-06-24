@@ -20,7 +20,7 @@ namespace sadna192_Tests.Unit_Tests
             member1 = new Member("Guy", "34343434");
             store = new Store("Max Brenner");
             store1 = new Store("Ossem");
-            owner = new Owner(member, store);
+            //owner = new Owner(member, store);
             member.Open_Store(store);
 
 

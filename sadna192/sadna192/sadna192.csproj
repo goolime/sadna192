@@ -45,9 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Admin.cs" />
+    <Compile Include="DBAccess.cs" />
     <Compile Include="DeliverySystem.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ImmediatePurchase.cs" />
+    <Compile Include="ItemsInCart.cs" />
     <Compile Include="Alerter.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Manager.cs" />
@@ -73,7 +75,9 @@
     <Compile Include="Visitor.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework">

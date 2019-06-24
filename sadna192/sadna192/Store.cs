@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using F23.StringSimilarity;
 
 
@@ -8,12 +9,19 @@ namespace sadna192
 {
     public class Store
     {
-        private string name;
-        private List<ProductInStore> productInStores= new List<ProductInStore>();
-        private List<Owner> owners;
-        private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
-        private Policy storePolicy;
-        private Discount storeDiscount;
+        public int storeID { get; set; }
+        public string name { get; set; }
+        public List<ProductInStore> productInStores { get; set; }
+        public List<Owner> owners { get; set; }
+        public int policyID { get; set; } 
+        [ForeignKey ("policyID")]
+        public Policy storePolicy { get; set; }
+        public int discountID { get; set; }
+        [ForeignKey("discountID")]
+        public Discount storeDiscount { get; set; }
+
+
+        public Store() { } 
 
         public Store(string name)
         {
@@ -82,47 +90,46 @@ namespace sadna192
             this.owners.Add(owner);
         }
 
+        public override string ToString()
+        {
+            return (this.name);
+        }
+
         internal bool addProduct(string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             //checks if the product is already exists, if not - adds it.
             try
-            {
-                ProductInStore oldPr = FindProductInStore(product_name);
-                oldPr.setAmount (product_amount);
-                oldPr.setPrice(product_price);
-                oldPr.setDiscount(product_discount);
-                oldPr.setPolicy(product_policy);
-                return true;
+            {  
+                return DBAccess.updateProductInStoreIfExist(this.name, product_name, product_price, product_amount, product_discount, product_policy);
             }
             catch
             {
                 Product pr = Product.getProduct(product_name, product_category, product_price);
                 ProductInStore P = new ProductInStore(pr, product_amount, product_price, this, product_discount, product_policy);
+                if (this.productInStores == null)
+                    this.productInStores = new List<ProductInStore>(); 
                 this.productInStores.Add(P);
+                if (!DBAccess.SaveToDB(P))
+                    DBAccess.DBerror("could not save ProductInStore to DB");
                 return true;
             }
         }
 
         internal bool removeProduct(string product_name)
         {
-            foreach(ProductInStore p in productInStores)
-            {
-                if (p.getName() == product_name)
-                {
-                    productInStores.Remove(p);
-                    return true;
-                }
-            }
-            throw new Sadna192Exception("Product to be removed was not found", "Store", "removeProduct");
+            bool ans = DBAccess.removeProductInStore(this.name, product_name); 
+            if (!ans)
+                throw new Sadna192Exception("Product to be removed was not found", "Store", "removeProduct");
+            return ans; 
             
         }
 
         internal bool updateProduct(string product_name, string product_new_name, string product_new_category, double product_new_price, int product_new_amount, Discount product_new_discount, Policy product_new_policy)
         {
-            
-            ProductInStore p = this.FindProductInStore(product_name);
+            return DBAccess.updateProductInStore(this.name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy); 
+            //ProductInStore p = this.FindProductInStore(product_name);
 
-            if(product_new_name != null)
+           /* if(product_new_name != null)
             {
                 Product newProductWithName = Product.getProduct(product_new_name, p.getCategory(), p.getRank());
                 p.setProduct(newProductWithName);
@@ -153,9 +160,7 @@ namespace sadna192
             if (product_new_policy != null)
             {
                 p.setPolicy(product_new_policy);
-            }
-
-            return true;
+            }*/          
         }
         
         //
@@ -214,6 +219,12 @@ namespace sadna192
             return ans;
         }
 
+        internal bool setDiscount(Discount dis)
+        {
+            this.storeDiscount = dis;
+            return true;
+        }
+
         internal void removeApointed(Owner owner)
         {
             this.owners.Remove(owner);
@@ -222,6 +233,7 @@ namespace sadna192
         //Implementation of the searching methods
         private List<ProductInStore> SearchProductByName(string name, List<ProductInStore> list)
         {
+            NormalizedLevenshtein similarety = new NormalizedLevenshtein();
             List<ProductInStore> productsResult = new List<ProductInStore>();
             foreach(ProductInStore p in list)
             {
@@ -233,8 +245,15 @@ namespace sadna192
             return productsResult;
         }
 
+        internal bool setPolicy(Policy dis)
+        {
+            this.storePolicy = dis;
+            return true;
+        }
+
         private List<ProductInStore> SearchProductByCategory(string category, List<ProductInStore> list)
         {
+            NormalizedLevenshtein similarety = new NormalizedLevenshtein();
             List<ProductInStore> productsResult = new List<ProductInStore>();
             foreach (ProductInStore p in list)
             {

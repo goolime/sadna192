@@ -35,11 +35,20 @@ The total amount is @sum$
             </form>
         </th>
         <th>
-            <form action="finalize" method="post">
-                Payment deatails: <input type="text" name="payment" /><br />
-                Shipping Addres: <input type="text" name="shipping" /><br />
+
+            @using (Html.BeginForm("finalize", "Home", FormMethod.Post))
+            {
+                <font> card_number deatails:</font> <input type="text" name=" card_number" /><br />
+                <font>month:</font><input type="number" name="month" /><br />
+                <font>year:</font><input type="number" name="year" /><br />
+                <font>holder:</font><input type="text" name="holder" /><br />
+                <font>ccv:</font><input type="text" name="ccv" /><br />
+                <font>id:</font><input type="text" name="id" /><br />
+                <font>country:</font><input type="text" name="country" /><br />
+                <font>city:</font><input type="text" name="city" /><br />
+                <font>zip:</font><input type="text" name="zip" /><br />
                 <input type="submit" value="check out">
-            </form>
+            }
         </th>
     </tr>
 </table>

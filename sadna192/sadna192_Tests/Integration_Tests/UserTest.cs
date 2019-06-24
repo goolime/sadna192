@@ -61,7 +61,8 @@ namespace sadna192_Tests.Integration_Tests
             testUser.Login("testUser", "1234Rtyu");
             List<KeyValuePair<ProductInStore, int>> cartList2 = testUser.Watch_Cart();
             Assert.AreEqual(cartList1.Count, cartList2.Count);
-            Assert.AreEqual(cartList1[0], cartList2[0]);
+            Assert.AreEqual(cartList1[0].Key.getName(), cartList2[0].Key.getName());
+            Assert.AreEqual(cartList1[0].Value, cartList2[0].Value);
         }
 
         [TestMethod]
@@ -75,7 +76,7 @@ namespace sadna192_Tests.Integration_Tests
             Assert.AreEqual(3, testUser2.GetUserState().numOfItemsInCart("shufersal"));
             Assert.AreEqual(3, testUser2.GetUserState().numOfItemsInCart("shufersal", "apple"));
             List<KeyValuePair<ProductInStore, int>> cartList = testUser2.Watch_Cart();
-            Assert.AreEqual(appleSearch[0], cartList[0].Key);
+            Assert.AreEqual(appleSearch[0].getName(), cartList[0].Key.getName());
             Assert.AreEqual(cartList[0].Value, 3);
             Assert.IsTrue(testUser2.Edit_Product_In_ShopingBasket(appleSearch[0], 5));
             cartList = testUser2.Watch_Cart();
@@ -111,7 +112,7 @@ namespace sadna192_Tests.Integration_Tests
               Assert.IsTrue(storeOwner.Add_Product_Store("shufersal", "milk", "drink", 5.9, 100, new noDiscount(), new regularPolicy()));
               milkSearch = storeOwner.GlobalSearch("milk", null, null, -1, -1, -1, -1);
               Assert.AreEqual( 1, milkSearch.Count);
-              Assert.AreEqual(storeOwner.GetProductFromStore("milk", "shufersal") , milkSearch[0]);
+              Assert.AreEqual(storeOwner.GetProductFromStore("milk", "shufersal").getName() , milkSearch[0].getName());
              bool ans = false;
              for (int i =0; i< milkSearch.Count; i++)
              {
@@ -126,7 +127,7 @@ namespace sadna192_Tests.Integration_Tests
             Assert.IsNull(storeOwner.GetProductFromStore("milk", "shufersal"));
             milkSearch = storeOwner.GlobalSearch("milk tnuva", null, null, -1, -1, -1, -1);
             Assert.AreEqual(milkSearch.Count, 1);
-            Assert.AreEqual(storeOwner.GetProductFromStore("milk tnuva", "shufersal"), milkSearch[0]);
+            Assert.AreEqual(storeOwner.GetProductFromStore("milk tnuva", "shufersal").getName(), milkSearch[0].getName());
             //Delete product
             Assert.IsTrue(storeOwner.Remove_Product_Store("shufersal", "milk tnuva"));
             milkSearch = storeOwner.GlobalSearch("milk tnuva", null, null, -1, -1, -1, -1);

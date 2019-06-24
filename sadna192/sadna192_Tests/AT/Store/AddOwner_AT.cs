@@ -55,7 +55,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void AddShopOwnerThatNotExist_happyTest()
         {
-            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "userNotExist"); }, "faild to add owner that not exist");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "userNotExist"); }, "faild to add owner that not exist");
         }
 
         [TestMethod()]
@@ -65,7 +65,7 @@ namespace sadna192.Tests.AcceptanceTests
             userServiceLayer3.Register("addOwneruser3", "9999Abcd");
 
             Assert.IsTrue(userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"));
-            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"); }, "this user is already owner");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Add_Store_Owner("shopipi", "addOwneruser3"); }, "this user is already owner");
 
         }
 
@@ -79,7 +79,7 @@ namespace sadna192.Tests.AcceptanceTests
             if (userServiceLayer4.Register("addOwneruser4", "12345Abcd"))
                 userServiceLayer4.Login("addOwneruser4", "12345Abcd");
 
-            Assert.ThrowsException<Exception>(() => { userServiceLayer4.Add_Store_Owner("shopipi", "addOwner_tmp_user");}, "only store owner can add new owner to the store");
+            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer4.Add_Store_Owner("shopipi", "addOwner_tmp_user");}, "only store owner can add new owner to the store");
         }
 
         [TestCleanup]

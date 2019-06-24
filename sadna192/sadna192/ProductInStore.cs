@@ -1,24 +1,40 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class ProductInStore
     {
-        private Product product;
-        private int amount;
-        private double price;
-        private Store store;
-        private Discount discount;
-        private Policy policy;
+        public int id { get; set; }
+        public int productID { get; set; }
+        [ForeignKey("productID")]
+        public virtual Product product { get; set; }
+        public int amount { get; set; }
+        public double price { get; set; }
+        public int storeID { get; set; }
+        [ForeignKey("storeID")]
+        public Store store { get; set; }
+        public int discountID { get; set; }
+        [ForeignKey("discountID")]
+        public Discount discount { get; set; }
+        public int policyID { get; set; }
+        [ForeignKey("policyID")]
+        public Policy policy { get; set; }
+
+        public ProductInStore() { }
 
         public ProductInStore(Product product, int amount, double price, Store store, Discount discount, Policy policy)
         {
             this.product = product;
+            this.productID = product.id;
             this.amount = amount;
             this.price = price;
             this.store = store;
+            this.storeID = store.storeID; 
             this.discount = discount;
+            this.discountID = discount.DiscountID;
             this.policy = policy;
+            this.policyID = policy.PolicyID;
         }
 
         public ProductInStore(ProductInStore p,Store s)
@@ -99,6 +115,7 @@ namespace sadna192
         public void setProduct(Product p)
         {
             this.product = p;
+            this.productID = p.id;
         }
 
         public void setPrice(double price)
@@ -109,11 +126,13 @@ namespace sadna192
         public void setDiscount(Discount discount)
         {
             this.discount = discount;
+            this.discountID = discount.DiscountID; 
         }
 
         public void setPolicy(Policy policy)
         {
             this.policy = policy;
+            this.policyID = policy.PolicyID;
         }
 
         

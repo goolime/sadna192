@@ -45,7 +45,7 @@ namespace sadna192
             //in case that there is such store, adds the product to this store.
             foreach(ShoppingCart sc in shoppingCarts)
             {
-                if (sc.getStore()==p.getStore()){
+                if (sc.getStore().getName()==p.getStore().getName()){
                     sc.addProduct(p, amount);
                     return true;
                 }
@@ -122,14 +122,20 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
         {
+            bool store_was_found = false;
             foreach(ShoppingCart sc in shoppingCarts)
             {
                 if(sc.getStore().getName() == store_name)
                 {
+                    store_was_found = true;
                     savedProducts = new List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>>();
                     foreach(KeyValuePair<ProductInStore,int> p in sc.getCart())
                     {
-                        if (p.Key.getAmount() - p.Value >= 0)
+                        bool c1 = (p.Key.getAmount() - p.Value >= 0);
+                        ProductInStore pro = sc.getStore().getProductInStore(p.Key.getName());
+                        Policy pol = pro.getPolicy();
+                        bool c2 = (pol.check(p.Key, u));
+                        if (c1 && c2)
                         {
                             p.Key.setAmount(p.Key.getAmount() - p.Value);
                             savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value * p.Key.getDiscount().calculate(p.Key, u))));
@@ -138,7 +144,10 @@ namespace sadna192
                         else
                         {
                             this.returnProducts();
-                            throw new Sadna192Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore(), "ShopingBasket", "Purchase_Store_cart(1)");
+                            if (c1)
+                                throw new Sadna192Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore(), "ShopingBasket", "Purchase_Store_cart(1)");
+                            else
+                                throw new Sadna192Exception("you don't stand in store policy", "ShopingBasket", "Purchase_Store_cart(2)");
                         }
                     }
                     this.shoppingCarts.Remove(sc);
@@ -146,7 +155,9 @@ namespace sadna192
                     return this.savedProducts;
                 }
             }
-            throw new Sadna192Exception("no cart for the store", "ShopingBasket", "Purchase_Store_cart(2)");
+            if (!store_was_found)
+                throw new Sadna192Exception("no cart for the store", "ShopingBasket", "Purchase_Store_cart(3)");
+            return this.savedProducts;
         }
 
         internal int numOfItemsInCart(string store)

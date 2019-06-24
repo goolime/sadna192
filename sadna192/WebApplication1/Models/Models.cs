@@ -32,6 +32,7 @@ namespace WebApplication1.Models
     public class StoreViewModel
     {
         public string StoreName { get; set; }
+        public string UserInContext { get; set; }
 
     }
 
@@ -79,8 +80,7 @@ namespace WebApplication1.Models
 
         public string DeleteOwnerConfig(string owner, string store)
         {
-            O = new OwnerViewModel() { Name = owner };
-            S = new StoreViewModel() { StoreName = store };
+            S = new StoreViewModel() { StoreName = store, UserInContext=owner };
             return "";
         }
 

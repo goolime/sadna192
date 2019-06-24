@@ -10,7 +10,7 @@ namespace sadna192
     {
         private string name;
         private List<ProductInStore> productInStores= new List<ProductInStore>();
-        private List<Owner> owners;
+        internal List<Owner> owners;
         private static NormalizedLevenshtein similarety = new NormalizedLevenshtein();
         private Policy storePolicy;
         private Discount storeDiscount;
@@ -214,6 +214,12 @@ namespace sadna192
             return ans;
         }
 
+        internal bool setDiscount(Discount dis)
+        {
+            this.storeDiscount = dis;
+            return true;
+        }
+
         internal void removeApointed(Owner owner)
         {
             this.owners.Remove(owner);
@@ -231,6 +237,12 @@ namespace sadna192
                 }
             }
             return productsResult;
+        }
+
+        internal bool setPolicy(Policy dis)
+        {
+            this.storePolicy = dis;
+            return true;
         }
 
         private List<ProductInStore> SearchProductByCategory(string category, List<ProductInStore> list)

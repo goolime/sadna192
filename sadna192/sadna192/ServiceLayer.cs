@@ -97,7 +97,7 @@ namespace sadna192
 
             public single_ServiceLayer(I_DeliverySystem deliverySystem, I_PaymentSystem paymentSystem, string admin_name, string admin_pass)
             {
-                if (!deliverySystem.Connect() || !paymentSystem.Connect()) throw new Sadna192Exception("can't access external systems", "(ServiceLayer) single_ServiceLayer",  "single_ServiceLayer(1)");
+                if (!deliverySystem.Connect().Result || !paymentSystem.Connect().Result) throw new Sadna192Exception("can't access external systems", "(ServiceLayer) single_ServiceLayer",  "single_ServiceLayer(1)");
                 this.deliverySystem = deliverySystem;
                 this.paymentSystem = paymentSystem;
                 this.members = new List<Member>();
@@ -159,7 +159,7 @@ namespace sadna192
         {
             private single_ServiceLayer single_ServiceLayer;
             public UserState userState;
-            private Alerter alerter;
+            public Alerter alerter { get; private set;}
             
             public User_ServiceLayer(single_ServiceLayer single_ServiceLayer, Alerter alerter)
             {
@@ -231,7 +231,7 @@ namespace sadna192
             {
                 if (isProductInStore(p) && Tools.check_amount(amount))
                 {
-                    bool ans = this.userState.Add_To_ShopingBasket(p, amount);
+                    bool ans = this.userState.Add_To_ShopingBasket(this.GetProductFromStore(p.getName(),p.getStore().getName()), amount);
                     if (ans) this.Add_Log("Added ["+amount+"]"+ p.getName() +" from the store " + p.getStore().getName() + " to his shopping basket");
                     return ans;
                 }
@@ -266,22 +266,22 @@ namespace sadna192
                 throw new Sadna192Exception("unvalid amount", "(ServiceLayer) User_ServiceLayer", "Edit_Product_In_ShopingBasket(2)");
             }
 
-            public bool Finalize_Purchase(string address, string payment)
+            public bool Finalize_Purchase(string address, string card_number, int month, int year, string holder, string ccv, string id,string country,string city,string zip)
             {
-                if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(payment))
+                if (this.single_ServiceLayer.deliverySystem.check_address(address) && this.single_ServiceLayer.paymentSystem.check_payment(card_number))
                 {
                     double total = this.userState.Finalize_Purchase();
-                    string code = this.single_ServiceLayer.deliverySystem.sendPackage(address);
+                    string code = this.single_ServiceLayer.deliverySystem.sendPackage(address,holder,country,city,zip).Result;
                     try
                     {
-                        this.single_ServiceLayer.paymentSystem.pay(total,payment);
+                        this.single_ServiceLayer.paymentSystem.pay(total, card_number, month, year, holder, ccv,id);
                     }
                     catch (Exception e)
                     {
                         this.single_ServiceLayer.deliverySystem.canclePackage(code);
                         throw e;
                     }
-                    this.Add_Log("Finish Purchased with total payment of " + total + " payed in " + payment +". package '" + code +"' was sent to address - " + address);
+                    this.Add_Log("Finish Purchased with total payment of " + total + " payed in " + card_number + ". package '" + code +"' was sent to address - " + address);
                     return true;
                 }
                 return false;
@@ -554,7 +554,7 @@ namespace sadna192
                 List<KeyValuePair<ProductInStore, int>> ans = new List<KeyValuePair<ProductInStore, int>>();
                 foreach(KeyValuePair<ProductInStore, int> p in tmp)
                 {
-                    ans.Add(new KeyValuePair<ProductInStore, int>())
+                    ans.Add(new KeyValuePair<ProductInStore, int>(new ProductInStore(p.Key, new Store(p.Key.getStore())), p.Value));
                 }
                 ans.Sort(new cartOrder());
                 this.Add_Log("watched his cart");
@@ -582,11 +582,30 @@ namespace sadna192
                 return this.userState.getMyShops();
             }
 
+            public bool addShopdiscount(string shop,Discount dis)
+            {
+                return this.userState.addShopdiscount(shop, dis);
+            }
+
+            public bool addShopPolicy(string shop, Policy dis)
+            {
+                return this.userState.addShopPolicy(shop, dis);
+            }
+
             public bool alert(string messege)
             {
                 return this.alerter.AlertUser(messege);
             }
 
+            public Alerter GetAlerter()
+            {
+                return alerter;
+            }
+
+            public bool Aprove_apointment(string store, string owner, bool ans)
+            {
+                return this.userState.Aprove_apointment(store, owner, ans);
+            }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -667,6 +686,8 @@ namespace sadna192
                 return null;
 
             }
+
+            
         }
     }
 }

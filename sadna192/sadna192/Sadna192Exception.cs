@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace sadna192
 {
-    class Sadna192Exception : Exception
+    public class Sadna192Exception : Exception
     {
         public static Logger log = new Logger("Event Log");
     

@@ -1,10 +1,12 @@
-﻿namespace sadna192
+﻿using System.Threading.Tasks;
+
+namespace sadna192
 {
     public interface I_DeliverySystem
     {
-        bool Connect();
+        Task<bool> Connect();
         bool check_address(string address);
-        string sendPackage(string address);
-        void canclePackage(string code);
+        Task<string> sendPackage(string address, string name, string city, string country, string zip);
+        Task canclePackage(string code);
     }
 }

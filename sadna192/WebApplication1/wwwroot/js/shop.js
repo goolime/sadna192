@@ -5,9 +5,15 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/ShopHub").build();
 //Disable send button until connection is established
 //document.getElementById("sendButton").disabled = true;
 var numberOfNotifications = 0;
+
 connection.on("ReceiveMessage", function (message) {
+    show_notification(message);
+});
+
+
+function show_notification(message) {
     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var encodedMsg = "- System says " + msg;
+    var encodedMsg = msg;
     var li = document.createElement("li");
     li.textContent = encodedMsg;
     document.getElementById("notifications_body").appendChild(li);
@@ -15,7 +21,7 @@ connection.on("ReceiveMessage", function (message) {
 
     document.getElementById("notifi_number_font").innerHTML = numberOfNotifications;
 
-});
+}
 
 connection.start().then(function () {
     //document.getElementById("sendButton").disabled = false;

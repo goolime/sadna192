@@ -53,7 +53,7 @@ namespace sadna192
             }
             if (key.Length > 16)
             {
-                key = key.Substring(0,16);
+                key = key.Substring(0, 16);
             }
             byte[] inputArray = UTF8Encoding.UTF8.GetBytes(input);
             TripleDESCryptoServiceProvider tripleDES = new TripleDESCryptoServiceProvider();
@@ -77,13 +77,13 @@ namespace sadna192
             {
                 if (owner.getStore().isMe(store_name)) return owner;
             }
-            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
+            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             Owner s = this.getUserStore(Store_name);
-            return s.addProduct(product_name, product_category,product_price,product_amount,product_discount,product_policy);
+            return s.addProduct(product_name, product_category, product_price, product_amount, product_discount, product_policy);
         }
 
         internal bool isMe(Member other)
@@ -143,7 +143,7 @@ namespace sadna192
         {
             List<Dictionary<string, dynamic>> ans = new List<Dictionary<string, dynamic>>();
 
-            foreach(Owner o in this.owner)
+            foreach (Owner o in this.owner)
             {
                 Dictionary<string, dynamic> tmp = new Dictionary<string, dynamic>();
                 tmp["store"] = new Store(o.getStore());
@@ -155,6 +155,24 @@ namespace sadna192
             }
 
             return ans;
+        }
+
+        public override bool addShopdiscount(string shop, Discount dis)
+        {
+            Owner o = this.getUserStore(shop);
+            return o.addShopdiscount(dis);
+        }
+
+        public override bool addShopPolicy(string shop, Policy dis)
+        {
+            Owner o = this.getUserStore(shop);
+            return o.addShopPolicy(dis);
+        }
+
+        public override bool Aprove_apointment(string store, string owner, bool ans)
+        {
+            Owner o = this.getUserStore(store);
+            return o.approveAssignmet(owner, ans);
         }
     }
 }

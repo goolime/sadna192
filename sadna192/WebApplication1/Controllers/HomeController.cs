@@ -85,10 +85,11 @@ namespace WebApplication1.Controllers
                 ViewData["Error"] = e.Message;
                 return RedirectToAction("Error");
             }
-
+            ViewData["Error"] = "you didn't stand in one of the stores policy";
+            return RedirectToAction("Error");
         }
 
-        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis, int? polnum)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis, int? polnum,bool? approveerr)
         {
             I_User_ServiceLayer sl = this.validateConnection();
             Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
@@ -97,6 +98,7 @@ namespace WebApplication1.Controllers
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
             ViewData["producterr"] = producterr.HasValue ? producterr.Value : false;
             ViewData["alertAddDiscount"] = alertdis.HasValue? alertdis.Value : false;
+            ViewData["approveerr"] = approveerr ?? false;
 
             ViewData["SL"] = sl;
             StoreViewModel Store = new StoreViewModel { StoreName = storename };
@@ -104,6 +106,7 @@ namespace WebApplication1.Controllers
                 new Store_AddManagerViewModel()
                 {
                     S = Store,
+                    O = new OwnerViewModel { Name = sl.GetUser().ToString() },
                     AM = null,
                     AD = new AddDiscountViewModel()
                     { NumberOfDiscounts = disnum ?? 1,
@@ -392,9 +395,9 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Remove_Store_Manager(model.S.StoreName, model.O.Name)
+                if (SL.Remove_Store_Manager(model.S.StoreName, model.S.UserInContext)
                     && SL.Add_Store_Manager(model.S.StoreName,
-                    model.O.Name,
+                    model.S.UserInContext,
                     model.AM.AddPermission,
                     model.AM.RemovePermission,
                     model.AM.UpdatePermission))
@@ -414,7 +417,7 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Remove_Store_Manager(model.S.StoreName, model.O.Name))
+                if (SL.Remove_Store_Manager(model.S.StoreName, model.S.UserInContext))
                 {
                     return RedirectToAction("MyStores", new { storename = model.S.StoreName });
                 }
@@ -459,16 +462,16 @@ namespace WebApplication1.Controllers
         {
             I_User_ServiceLayer SL = this.validateConnection();
             SL.canclePurch();
-            return RedirectToAction("Baskt");
+            return RedirectToAction("Basket");
         }
 
         [HttpPost]
-        public ActionResult finalize(string payment, string shipping)
+        public ActionResult finalize(string address, string card_number, int month, int year, string holder, string ccv, string id,string country,string city,string zip)
         {
             I_User_ServiceLayer SL = this.validateConnection();
             try
             {
-                SL.Finalize_Purchase(shipping, payment);
+                SL.Finalize_Purchase(address, card_number, month, year,holder,ccv,id,country,city,zip);
                 return RedirectToAction("Allgood");
             }
             catch (Exception e)
@@ -485,7 +488,7 @@ namespace WebApplication1.Controllers
             try
             {
 
-                if (SL.Remove_Store_Owner(vm.S.StoreName, vm.O.Name))
+                if (SL.Remove_Store_Owner(vm.S.StoreName, vm.S.UserInContext))
                 {
                     return RedirectToAction("LoggedIn");
                 }
@@ -585,10 +588,18 @@ namespace WebApplication1.Controllers
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Update_Product_Store(vm.S.StoreName, vm.O.Name, null, null, -1, -1, d, null))
+                if (vm.AD.IsProductsDiscount)
                 {
-                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+                    if (SL.Update_Product_Store(vm.S.StoreName, vm.O.Name, null, null, -1, -1, d, null))
+                    {
+                        return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+                    }
                 }
+                else
+                {
+                    SL.addShopdiscount(vm.S.StoreName, d);
+                }
+
             }
             catch
             {
@@ -685,10 +696,21 @@ namespace WebApplication1.Controllers
         {
             Policy policy = ConstructPolicy(vm.APolicy);
             I_User_ServiceLayer SL = validateConnection();
-            if (SL.Update_Product_Store(vm.S.StoreName, vm.APolicy.Name, null, null, -1, -1, null, policy)) ;
+            if (vm.APolicy.PolicyKind == "Product")
             {
-                return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+                if (SL.Update_Product_Store(vm.S.StoreName, vm.APolicy.Name, null, null, -1, -1, null, policy)) ;
+                {
+                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+                }
             }
+            else// if( aPolicy.PolicyKind == "Store")
+            {
+                if (SL.addShopPolicy(vm.S.StoreName,policy)) ;
+                {
+                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+                }
+            }
+
         }
 
         private Policy ConstructPolicy(AddPolicyViewModel aPolicy)
@@ -763,5 +785,19 @@ namespace WebApplication1.Controllers
             }
             return PoliciesToAnd;
         }
+
+
+        private ActionResult ApproveOwnerForm(Store_AddManagerViewModel vm,string command)
+        {
+            I_User_ServiceLayer SL = validateConnection();
+            bool isApproved = command == "approve";
+            if (SL.Aprove_apointment(vm.S.StoreName,vm.S.UserInContext, isApproved))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+            }
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName,approveerr = true });
+        }
+
+
     }
 }

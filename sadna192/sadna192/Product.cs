@@ -24,7 +24,22 @@ namespace sadna192
             }
 
             Product pr = new Product(name, category, rank);
+            try
+            {              
+                using (var ctx = new Model1())
+                {
+                    ctx.Products.Add(pr);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Fail : " + e.ToString());
+            }
+
+
             allProducts.Add(pr);
+           
             return pr;
 
 
@@ -35,7 +50,7 @@ namespace sadna192
             this.name = name;
             this.category = category;
             this.rank = rank;
-            this.keywords = null;
+            this.keywords = new List<string>();
         }
 
         private Product(string name, string category, double rank, List<string> keywords)
@@ -43,7 +58,8 @@ namespace sadna192
             this.name = name;
             this.category = category;
             this.rank = rank;
-            this.keywords = keywords;
+            if (keywords == null) this.keywords = new List<string>();
+            else this.keywords = keywords;
         }
 
         public Product(Product product)

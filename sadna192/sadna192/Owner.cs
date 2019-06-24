@@ -5,7 +5,7 @@ namespace sadna192
 {
     public class Owner
     {
-        private Store store;
+        internal Store store;
         private Member user;
         private List<Owner> has_Apointed;
         internal List<Owner> waiting_to_aprove;
@@ -91,10 +91,9 @@ namespace sadna192
 
         private  bool removeMe()
         {
-            this.are_assigned();
-            this.store.removeApointed(this);
+      
             this.user.owner.Remove(this);
-            foreach (Owner apointed in this.has_Apointed) apointed.removeMe();
+            this.store.owners.Remove(this);
             return true;
         }
 
@@ -108,8 +107,8 @@ namespace sadna192
         private Owner findOwner(Member other)
         {
             this.are_assigned();
-            if (this.user.isMe(other)) return this;
-            foreach(Owner apointed in this.has_Apointed)
+            if (this.user.isMe(other) && this.isManger()) return this;
+            foreach(Owner apointed in this.store.GetOwners())
             {
                 try
                 {
@@ -155,12 +154,17 @@ namespace sadna192
         public List<string> waiting_for_owner_approval()
         {
             List<string> ans = new List<string>();
-            foreach(Owner o in this.store.GetOwners())
-            {
-                if (o.waiting_to_aprove.IndexOf(this) != -1)
-                    ans.Add(o.user.name);
+            foreach(Owner o in this.waiting_to_aprove)
+            { 
+                ans.Add(o.user.name);
             }
             return ans;
+        }
+
+        internal virtual bool addShopdiscount(Discount dis)
+        {
+            this.are_assigned();
+            return this.store.setDiscount(dis);
         }
 
         public bool approveAssignmet(string name, bool ans)
@@ -193,6 +197,12 @@ namespace sadna192
                 toapprove.removeMe();
             }
             return true;
+        }
+
+        internal bool addShopPolicy(Policy dis)
+        {
+            this.are_assigned();
+            return this.store.setPolicy(dis);
         }
     }
 }

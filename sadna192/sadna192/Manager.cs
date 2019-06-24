@@ -61,5 +61,19 @@ namespace sadna192
         }
 
         public override bool isManger() => true;
+
+        internal override bool addShopdiscount(Discount dis)
+        {
+            if(this.permision_update)
+                return this.store.setDiscount(dis);
+            return false;
+        }
+
+        internal bool addShopPolicy(Policy dis)
+        {
+            if (this.permision_update)
+                return this.store.setPolicy(dis);
+            return false;
+        }
     }
 }

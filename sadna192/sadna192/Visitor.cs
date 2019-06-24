@@ -140,5 +140,20 @@ namespace sadna192
         {
             return new Visitor(this);
         }
+
+        public virtual bool addShopdiscount(string shop, Discount dis)
+        {
+            throw new Sadna192Exception("User must login inorder to add shop discount", "Visitor", "addShopdiscount");
+        }
+
+        public virtual bool addShopPolicy(string shop, Policy dis)
+        {
+            throw new Sadna192Exception("User must login inorder to add shop Policy", "Visitor", "addShopPolicy");
+        }
+
+        public virtual bool Aprove_apointment(string store, string owner, bool ans)
+        {
+            throw new Sadna192Exception("User must login inorder to approve shop appointment", "Visitor", "Aprove_apointment");
+        }
     }
 }

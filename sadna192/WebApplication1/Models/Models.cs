@@ -74,6 +74,8 @@ namespace WebApplication1.Models
         public AddManagerViewModel AM { get; set; }
         public AddProductViewModel AP { get; set; }
         public AddDiscountViewModel AD { get; set; }
+        public AddPolicyViewModel APolicy { get; set; }
+
 
         public string DeleteOwnerConfig(string owner, string store)
         {
@@ -90,22 +92,56 @@ namespace WebApplication1.Models
 
     public class AddDiscountViewModel
     {
+        public bool IsProductsDiscount { get; set; }
         public string LogicConnection { get; set; }
-        public bool IsStoreDiscount { get; set; }
-        public bool IsProductDiscount { get; set; }
-        public string ProductName { get; set; }
-        public bool IsFixed { get; set; }
+        public List<DiscountViewModel> Discounts { get; set; }
 
+        public TimeSpanViewModel  TimeSpan { get; set; }
+
+        public bool IsStoreDiscount { get; set; }
+        public int NumberOfDiscounts { get; set; }
+        public bool DiscountVisible { get; set; }
+    }
+
+    public class DiscountViewModel
+    {
+        public string ProductName { get; set; }
+        public int Amount { get; set; }
+        public int DiscountPercent { get; set; }
+    }
+
+    public class AddPolicyViewModel
+    {
+        public bool IsPolicyVisible { get; set; }
+        public string PolicyKind { get; set; }//Store Product Policy
+        public List<ProductPolicyViewModel> ProductPolicies { get; set; }
+        public int NumberOfPolicies { get; set; }
+        public string Name { get; set; }
+
+
+    }
+
+    public class TimeSpanViewModel
+    {
+        public bool IsTimeLimited { get; set; }
         [DisplayName("Start Date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Start { get; set; }
-
         [DisplayName("Finish Date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Finish { get; set; }
+    }
 
+    public class ProductPolicyViewModel
+    {
+        public string Constraint { get; set; }
         public int Amount { get; set; }
-        public int DiscountPercent { get; set; }
+        public TimeSpanViewModel Time { get; set; }
+        public bool Member { get; set; }
+        public bool IncludeStorePolicy { get; set; }
+        public bool Immidiate { get; set; }
 
     }
+
+
 }

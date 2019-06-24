@@ -4,6 +4,10 @@
     ViewData["Title"] = "MyStores";
 }
 Store: <h2 id="storeName">@Model.S.StoreName</h2>
+<!--if (((I_User_ServiceLayer)ViewData["SL"]).GetUserState().isOwner(Model.S.StoreName))
+{
+}-->
+
 <button onclick="show_add_owner_form()" id="addOwnerButton">
     @if (ViewData["ownererr"] != null && (bool)ViewData["ownererr"])
     {
@@ -56,7 +60,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-<button onclick="show_store_management_form()">Management</button>
+<button onclick="show_store_management_form()" id="manage">Management</button>
 <div id="storeOwnersDiv" style="visibility: hidden;">
     <table class="table">
         <thead>
@@ -118,7 +122,7 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     </table>
 </div>
 
-<button onclick="show_add_product_form()">Add Product</button>
+<button onclick="show_add_product_form()" id="addProdButton">Add Product</button>
 <div id="addProductDiv" style="visibility: @(((bool)ViewData["producterr"])?"visible":"hidden");">
     @if (ViewData["producterr"] != null && (bool)ViewData["producterr"])
     {
@@ -137,89 +141,227 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
     }
 </div>
 
-<button onclick="show_add_discount_form()">Add Discount</button>
-<div id="addDiscount" style="visibility: @(ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]? "visible":"hidden")">
+<button onclick="show_add_discount_form()" id="addDiscountFormButton">Add Discount</button>
+<div id="addDiscount" style="visibility: @((ViewData["alertAddDiscount"]!=null && (bool)ViewData["alertAddDiscount"]) || Model.AD.DiscountVisible? "visible":"hidden")">
     @if (ViewData["alertAddDiscount"] != null && (bool)ViewData["alertAddDiscount"])
     {
-        <font color="red"> could not add the discount to the product </font>
+        <font color="red"> could not add the discount to the store </font>
     }
-    @using (Html.BeginForm("AddDiscount", "Home", FormMethod.Post))
+    @using (Html.BeginForm("AddDiscountForm", "Home", FormMethod.Post))
     {
+
         @Html.HiddenFor(s => Model.S.StoreName)
         @Html.HiddenFor(s => Model.O.Name)
-        @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>() { "OR", "AND" }), "Select Logic Connection")
-        <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
-        <font>Is Product Discount:</font>@Html.CheckBoxFor(s => s.AD.IsProductDiscount, new { @onchange = "show_product_name(this)" })
-        @Html.DropDownListFor(s => s.AD.ProductName, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "productname", @style = "visibility:hidden", @placeholder = "Product name" })
-        <br />
-        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.IsFixed, new { @onchange = "show_time_range(this)" })
-        <div id="discountDiv" style="visibility:hidden">
-            <font>Start:</font>@Html.TextBoxFor(s => s.AD.Start, new { @type = "date" })
-            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.Finish, new { @type = "date" })
+        @Html.HiddenFor(s => Model.AD.NumberOfDiscounts)
+        <font>Is Products Discount:</font>@Html.CheckBoxFor(s => s.AD.IsProductsDiscount, new { @id = "productsCheckBox", @onchange = "is_product_discount(this)" })
+        <div id="productsDiscountForm" style="visibility:hidden">
+            Select Logic Connection: @Html.DropDownListFor(s => s.AD.LogicConnection, new SelectList(new List<string>
+() { "OR", "AND" }),new { @value="OR",@placeholder="OR"})
+            @for (int i = 0; i < Model.AD.NumberOfDiscounts; i++)
+            {
+                <br /><font color="blue">Discount Number #@(i + 1)</font><br />
+                <br />
+                @Html.DropDownListFor(s => s.AD.Discounts[i].ProductName, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "productname" + i, @placeholder = "Product name" })
+                <br />
+                @Html.TextBoxFor(s => s.AD.Discounts[i].Amount, new { @placeholder = "Amount" })
+                @Html.TextBoxFor(s => s.AD.Discounts[i].DiscountPercent, new { @placeholder = "DiscountPercent" })
+                <br />
+            }
         </div>
-        @Html.TextBoxFor(s => s.AD.Amount, new { @placeholder = "Amount" })
-        @Html.TextBoxFor(s => s.AD.DiscountPercent, new { @placeholder = "DiscountPercent" })
-        <button input="submit" class="btn btn-success">Add Discount</button>
+        <div id="storeDiscount">
+            @Html.TextBoxFor(s => s.AD.Discounts[0].Amount, new { @placeholder = "Amount" })
+            @Html.TextBoxFor(s => s.AD.Discounts[0].DiscountPercent, new { @placeholder = "DiscountPercent" })
+        </div>
+        <br />
+        <font>Is Time Discount:</font>@Html.CheckBoxFor(s => s.AD.TimeSpan.IsTimeLimited, new { @onchange = "show_time_range(this,\"timeDiv\")" })
+        <font>Is Included In Store Discount:</font>@Html.CheckBoxFor(s => s.AD.IsStoreDiscount)
 
-
+        <div id="timeDiv" style="visibility:hidden">
+            <font>Start:</font>@Html.TextBoxFor(s => s.AD.TimeSpan.Start, new { @type = "date" })
+            <fon>Finish:</fon>@Html.TextBoxFor(s => s.AD.TimeSpan.Finish, new { @type = "date" })
+        </div>
+        <button name="command" value="add" id="addDiscountButton" style="visibility:hidden">Add a Discount</button>
+        <button name="command" value="reset" id="resetDiscount" style="visibility:hidden">Reset Discounts</button>
+        <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Total Discount</button>
     }
-
 </div>
-Products:
+
+
+<button onclick="show_add_policy_form()" id="addPolicyButton">Add Policy</button>
+<div id="addpolicydiv" style="visibility:@((ViewData["alertAddPolicy"]!=null && (bool)ViewData["alertAddPolicy"]) || Model.APolicy.IsPolicyVisible? "visible":"hidden")">
+    @if (ViewData["alertAddPolicy"] != null && (bool)ViewData["alertAddPolicy"])
+    {
+        <font color="red"> could not add the policy to the store </font>
+    }
+    @using (Html.BeginForm("AddPolicyForm", "Home", FormMethod.Post))
+    {
+
+        @Html.HiddenFor(s => Model.S.StoreName)
+        @Html.HiddenFor(s => Model.O.Name)
+        @Html.HiddenFor(s => Model.APolicy.NumberOfPolicies)
+        <font>Policy Kind:</font> @Html.DropDownListFor(s => s.APolicy.PolicyKind, new SelectList(new List<string>(){"Store", "Product" }), "Choose...", new { @id = "policyKindListBox", @onchange = "policy_kind(this.value)" })
+        <div id="productsPolicyForm" style="visibility:hidden">
+            @Html.DropDownListFor(s => s.APolicy.Name, new SelectList(((Store)ViewData["currStore"]).getProductInStore().ConvertAll(s => s.getName())), "Select Product", new { @id = "policyproductname", @placeholder = "Product name" })
+            @for (int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+            {
+                <br /><font color="blue">Policy Number #@(i + 1)</font><br />
+                <br />
+                @Html.DropDownListFor(s => s.APolicy.ProductPolicies[i].Constraint, new SelectList(new List<string>() { "MAX", "MIN" }), "Choose MAX/Min...", new { @id = "policyconstraint" + i, @placeholder = "MAX/MIN" })
+                <br />
+                @Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Amount, new { @placeholder = "Amount" })
+                <div id=@("is_included" + i)><font>Is Included In Store Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].IncludeStorePolicy)</div>
+                <font>Member Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Member)
+                <font>Immidiate Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Immidiate)
+                <font>Is Time Policy:</font>@Html.CheckBoxFor(s => s.APolicy.ProductPolicies[i].Time.IsTimeLimited, new { @onchange = "show_time_range(this,\"timePolicyDiv" + i + "\")" })
+                <div id=@("timePolicyDiv" + i) style="visibility:hidden">
+                    <font>Start:</font>@Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Time.Start, new { @type = "date" })
+                    <fon>Finish:</fon>@Html.TextBoxFor(s => s.APolicy.ProductPolicies[i].Time.Finish, new { @type = "date" })
+                </div>
+            }
+        </div>
+
+        <br />
+        <div id="regularPolicyStuff" style="visibility:hidden">
+            <button name="command" value="add" id="addAPolicyDivButton">Add a Policy</button>
+            <button name="command" value="reset" id="resetPolicy">Reset Policies</button>
+            <button name="command" input="submit" class="btn btn-success" value="finalize">Finalize Policy</button>
+        </div>
+    }
+</div>
+    Products:
 @foreach (ProductInStore product in ((Store)ViewData["currStore"]).getProductInStore())
 {
     <div>
         <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Product" asp-route-storename="@(((Store)ViewData["currStore"]).getName())" asp-route-productname="@product.getName()">@product.getName()</a>
-    </div><br />
+    </div>
 }
 
-<script>
+
+    <script>
     document.getElementById("storeName").value = "@ViewData["storename"]";
-    function show_add_owner_form() {
-        var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
-        document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("addOwnerButton").innerHTML = isHidden ? "Hide" : "Add Owner";
+        @if (Model.AD.DiscountVisible) {
+            <text>
+    document.getElementById("productsCheckBox").checked = true;
+    is_product_discount(document.getElementById("productsCheckBox"));
 
-    }
-
-    function show_add_manager_form() {
-        var isHidden = document.getElementById("addManagerDiv").style.visibility === "hidden";
-        document.getElementById("addManagerDiv").style.visibility = isHidden ? "visible" : "hidden";
-        document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
-
-    }
-
-    function show_store_management_form() {
-        var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
-        document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
-    }
-
-    function show_add_product_form() {
-        var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
-        document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
-    }
-    function show_add_discount_form() {
-        var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
-        document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
-    }
-
-    function show_product_name(obj) {
-        if ($(obj).is(":checked")) {
-            document.getElementById("productname").style.visibility = "visible";
-        } else {
-            document.getElementById("productname").style.visibility = "hidden";
+            </text>
         }
-    }
+        @if (Model.APolicy.IsPolicyVisible)
+            {
+                        <text>
+        document.getElementById("policyKindListBox").value = "";
+        policy_kind("Store");
 
-    function show_time_range(obj) {
-        if ($(obj).is(":checked")) {
-            document.getElementById("discountDiv").style.visibility = "visible";
-        } else {
-            document.getElementById("discountDiv").style.visibility = "hidden";
+            </text>
+            }
+            function show_add_owner_form() {
+                var isHidden = document.getElementById("addOwnerDiv").style.visibility === "hidden";
+                document.getElementById("addOwnerDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addOwnerButton").innerHTML = isHidden ? "Hide" : "Add Owner";
+
+            }
+
+            function show_add_manager_form() {
+                var isHidden = document.getElementById("addManagerDiv").style.visibility === "hidden";
+                document.getElementById("addManagerDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addManagerButton").innerHTML = isHidden ? "Hide" : "Add Manager";
+
+            }
+
+            function show_store_management_form() {
+                var isHidden = document.getElementById("storeOwnersDiv").style.visibility === "hidden";
+                document.getElementById("storeOwnersDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("manage").innerHTML = isHidden ? "Hide" : "Management";
+
+            }
+
+            function show_add_product_form() {
+                var isHidden = document.getElementById("addProductDiv").style.visibility === "hidden";
+                document.getElementById("addProductDiv").style.visibility = isHidden ? "visible" : "hidden";
+                document.getElementById("addProdButton").innerHTML = isHidden ? "Hide" : "Add Product";
+
+            }
+
+            function show_add_discount_form() {
+                var isHidden = document.getElementById('addDiscount').style.visibility === 'hidden';
+                document.getElementById('addDiscount').style.visibility = isHidden ? 'visible' : 'hidden';
+                document.getElementById("addDiscountFormButton").innerHTML = isHidden ? "Hide" : "Add Discount";
+
+            }
+
+
+            function is_product_discount(obj) {
+                if (!($(obj).is(":checked"))) {
+                document.getElementById("productsDiscountForm").style.visibility = "hidden";
+                document.getElementById("storeDiscount").style.visibility = "visible";
+                document.getElementById("addDiscountButton").style.visibility = "hidden";
+                document.getElementById("resetDiscount").style.visibility = "hidden";
+            } else {
+                document.getElementById("productsDiscountForm").style.visibility = "visible";
+                document.getElementById("storeDiscount").style.visibility = "hidden";
+                document.getElementById("addDiscountButton").style.visibility = "visible";
+                document.getElementById("resetDiscount").style.visibility = "visible";
+            }
         }
-    }
 
-</script>
+
+        function policy_kind(obj) {
+            if (obj == "Store") {
+                document.getElementById("regularPolicyStuff").style.visibility = "visible";
+                document.getElementById("productsPolicyForm").style.visibility = "visible";
+                document.getElementById("policyproductname").style.visibility = "hidden";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "hidden"
+                    </text>
+                }
+            }
+            else if (obj == "Product") {
+                document.getElementById("regularPolicyStuff").style.visibility = "visible";
+                document.getElementById("productsPolicyForm").style.visibility = "visible";
+                document.getElementById("policyproductname").style.visibility = "visible";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "visible"
+                    </text>
+                }
+            }
+            else {
+                document.getElementById("regularPolicyStuff").style.visibility = "hidden";
+                document.getElementById("productsPolicyForm").style.visibility = "hidden";
+                document.getElementById("policyproductname").style.visibility = "hidden";
+
+                @for(int i = 0; i < Model.APolicy.NumberOfPolicies; i++)
+                {
+                    <text>
+                document.getElementById("is_included" + @i).style.visibility = "hidden"
+                    </text>
+                }
+            }
+        }
+
+
+        function show_time_range(obj, domeName) {
+            if ($(obj).is(":checked")) {
+                document.getElementById(domeName).style.visibility = "visible";
+            } else {
+                document.getElementById(domeName).style.visibility = "hidden";
+            }
+        }
+
+        function show_add_policy_form() {
+            var isHidden = document.getElementById('addpolicydiv').style.visibility === 'hidden';
+            document.getElementById('addpolicydiv').style.visibility = isHidden ? 'visible' : 'hidden';
+            document.getElementById("addPolicyButton").innerHTML = isHidden ? "Hide" : "Add Policy";
+            document.getElementById("regularPolicyStuff").style.visibility = "hidden";
+            document.getElementById("productsPolicyForm").style.visibility = "hidden";
+        }
+    
+    </script>
 
 
 

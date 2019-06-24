@@ -33,17 +33,22 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Login" id="login">Login</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Basket">Basket</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Register" id="register">Register</a></li>
+                    <li id="notifications_li"> <a id="notif_li" data-toggle="modal" data-target="#notifModal">Notifications: </a></li>
+                    <li> <a onclick="sendNotification2('a notifiction')">Send Notification</a></li>
+
                     <li>
                         <form class="form-inline md-form mr-auto mb-4" action="/Home/SearchForm">
                             <input class="form-control mr-sm-2" type="text" name="keyword" placeholder="Search" aria-label="Search">
                             <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
                         </form>
-                        
+
 
                     </li>
-                    <li><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
-    Advanced Search
-</button></li>
+                    <li>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+                            Advanced Search
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -71,6 +76,27 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="notifModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="notifications_body">
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script>
 
@@ -82,7 +108,12 @@
             document.getElementById("login").innerHTML = "Logout";
             document.getElementById("register").innerHTML = "My Page";
         }
+        document.getElementById("notif_li").innerHTML += '<font color="red" id="notifi_number_font">@((List<string>)ViewData["LastNotifications"] != null? ((List<string>)ViewData["LastNotifications"]).Count : 0)</font>'
+
     </script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/shop.js"></script>
+
 
     <partial name="_CookieConsentPartial" />
 

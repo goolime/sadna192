@@ -52,10 +52,15 @@ namespace WebApplication1
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+<<<<<<< HEAD
+            app.UseCookiePolicy();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<ShopHub>("/ShopHub");
             });
+=======
+
+>>>>>>> origin/domain_changes
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

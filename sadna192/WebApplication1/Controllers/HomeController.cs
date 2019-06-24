@@ -85,10 +85,10 @@ namespace WebApplication1.Controllers
                 ViewData["Error"] = e.Message;
                 return RedirectToAction("Error");
             }
-            
+
         }
 
-        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr,bool? producterr)
+        public IActionResult MyStores(string storename, bool? ownererr, bool? managererr, bool? producterr, int? disnum, bool? resetdis,bool? resetpol,bool? alertdis, int? polnum)
         {
             I_User_ServiceLayer sl = this.validateConnection();
             Dictionary<string, dynamic> storeDictionary = sl.usersStores().Find(d => ((Store)d["store"]).getName() == storename);
@@ -96,8 +96,25 @@ namespace WebApplication1.Controllers
             ViewData["ownererr"] = ownererr.HasValue ? ownererr.Value : false;
             ViewData["managererr"] = managererr.HasValue ? managererr.Value : false;
             ViewData["producterr"] = producterr.HasValue ? producterr.Value : false;
+            ViewData["alertAddDiscount"] = alertdis.HasValue? alertdis.Value : false;
+
+            ViewData["SL"] = sl;
             StoreViewModel Store = new StoreViewModel { StoreName = storename };
-            Store_AddManagerViewModel model = new Store_AddManagerViewModel() { S = Store, AM = null };
+            Store_AddManagerViewModel model =
+                new Store_AddManagerViewModel()
+                {
+                    S = Store,
+                    AM = null,
+                    AD = new AddDiscountViewModel()
+                    { NumberOfDiscounts = disnum ?? 1,
+                        DiscountVisible = ((disnum ?? 1) > 1) || (resetdis ?? false) },
+                    APolicy = new AddPolicyViewModel()
+                    {
+                        NumberOfPolicies = polnum ?? 1,
+                        IsPolicyVisible = ((polnum ?? 1)>1) || (resetpol ?? false),
+                    }
+                    
+                };
             if (storename != null)
             {
                 ViewData["storename"] = storename;
@@ -121,7 +138,22 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public IActionResult SearchResults(string key,string keys,string cat,double max ,double min)
+        public IActionResult Notifications()
+        {
+            if (!IsLoggedIn())
+            {
+                this.validateConnection();
+                ViewData["Message"] = "Your application Register";
+
+                return RedirectToAction("index");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public IActionResult SearchResults(string key, string keys, string cat, double max, double min)
         {
             I_User_ServiceLayer SL = validateConnection();
             List<ProductInStore> list =
@@ -181,12 +213,12 @@ namespace WebApplication1.Controllers
                 StoreName = storename,
                 EditProduct = new EditProductViewModel()
                 {
-                    
+
                     ProductAmount = product.getAmount(),
                     ProductCategory = product.getCategory(),
                     ProductPrice = product.getPrice(),
                     NewName = productname
-               }
+                }
             });
         }
 
@@ -210,10 +242,10 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Buy_from_store_form(string Store)
         {
-            return RedirectToAction("Recipt", new { store=Store });
-            
+            return RedirectToAction("Recipt", new { store = Store });
+
         }
-       
+
         [HttpPost]
         public ActionResult update_product_inCart(string newAmount, string store, string product)
         {
@@ -222,7 +254,7 @@ namespace WebApplication1.Controllers
             //var map = new Dictionary<string, List<KeyValuePair<ProductInStore, int>>>();
             foreach (KeyValuePair<ProductInStore, int> p in tmp)
             {
-                if (p.Key.getName()==product && p.Key.getStore().getName() == store)
+                if (p.Key.getName() == product && p.Key.getStore().getName() == store)
                 {
                     SL.Edit_Product_In_ShopingBasket(p.Key, int.Parse(newAmount));
                     return RedirectToAction("Basket");
@@ -343,7 +375,7 @@ namespace WebApplication1.Controllers
             try
             {
                 if (ModelState.IsValid &&
-                    SL.Add_Product_Store(model.S.StoreName,model.AP.ProductName, model.AP.ProductCategory, model.AP.ProductPrice, model.AP.ProductAmount, model.AP.Discount, model.AP.ProductPolicy))
+                    SL.Add_Product_Store(model.S.StoreName, model.AP.ProductName, model.AP.ProductCategory, model.AP.ProductPrice, model.AP.ProductAmount, model.AP.Discount, model.AP.ProductPolicy))
                 {
                     return RedirectToAction("MyStores", new { storename = model.S.StoreName });
                 }
@@ -409,10 +441,10 @@ namespace WebApplication1.Controllers
             }
         }
 
-        public ActionResult SearchForm(string keyword, string keywords,string category,double pricemax, double pricemin)
+        public ActionResult SearchForm(string keyword, string keywords, string category, double pricemax, double pricemin)
         {
             validateConnection();
-            return RedirectToAction("SearchResults", new { key = keyword,keys=keywords, cat = category,max=pricemax,min=pricemin });
+            return RedirectToAction("SearchResults", new { key = keyword, keys = keywords, cat = category, max = pricemax, min = pricemin });
 
         }
 
@@ -423,7 +455,8 @@ namespace WebApplication1.Controllers
             return !"Visitor".Equals(ius.ToString());
         }
         [HttpPost]
-        public ActionResult return_to_cart() {
+        public ActionResult return_to_cart()
+        {
             I_User_ServiceLayer SL = this.validateConnection();
             SL.canclePurch();
             return RedirectToAction("Baskt");
@@ -474,7 +507,7 @@ namespace WebApplication1.Controllers
 
                 if (SL.Remove_Product_Store(vm.StoreName, vm.Name))
                 {
-                    return RedirectToAction("MyStores",new { storename = vm.StoreName});
+                    return RedirectToAction("MyStores", new { storename = vm.StoreName });
                 }
             }
             catch
@@ -485,7 +518,7 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
 
-        
+
         [HttpPost]
         public ActionResult EditProductForm(ProductInStoreViewModel vm)
         {
@@ -493,8 +526,8 @@ namespace WebApplication1.Controllers
             try
             {
 
-                if (SL.Update_Product_Store(vm.StoreName,vm.Name,vm.EditProduct.NewName,vm.EditProduct.ProductCategory, vm.EditProduct.ProductPrice
-                    , vm.EditProduct.ProductAmount,null,null))
+                if (SL.Update_Product_Store(vm.StoreName, vm.Name, vm.EditProduct.NewName, vm.EditProduct.ProductCategory, vm.EditProduct.ProductPrice
+                    , vm.EditProduct.ProductAmount, null, null))
                 {
                     return RedirectToAction("MyStores", new { storename = vm.StoreName });
                 }
@@ -507,14 +540,14 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
 
-        
+
         [HttpPost]
         public ActionResult AddToCart(ProductInStoreViewModel vm)
         {
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Add_To_ShopingBasket(SL.GetProductFromStore(vm.Name,vm.StoreName),vm.AddToCart.Amount))
+                if (SL.Add_To_ShopingBasket(SL.GetProductFromStore(vm.Name, vm.StoreName), vm.AddToCart.Amount))
                 {
                     return RedirectToAction("Basket");
                 }
@@ -527,26 +560,208 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Product", new { storename = vm.StoreName, productname = vm.Name });
         }
 
-        
+
         [HttpPost]
-        public ActionResult AddDiscount(Store_AddManagerViewModel vm)
+        public ActionResult AddDiscountForm(Store_AddManagerViewModel vm, string command)
         {
-            Discount d= null;
+            if (command.Equals("finalize"))
+            {
+                return FinalizeDiscounts(vm);
+            }
+            else if (command.Equals("add"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, disnum = vm.AD.NumberOfDiscounts + 1 });
+            }
+            else if (command.Equals("reset"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, resetdis = true });
+            }
+            return new EmptyResult();
+        }
+
+        private ActionResult FinalizeDiscounts(Store_AddManagerViewModel vm)
+        {
+            Discount d = GenerateDiscount(vm.AD);
             I_User_ServiceLayer SL = validateConnection();
             try
             {
-                if (SL.Update_Product_Store(vm.S.StoreName,vm.O.Name,null,null,-1,-1,d,null))
+                if (SL.Update_Product_Store(vm.S.StoreName, vm.O.Name, null, null, -1, -1, d, null))
                 {
-                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName});
+                    return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
                 }
             }
             catch
             {
 
             }
-            ViewData["alertAddDiscount"] = true;
-            return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+            return RedirectToAction("MyStores", new { storename = vm.S.StoreName ,alertdis =true});
         }
 
+        private Discount GenerateDiscount(AddDiscountViewModel ad)
+        {
+            Discount dis; 
+            if (ad.IsProductsDiscount)
+            {
+                dis = oneDiscountGen(ad);
+            }
+            else
+            {
+                dis = new ProductAmountInBasketDiscount(ad.Discounts[0].Amount, ((double)(ad.Discounts[0].DiscountPercent)) / 100);
+                
+            }
+            if (ad.TimeSpan.IsTimeLimited)
+            {
+                dis = TimeDiscount(ad.TimeSpan.Start, ad.TimeSpan.Finish, dis);
+            }
+            dis = StoreDiscount(dis);
+            return dis;
+        }
+
+        private static Discount oneDiscountGen(AddDiscountViewModel ad)
+        {
+            Discount dis;
+            List<Discount> list = new List<Discount>();
+            foreach (DiscountViewModel dvm in ad.Discounts)
+            {
+
+                ProductAmountDiscount productDis = new ProductAmountDiscount(dvm.ProductName, dvm.Amount, ((double)dvm.DiscountPercent) / 100);
+                list.Add(productDis);
+            }
+            dis = LogicConnection(ad.LogicConnection, list);
+            return dis;
+        }
+
+        private static Discount TimeDiscount(DateTime start, DateTime finish, Discount dis)
+        {
+            return new TimeDiscount(start, finish, dis);
+        }
+
+        private static Discount StoreDiscount(Discount dis)
+        {
+
+            dis = new AndDiscount(new List<Discount>()
+                {
+                    dis,
+                    new IncludeStoreDiscount()
+                });
+
+
+            return dis;
+        }
+
+        private static Discount LogicConnection(string logicConn, List<Discount> list)
+        {
+            if (logicConn == "OR")
+            {
+                return new XOrDiscount(list);
+            }
+            else if (logicConn == "AND")
+            {
+                return new AndDiscount(list);
+            }
+            throw new Exception("no logic connection was chosen");
+
+        }
+
+        [HttpPost]
+        public ActionResult AddPolicyForm(Store_AddManagerViewModel vm, string command)
+        {
+            if (command.Equals("finalize"))
+            {
+                return FinalizePolicies(vm);
+            }
+            else if (command.Equals("add"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, polnum = vm.APolicy.NumberOfPolicies + 1 });
+            }
+            else if (command.Equals("reset"))
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName, resetpol = true });
+            }
+            return new EmptyResult();
+        }
+
+        private ActionResult FinalizePolicies(Store_AddManagerViewModel vm)
+        {
+            Policy policy = ConstructPolicy(vm.APolicy);
+            I_User_ServiceLayer SL = validateConnection();
+            if (SL.Update_Product_Store(vm.S.StoreName, vm.APolicy.Name, null, null, -1, -1, null, policy)) ;
+            {
+                return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
+            }
+        }
+
+        private Policy ConstructPolicy(AddPolicyViewModel aPolicy)
+        {
+            if(aPolicy.PolicyKind!="Product" && aPolicy.PolicyKind != "Store")
+            {
+                throw new Exception("no option was chosen for product kind");
+            }
+            List<Policy> PoliciesToOr = new List<Policy>();
+            foreach(ProductPolicyViewModel pp in aPolicy.ProductPolicies)
+            {
+                List<Policy> PoliciesToAnd = GenerateOnePolicy(pp);
+                IsIncluded(aPolicy, pp, PoliciesToAnd);
+                MaxMinHandle(aPolicy, pp, PoliciesToAnd);
+                Policy AndPolicy = new AndPolicy(PoliciesToAnd);
+                PoliciesToOr.Add(AndPolicy);
+            }
+            return new OrPolicy(PoliciesToOr);
+        }
+
+        private static void IsIncluded(AddPolicyViewModel aPolicy, ProductPolicyViewModel pp, List<Policy> PoliciesToAnd)
+        {
+            if (aPolicy.PolicyKind == "Product" && pp.IncludeStorePolicy)
+            {
+                PoliciesToAnd.Add(new IncludeStorePolicy());
+            }
+        }
+
+        private static void MaxMinHandle(AddPolicyViewModel aPolicy, ProductPolicyViewModel pp, List<Policy> PoliciesToAnd)
+        {
+            if (pp.Constraint == "MAX" || pp.Constraint == "MIN")
+            {
+                if (aPolicy.PolicyKind == "Product")
+                {
+                    if (pp.Constraint == "MAX")
+                    {
+                        PoliciesToAnd.Add(new MaximumProductInCart(pp.Amount));
+                    }
+                    else //(pp.Constraint == "MIN")
+                    {
+                        PoliciesToAnd.Add(new MinimumProductInCart(pp.Amount));
+                    }
+                }
+                else //(pp.ProductKind == "Store")
+                {
+                    if (pp.Constraint == "MAX")
+                    {
+                        PoliciesToAnd.Add(new MaximumInCart(pp.Amount));
+                    }
+                    else //(pp.Constraint == "MIN")
+                    {
+                        PoliciesToAnd.Add(new MinimumInCart(pp.Amount));
+                    }
+                }
+            }
+        }
+
+        private List<Policy> GenerateOnePolicy(ProductPolicyViewModel pp)
+        {
+            List<Policy> PoliciesToAnd = new List<Policy>();
+            if (pp.Immidiate)
+            {
+                PoliciesToAnd.Add(new immidiatePolicy());
+            }
+            if (pp.Member)
+            {
+                PoliciesToAnd.Add(new MamberPolicy());
+            }
+            if (pp.Time.IsTimeLimited)
+            {
+                PoliciesToAnd.Add(new TimePolicy(pp.Time.Start, pp.Time.Finish));
+            }
+            return PoliciesToAnd;
+        }
     }
 }

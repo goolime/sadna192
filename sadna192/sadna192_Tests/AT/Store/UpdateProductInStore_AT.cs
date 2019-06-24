@@ -57,7 +57,25 @@ namespace sadna192.Tests.AcceptanceTests
             search1 = userServiceLayer2.GlobalSearch("bread", null, null, -1, -1, -1, -1);
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("light bread", null, null, -1, -1, -1, -1);
             Assert.AreEqual(1, search2.Count);
-            Assert.AreEqual(pre_amount-1, search1.Count);
+            Assert.AreEqual(pre_amount - 1, search1.Count);
+        }
+
+        [TestMethod()]
+        public void Update_defaults_on_non_to_update_params_happyTest()
+        {
+            List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("bread", null, null, -1, -1, -1, -1);
+            int pre_amount = search1.Count;
+            //Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, null, -1, -1, null, new regularPolicy()));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, null, -1, -1, null, new immidiatePolicy()));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, null, -1, -1, new noDiscount(), null));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, null, -1, 90, null, null));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, null, 8.9, -1, null, null));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", null, "food", -1, -1, null, null));   //happy 1
+            Assert.IsTrue(userServiceLayer1.Update_Product_Store("my store", "bread", "light bread", null, -1, -1, null, null));   //happy 1
+            search1 = userServiceLayer2.GlobalSearch("bread", null, null, -1, -1, -1, -1);
+            List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("light bread", null, null, -1, -1, -1, -1);
+            Assert.AreEqual(1, search2.Count);
+            Assert.AreEqual(pre_amount - 1, search1.Count);
         }
 
         [TestMethod()]

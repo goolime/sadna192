@@ -28,8 +28,5 @@ namespace sadna192
         int numOfItemsInCart(string store);
         int numOfItemsInCart(string v, string p);
         UserState Copy();
-        bool addShopdiscount(string shop, Discount dis);
-        bool addShopPolicy(string shop, Policy dis);
-        bool Aprove_apointment(string store, string owner, bool ans);
     }
 }

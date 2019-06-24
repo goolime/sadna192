@@ -48,7 +48,8 @@ namespace sadna192
         // UC 2.8.4
         List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_product(ProductInStore p, int amount);
 
-        bool Finalize_Purchase(string address, string card_number, int month, int year, string holder, string ccv, string id, string country, string city, string zip);
+        bool Finalize_Purchase(string address, string payment);
+
         // UC 3.1 
         bool Logout();
 
@@ -91,15 +92,7 @@ namespace sadna192
          ProductInStore GetProductFromStore(string productName, string storeName);
 
         bool alert(string messege);
-
-        Alerter GetAlerter();
-
-        bool Aprove_apointment(string store, string owner, bool ans);
-
-        bool addShopdiscount(string shop, Discount dis);
-
-        bool addShopPolicy(string shop, Policy dis);
     }
-
+    
 
 }

@@ -9,7 +9,5 @@ namespace sadna192
     public interface Alerter
     {
         bool AlertUser(string messege);
-
-        List<string> LastNotifications();
     }
 }

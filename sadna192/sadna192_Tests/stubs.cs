@@ -19,9 +19,9 @@ namespace sadna192_Tests
                 isConnect = true; 
             }
 
-            public virtual Task canclePackage(string code)
+            public virtual void canclePackage(string code)
             {
-                return new Task(() => { });
+
             }
 
             public virtual bool check_address(string address)
@@ -29,20 +29,16 @@ namespace sadna192_Tests
                 return true;
             }
 
-            public virtual Task<bool> Connect()
+            public virtual bool Connect()
             {
-                Task<bool> t = new Task<bool>(() => isConnect);
-                t.Start();
-                return t;
+                return isConnect;
             }
 
-            public virtual Task<string> sendPackage(string address, string name, string city, string country, string zip)
+            public virtual string sendPackage(string address)
             {
                 string ans = "test " + index;
                 index++;
-                Task<string> t = new Task<string>(() => ans);
-                    t.Start();
-                return t;
+                return ans;
             }
         }
 
@@ -60,14 +56,12 @@ namespace sadna192_Tests
                 return true;
             }
 
-            public virtual Task<bool> Connect()
+            public virtual bool Connect()
             {
-                Task<bool> t = new Task<bool>(() => isConnect);
-                    t.Start();
-                return t;
+                return isConnect;
             }
 
-            public virtual void pay(double total, string card_number, int month, int year, string holder, string ccv, string id)
+            public virtual void pay(double total, string payment)
             {
 
             }
@@ -78,11 +72,6 @@ namespace sadna192_Tests
             public bool AlertUser(string messege)
             {
                 return true;
-            }
-
-            public List<string> LastNotifications()
-            {
-                return new List<string>();
             }
         }
     }

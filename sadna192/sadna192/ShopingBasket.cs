@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Timers;
 
 namespace sadna192
 {
-    public class ShopingBasket
+    internal class ShopingBasket
     {
-        public int id { get; set; }
-        public List<ShoppingCart> shoppingCarts { get; set; }
+        //private Member member;
+        private List<ShoppingCart> shoppingCarts;
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> savedProducts;
         internal bool toBeRemoved;
 
@@ -40,70 +39,41 @@ namespace sadna192
             return shoppingCarts;
         }
 
-        internal bool visitorAddProduct(ProductInStore p, int amount)
-        {
-            //checking if already there is a Shopping cart for this prodcut in the shopping basket
-            //in case that there is such store, adds the product to this store.
-            foreach (ShoppingCart sc in shoppingCarts)
-            {
-                if (sc.getStore() == p.getStore())
-                {
-                    sc.addProduct(p, amount, false);
-                    return true;
-                }
-
-            }
-
-            //if there is no Shopping cart for this store, Opens new one
-            List<ItemsInCart> shoppingCartContent = new List<ItemsInCart>();
-            ItemsInCart productToAdd = new ItemsInCart(p, amount);
-            shoppingCartContent.Add(productToAdd); 
-            ShoppingCart ShoppingCartToAdd = new ShoppingCart(p.getStore(), shoppingCartContent);
-            shoppingCarts.Add(ShoppingCartToAdd);
-            
-            return true;
-        }
-
-        internal bool memberAddProduct(ProductInStore p, int amount)
+        internal bool addProduct(ProductInStore p, int amount)
         {
             //checking if already there is a Shopping cart for this prodcut in the shopping basket
             //in case that there is such store, adds the product to this store.
             foreach(ShoppingCart sc in shoppingCarts)
             {
-                if (sc.getStore().getName()==p.getStore().getName()){
-                    sc.addProduct(p, amount, true);
+                if (sc.getStore()==p.getStore()){
+                    sc.addProduct(p, amount);
                     return true;
                 }
 
             }
 
             //if there is no Shopping cart for this store, Opens new one
-            List<ItemsInCart> shoppingCartContent = new List<ItemsInCart>();
-            ItemsInCart productToAdd = new ItemsInCart(p, amount);
+            List<Pair<ProductInStore, int>> shoppingCartContent = new List<Pair<ProductInStore, int>>();
+            Pair<ProductInStore, int> productToAdd = new Pair<ProductInStore, int>(p, amount);
             shoppingCartContent.Add(productToAdd);
-            if (!DBAccess.SaveToDB(productToAdd))
-                DBAccess.DBerror("could not save ProductInStore & amount to DB");
             ShoppingCart ShoppingCartToAdd = new ShoppingCart(p.getStore(), shoppingCartContent);
             shoppingCarts.Add(ShoppingCartToAdd);
-            if (!DBAccess.SaveToDB(ShoppingCartToAdd))
-                DBAccess.DBerror("could not save ProductInStore & amount to DB");
-
-            return true;  
+            return true;
+            
         }
-
 
         internal bool editProductAmount(ProductInStore p, int amount)
         {
             foreach (ShoppingCart sc in shoppingCarts)
             {
                 //checking for the same store
-                if (sc.getStore().getName() == p.getStore().getName())
+                if (sc.getStore() == p.getStore())
                 {
                     return sc.editAmount(p, amount);
                 }
 
             }
-            throw new Sadna192Exception("There is no such product in store " + p.getStore().getName() , "ShopingBasket" , "editProductAmount");
+            throw new Sadna192Exception("There is no such product in store" + p.getStore().getName() , "ShopingBasket" , "editProductAmount");
         }
 
         internal double Finalize_Purchase()
@@ -131,7 +101,7 @@ namespace sadna192
                 }
                 else
                 {
-                    this.returnProducts(u.isMember());
+                    this.returnProducts();
                     throw new Sadna192Exception("There are no enough pieces of " + p.getName() + "in the store " + p.getStore(), "ShopingBasket", "Purchase_product");
                 }
             }
@@ -144,7 +114,7 @@ namespace sadna192
             {
                 if (!p.Key.GetPolicy().check(p.Key, u))
                 {
-                    this.returnProducts(u.isMember());
+                    this.returnProducts();
                     throw new Sadna192Exception("you don't stand in the shop policy", "ShoppingBasket", "checkSaved");
                 }
             }
@@ -152,20 +122,14 @@ namespace sadna192
 
         internal List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>> Purchase_Store_cart(string store_name,UserState u)
         {
-            bool store_was_found = false;
             foreach(ShoppingCart sc in shoppingCarts)
             {
                 if(sc.getStore().getName() == store_name)
                 {
-                    store_was_found = true;
                     savedProducts = new List<KeyValuePair<ProductInStore, KeyValuePair<int, double>>>();
                     foreach(KeyValuePair<ProductInStore,int> p in sc.getCart())
                     {
-                        bool c1 = (p.Key.getAmount() - p.Value >= 0);
-                        ProductInStore pro = sc.getStore().getProductInStore(p.Key.getName());
-                        Policy pol = pro.getPolicy();
-                        bool c2 = (pol.check(p.Key, u));
-                        if (c1 && c2)
+                        if (p.Key.getAmount() - p.Value >= 0)
                         {
                             p.Key.setAmount(p.Key.getAmount() - p.Value);
                             savedProducts.Add(new KeyValuePair<ProductInStore, KeyValuePair<int, double>>(p.Key, new KeyValuePair<int, double>(p.Value, p.Key.getPrice() * p.Value * p.Key.getDiscount().calculate(p.Key, u))));
@@ -173,11 +137,8 @@ namespace sadna192
                         }
                         else
                         {
-                            this.returnProducts(u.isMember());
-                            if (c1)
-                                throw new Sadna192Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore(), "ShopingBasket", "Purchase_Store_cart(1)");
-                            else
-                                throw new Sadna192Exception("you don't stand in store policy", "ShopingBasket", "Purchase_Store_cart(2)");
+                            this.returnProducts();
+                            throw new Sadna192Exception("There are no enough pieces of " + p.Key.getName() + "in the store " + p.Key.getStore(), "ShopingBasket", "Purchase_Store_cart(1)");
                         }
                     }
                     this.shoppingCarts.Remove(sc);
@@ -185,9 +146,7 @@ namespace sadna192
                     return this.savedProducts;
                 }
             }
-            if (!store_was_found)
-                throw new Sadna192Exception("no cart for the store", "ShopingBasket", "Purchase_Store_cart(3)");
-            return this.savedProducts;
+            throw new Sadna192Exception("no cart for the store", "ShopingBasket", "Purchase_Store_cart(2)");
         }
 
         internal int numOfItemsInCart(string store)
@@ -216,19 +175,16 @@ namespace sadna192
             {
                 ans.AddRange(sc.getCart());
             }
-           
             if (ans.Count == 0) throw new Sadna192Exception("there are no product in the cart", "ShopingBasket", "get_basket");
             return ans;
         }
 
-        internal void returnProducts(bool isMember)
+        internal void returnProducts()
         {
             foreach(KeyValuePair<ProductInStore, KeyValuePair<int, double>> productToReturn in savedProducts)
             {
                 productToReturn.Key.setAmount(productToReturn.Key.getAmount() + productToReturn.Value.Key);
-                if (isMember)
-                    this.memberAddProduct(productToReturn.Key, productToReturn.Value.Key);
-                else this.visitorAddProduct(productToReturn.Key, productToReturn.Value.Key);
+                this.addProduct(productToReturn.Key, productToReturn.Value.Key);
             }
             savedProducts = null;
         }

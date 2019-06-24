@@ -1,23 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("sadna192_Tests.Unit_Tests")]
 
 namespace sadna192
 {
-    
     public class Manager : Owner
     {
-        public int id { set; get; }
-        public bool permision_add { get;  set; }
-        public bool permision_remove { get;  set; }
-        public bool permision_update { get;  set; }
-
-        public Manager() { }
+        public bool permision_add { get; internal set; }
+        public bool permision_remove { get; internal set; }
+        public bool permision_update { get; internal set; }
 
         public Manager(Member u, Store s, bool permision_add, bool permission_remove, bool permission_update) : base(u, s)
         {
-            base.waiting_to_aprove.Clear();
             this.permision_add = permision_add;
             this.permision_remove = permission_remove;
             this.permision_update = permission_update;
@@ -67,19 +61,5 @@ namespace sadna192
         }
 
         public override bool isManger() => true;
-
-        internal override bool addShopdiscount(Discount dis)
-        {
-            if(this.permision_update)
-                return this.store.setDiscount(dis);
-            return false;
-        }
-
-        internal bool addShopPolicy(Policy dis)
-        {
-            if (this.permision_update)
-                return this.store.setPolicy(dis);
-            return false;
-        }
     }
 }

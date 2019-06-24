@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity.Infrastructure;
 using System.Security.Cryptography;
 using System.Text;
 namespace sadna192
 {
     public class Member : Visitor
     {
-        public int id { get; set; }
-        [Required]
-        public string name { get; set; }
-        public string code { get; set; }
-        public List<Owner> owner { get; set; }
+        internal string name;
+        private readonly string Code;
+        internal List<Owner> owner;
+        internal List<string> alerts;
 
-        public Member() : base()
-        {
-        }
+
         public Member(string name, string password) : base()
         {
             this.name = name;
@@ -38,12 +32,11 @@ namespace sadna192
 
         public override bool isOwner(string store_name)
         {
-            /*foreach (Owner o in this.owner)
+            foreach (Owner o in this.owner)
             {
                 if (o.getStore().isMe(store_name)) return true;
             }
-            return false;*/
-            return DBAccess.MemberIsOwner(this.name, store_name);
+            return false;
         }
 
         public bool isMe(string other)
@@ -60,7 +53,7 @@ namespace sadna192
             }
             if (key.Length > 16)
             {
-                key = key.Substring(0, 16);
+                key = key.Substring(0,16);
             }
             byte[] inputArray = UTF8Encoding.UTF8.GetBytes(input);
             TripleDESCryptoServiceProvider tripleDES = new TripleDESCryptoServiceProvider();
@@ -80,16 +73,17 @@ namespace sadna192
 
         internal Owner getUserStore(string store_name)
         {
-            Owner owner = DBAccess.getUserStore(store_name, this.name);
-            if (owner==null)
-                  throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'", "Member", "getUserStore");
-            return owner;
+            foreach (Owner owner in this.owner)
+            {
+                if (owner.getStore().isMe(store_name)) return owner;
+            }
+            throw new Sadna192Exception("the user is not associated with the store '" + store_name + "'" ,"Member","getUserStore");
         }
 
         public override bool Add_Product_Store(string Store_name, string product_name, string product_category, double product_price, int product_amount, Discount product_discount, Policy product_policy)
         {
             Owner s = this.getUserStore(Store_name);
-            return s.addProduct(product_name, product_category, product_price, product_amount, product_discount, product_policy);
+            return s.addProduct(product_name, product_category,product_price,product_amount,product_discount,product_policy);
         }
 
         internal bool isMe(Member other)
@@ -99,14 +93,8 @@ namespace sadna192
 
         public override bool Open_Store(Store name)
         {
-            Member m = DBAccess.getMemberFromDB(this.name);
-            if (m.owner == null)  m.owner = new List<Owner>();        
-            Owner owner = new Owner(m, name);
-            
-            m.owner.Add(owner); 
-           // this.owner.Add(owner);
-            //if (!DBAccess.SaveToDB(owner))
-             //   DBAccess.DBerror("could not save owner to DB");
+            if (this.owner == null) this.owner = new List<Owner>();
+            this.owner.Add(new Owner(this, name));
             return true;
         }
 
@@ -120,11 +108,6 @@ namespace sadna192
         {
             Owner s = this.getUserStore(Store_name);
             return s.addOwner(Store_name, new_owner_name);
-        }
-
-        public override bool Add_To_ShopingBasket(ProductInStore p, int amount)
-        {
-            return this.shopingBasket.memberAddProduct(p, amount);
         }
 
         public override bool Remove_Product_Store(string Store_name, string product_name)
@@ -156,12 +139,11 @@ namespace sadna192
             return (this.name);
         }
 
-
         public override List<Dictionary<string, dynamic>> getMyShops()
         {
             List<Dictionary<string, dynamic>> ans = new List<Dictionary<string, dynamic>>();
 
-            foreach (Owner o in this.owner)
+            foreach(Owner o in this.owner)
             {
                 Dictionary<string, dynamic> tmp = new Dictionary<string, dynamic>();
                 tmp["store"] = new Store(o.getStore());
@@ -173,24 +155,6 @@ namespace sadna192
             }
 
             return ans;
-        }
-
-        public override bool addShopdiscount(string shop, Discount dis)
-        {
-            Owner o = this.getUserStore(shop);
-            return o.addShopdiscount(dis);
-        }
-
-        public override bool addShopPolicy(string shop, Policy dis)
-        {
-            Owner o = this.getUserStore(shop);
-            return o.addShopPolicy(dis);
-        }
-
-        public override bool Aprove_apointment(string store, string owner, bool ans)
-        {
-            Owner o = this.getUserStore(store);
-            return o.approveAssignmet(owner, ans);
         }
     }
 }

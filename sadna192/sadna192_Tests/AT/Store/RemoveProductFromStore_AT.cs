@@ -63,7 +63,7 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Remove_product_that_not_exisit_happyTest()
         {
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Remove_Product_Store("our store", "fish"); }, "product does not exist in store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Remove_Product_Store("our store", "fish"); }, "product does not exist in store");
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("orbit", null, null, -1, -1, -1, -1);
             Assert.IsTrue(userServiceLayer1.Remove_Product_Store("our store", "orbit"));   //happy 2
             List<ProductInStore> search2 = userServiceLayer2.GlobalSearch("orbit", null, null, -1, -1, -1, -1);
@@ -75,12 +75,12 @@ namespace sadna192.Tests.AcceptanceTests
         {
             List<ProductInStore> search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
             int pre_amount = search1.Count;
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Remove_Product_Store("our store", "pizza"); }, "only store owner or manager can remove product from the store");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Remove_Product_Store("our store", "pizza"); }, "only store owner or manager can remove product from the store");
             search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount, search1.Count);
 
             I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
-            Assert.ThrowsException<Sadna192Exception>(() => { tmp_userServiceLayer.Remove_Product_Store("our store", "pizza"); }, "only store owner or manager can remove product to the store");
+            Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Remove_Product_Store("our store", "pizza"); }, "only store owner or manager can remove product to the store");
             search1 = userServiceLayer2.GlobalSearch("pizza", "food", null, 0, 100, 0, 0);
             Assert.AreEqual(pre_amount, search1.Count);
         }

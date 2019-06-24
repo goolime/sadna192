@@ -17,7 +17,7 @@ namespace WebApplication1
         public static void Main(string[] args)
         {
             I_ServiceLayer tmp_sl = new sadna192.ServiceLayer();
-            tmp_sl.Create_ServiceLayer(new Stubs.Stub_deliverySystem(), new herokuapp_wsep_192.paymentSystem(),"admin", "1234Abcd");
+            tmp_sl.Create_ServiceLayer(new Stubs.Stub_deliverySystem(), new Stubs.Stub_paymentSystem(),"admin", "1234Abcd");
             init(tmp_sl);
             CreateWebHostBuilder(args).Build().Run();
         }

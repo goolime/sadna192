@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class Visitor : UserState
     {
-        public int shopingBaskRef { get; set; }
-        [ForeignKey("shopingBaskRef")]
-        public ShopingBasket shopingBasket { get; set; }
+        internal ShopingBasket shopingBasket;
 
         public Visitor()
         {
@@ -41,9 +38,9 @@ namespace sadna192
             throw new Sadna192Exception("User must login to add a Owner to a store", "Visitor", "Add_Store_Owner");
         }
 
-        public virtual bool Add_To_ShopingBasket(ProductInStore p, int amount)
+        public bool Add_To_ShopingBasket(ProductInStore p, int amount)
         {
-            return this.shopingBasket.visitorAddProduct(p, amount);
+            return this.shopingBasket.addProduct(p, amount);
         }
 
         public bool Edit_Product_In_ShopingBasket(ProductInStore p, int amount)
@@ -142,21 +139,6 @@ namespace sadna192
         public virtual UserState Copy()
         {
             return new Visitor(this);
-        }
-
-        public virtual bool addShopdiscount(string shop, Discount dis)
-        {
-            throw new Sadna192Exception("User must login inorder to add shop discount", "Visitor", "addShopdiscount");
-        }
-
-        public virtual bool addShopPolicy(string shop, Policy dis)
-        {
-            throw new Sadna192Exception("User must login inorder to add shop Policy", "Visitor", "addShopPolicy");
-        }
-
-        public virtual bool Aprove_apointment(string store, string owner, bool ans)
-        {
-            throw new Sadna192Exception("User must login inorder to approve shop appointment", "Visitor", "Aprove_apointment");
         }
     }
 }

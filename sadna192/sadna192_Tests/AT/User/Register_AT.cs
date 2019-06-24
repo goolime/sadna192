@@ -32,16 +32,16 @@ namespace sadna192.Tests.AcceptanceTests
         public void Register_happyTest()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Login("bobi", "9876ASdf"); }, "try to log in with user name that not exist");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("bobi", "9876ASdf"); }, "try to log in with user name that not exist");
             Assert.IsTrue(userServiceLayer2.Register("bobi", "9876ASdf"));
-             Assert.IsTrue(userServiceLayer2.Login("bobi", "9876ASdf"));
+            Assert.IsTrue(userServiceLayer2.Login("bobi", "9876ASdf"));
         }
 
         [TestMethod()]
         public void Register_sadTest1()
         {
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Register("registerUser", "69375LOpo"); }, "this user name is not avilable");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Register("registerUser", "69375LOpo"); }, "this user name is not avilable");
 
         }
 
@@ -49,15 +49,15 @@ namespace sadna192.Tests.AcceptanceTests
         public void Register_sadTest2()
         {
             I_User_ServiceLayer userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer.Register("", "3456Sdfg"); }, "user name is mandatory field");
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer.Register("Alice", ""); }, "password is mandatory field");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("", "3456Sdfg"); }, "user name is mandatory field");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer.Register("Alice", ""); }, "password is mandatory field");
         }
 
         [TestMethod()]
         public void Register_badTest()
         {
             if (userServiceLayer1.Login("registerUser", "1221zxcV"))
-                Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Register("Alice", "3456Sdfg"); }, "trying to register when already logedin");
+                Assert.ThrowsException<Exception>(() => { userServiceLayer1.Register("Alice", "3456Sdfg"); }, "trying to register when already logedin");
         }
 
         [TestCleanup]

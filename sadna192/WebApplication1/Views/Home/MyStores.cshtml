@@ -100,32 +100,16 @@ Store: <h2 id="storeName">@Model.S.StoreName</h2>
                         }
                         else
                         {
-                            <!--
-        using (Html.BeginForm("RemoveOwnerForm", "Home", FormMethod.Post))
-        {
-           Model.DeleteOwnerConfig(owner.GetUsername(), ((Store)ViewData["currStore"]).getName());
-            Html.HiddenFor(s => Model.O.Name);
-            Html.HiddenFor(s => Model.S.StoreName);
 
-            <font>Remove Owner:</font><input type="submit" class="btn btn-primary" />
-
-
-        }
-        -->
-                            @if (owner.waiting_for_owner_approval().IndexOf(Model.O.Name) != -1)
+                            @using (Html.BeginForm("RemoveOwnerForm", "Home", FormMethod.Post))
                             {
-                                @using (Html.BeginForm("ApproveOwnerForm", "Home", FormMethod.Post))
-                                {
-                                    @Model.DeleteManagerConfig(owner.GetUsername(), Model.S.StoreName)
-                                    @Html.HiddenFor(s => Model.S.StoreName)
-                                    @Html.HiddenFor(s => Model.O.Name)
-                                    <font>Approve:</font><button name="command" value="approve" type="submit" class="btn btn-warning" /><br />
-                                    <font>Disapprove:</font><button name="command" value="disapprove"  type="submit" class="btn btn-warning" /><br />
-                                }
-                            }
-                            else if (owner.waiting_for_owner_approval().Count > 0)
-                            {
-                                <font color="green">you approved this user, waiting for other owners approval</font>
+                                @Model.DeleteOwnerConfig(owner.GetUsername(), ((Store)ViewData["currStore"]).getName());
+                                @Html.HiddenFor(s => Model.O.Name);
+                                @Html.HiddenFor(s => Model.S.StoreName);
+
+                                <font>Remove Owner:</font><input type="submit" class="btn btn-primary" />
+
+
                             }
                         }
 

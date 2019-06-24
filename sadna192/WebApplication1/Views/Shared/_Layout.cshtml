@@ -87,7 +87,7 @@
                     </button>
                 </div>
                 <div class="modal-body" id="notifications_body">
-
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -98,8 +98,6 @@
     </div>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
-    <script src="~/js/shop.js"></script>
     <script>
 
         if ("@ViewData["state"]" == "Visitor") {
@@ -110,16 +108,11 @@
             document.getElementById("login").innerHTML = "Logout";
             document.getElementById("register").innerHTML = "My Page";
         }
-            document.getElementById("notif_li").innerHTML += '<font color="red" id="notifi_number_font">@((List<string>)ViewData["LastNotifications"] != null? ((List<string>)ViewData["LastNotifications"]).Count : 0)</font>'
-        @using sadna192
-    @foreach(string notif in ((I_User_ServiceLayer)ViewData["SL"]).GetAlerter().LastNotifications())
-        {
-            <text>
-                show_notification('@notif');
-            </text>
-        }
-    </script>
+        document.getElementById("notif_li").innerHTML += '<font color="red" id="notifi_number_font">@((List<string>)ViewData["LastNotifications"] != null? ((List<string>)ViewData["LastNotifications"]).Count : 0)</font>'
 
+    </script>
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/shop.js"></script>
 
 
     <partial name="_CookieConsentPartial" />

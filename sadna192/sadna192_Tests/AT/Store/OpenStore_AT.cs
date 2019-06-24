@@ -42,14 +42,14 @@ namespace sadna192.Tests.AcceptanceTests
         public void OpenStore_happyTest()
         {
             Assert.IsTrue(userServiceLayer1.Open_Store("marketim"));   //happy 1
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Open_Store("marketim"); }, "This store name is already taken");  //happy 2
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Open_Store("marketim"); }, "This store name is already taken");  //happy 2
         }
 
         [TestMethod()]
         public void OpenStore_visitor_state_sadTest()  
         {
             I_User_ServiceLayer tmp_userServiceLayer = serviceLayer.Connect(new Stub_Alerter());
-            Assert.ThrowsException<Sadna192Exception>(() => { tmp_userServiceLayer.Open_Store("dig dig dog"); }, "only registered user can open stores");  //happy 2
+            Assert.ThrowsException<Exception>(() => { tmp_userServiceLayer.Open_Store("dig dig dog"); }, "only registered user can open stores");  //happy 2
         }
 
         [TestCleanup]

@@ -43,19 +43,19 @@ namespace sadna192.Tests.AcceptanceTests
             Assert.IsTrue(userServiceLayer1.Login("removeUser", "1221Asdf"));
             userServiceLayer1.Logout();
             Assert.IsTrue(userServiceLayer_admin.Remove_User("removeUser"));
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Login("removeUser", "1221Asdf"); }, "this user has been removed from the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("removeUser", "1221Asdf"); }, "this user has been removed from the system");
         }
 
         [TestMethod()]
         public void Remove_user_that_not_exist_happyTest()
         {
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer_admin.Remove_User("stamUser"); }, "can't remove user that dont exist from the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_admin.Remove_User("stamUser"); }, "can't remove user that dont exist from the system");
         }
 
         [TestMethod()]
         public void Admin_try_remove_himself_happyTest()
         {
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer_admin.Remove_User("admin"); }, "admin cannot remove himself from the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer_admin.Remove_User("admin"); }, "admin cannot remove himself from the system");
             Assert.IsTrue(userServiceLayer_admin.Open_Store("AdminStore")); 
         }
 
@@ -68,7 +68,7 @@ namespace sadna192.Tests.AcceptanceTests
 
             I_User_ServiceLayer userServiceLayer2 = serviceLayer.Connect(new Stub_Alerter());
             userServiceLayer2.Register("removeUserTmp", "1221Poiu");
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Remove_User("removeUserTmp"); }, "only admin can remove users from the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer1.Remove_User("removeUserTmp"); }, "only admin can remove users from the system");
             Assert.IsTrue(userServiceLayer2.Login("removeUserTmp", "1221Poiu"));
         }
 

@@ -12,9 +12,8 @@ namespace WebApplication1
         public class Stub_deliverySystem : I_DeliverySystem
         {
             int index = 0;
-            public virtual Task canclePackage(string code)
+            public virtual void canclePackage(string code)
             {
-                return new Task(() => { });
 
             }
 
@@ -23,20 +22,16 @@ namespace WebApplication1
                 return true;
             }
 
-            public virtual Task<bool> Connect()
+            public virtual bool Connect()
             {
-                Task<bool> t = new Task<bool>(() => true);
-                t.Start();
-                return t;
+                return true;
             }
 
-            public virtual Task<string> sendPackage(string address, string name, string city, string country, string zip)
+            public virtual string sendPackage(string address)
             {
                 string ans = "test " + index;
                 index++;
-                Task<string> t = new Task<string>(() => ans);
-                t.Start();
-                return t;
+                return ans;
             }
         }
 
@@ -47,14 +42,12 @@ namespace WebApplication1
                 return true;
             }
 
-            public virtual Task<bool> Connect()
+            public virtual bool Connect()
             {
-                Task<bool> t = new Task<bool>(() => true);
-                t.Start();
-                return t;
+                return true;
             }
 
-            public virtual void pay(double total, string card_number, int month, int year, string holder, string ccv, string id)
+            public virtual void pay(double total, string payment)
             {
 
             }

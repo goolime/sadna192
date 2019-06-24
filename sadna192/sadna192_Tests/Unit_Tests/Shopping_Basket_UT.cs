@@ -29,16 +29,16 @@ namespace sadna192_Tests.Unit_Tests
         [TestMethod]
         public void addProduct_Classic_Case_Test()
         {
-            shopingBasket.visitorAddProduct(store1.FindProductInStore("T-shirt"), 14);
-            shopingBasket.visitorAddProduct(store2.FindProductInStore("Socks"), 2);
+            shopingBasket.addProduct(store1.FindProductInStore("T-shirt"), 14);
+            shopingBasket.addProduct(store2.FindProductInStore("Socks"), 2);
             Assert.IsTrue(shopingBasket.getshoppingCarts().Count==2);
         }
 
         [TestMethod]
         public void addProduct_Same_Store_Test()
         {
-            shopingBasket.visitorAddProduct(store1.FindProductInStore("T-shirt"), 14);
-            shopingBasket.visitorAddProduct(store1.FindProductInStore("Shoes"), 2);
+            shopingBasket.addProduct(store1.FindProductInStore("T-shirt"), 14);
+            shopingBasket.addProduct(store1.FindProductInStore("Shoes"), 2);
             Assert.IsTrue(shopingBasket.getshoppingCarts().Count == 1);
             Assert.IsTrue(shopingBasket.getshoppingCarts()[0].getStore().getName() == store1.getName());
         }
@@ -46,7 +46,7 @@ namespace sadna192_Tests.Unit_Tests
         [TestMethod]
         public void EditProductAmount_Test()
         {
-            shopingBasket.visitorAddProduct(store1.FindProductInStore("T-shirt"), 14);
+            shopingBasket.addProduct(store1.FindProductInStore("T-shirt"), 14);
             Assert.IsTrue(shopingBasket.getshoppingCarts().Count == 1);
             Assert.IsTrue(shopingBasket.getshoppingCarts()[0].FindProductInCart("T-shirt").Second == 14);
             shopingBasket.editProductAmount(shopingBasket.getshoppingCarts()[0].FindProductInCart("T-shirt").First, 12);

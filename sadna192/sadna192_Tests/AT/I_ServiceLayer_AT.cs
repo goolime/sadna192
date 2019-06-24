@@ -17,18 +17,18 @@ namespace sadna192.Tests.AcceptanceTests
         private class Stub_bad_deliverySystem : Stub_deliverySystem
         {
             
-            public override Task<bool> Connect()
+            public override bool Connect()
             {
-                return new Task<bool>(()=>false);
+                return false;
             }
         }
 
         private class Stub_bad_paymentSystem : Stub_paymentSystem
         {
 
-            public override Task<bool> Connect()
+            public override bool Connect()
             {
-                return new Task<bool>(()=>false);
+                return false;
             }
         }
 

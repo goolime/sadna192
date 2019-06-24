@@ -45,16 +45,16 @@ namespace sadna192.Tests.AcceptanceTests
         [TestMethod()]
         public void Login_sadTest()
         {
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Login("user34", "69375Abcd"); }, "this user is not exist in the system");
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Login("", "9876"); }, "user name is mandatory field");
-            Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer2.Login("login_user2", ""); }, "password is mandatory field");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("user34", "69375Abcd"); }, "this user is not exist in the system");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("", "9876"); }, "user name is mandatory field");
+            Assert.ThrowsException<Exception>(() => { userServiceLayer2.Login("login_user2", ""); }, "password is mandatory field");
         }
 
         [TestMethod()]
         public void Login_badTest()
         {
             if (userServiceLayer1.Login("loginuser", "1221Abcd"))
-                Assert.ThrowsException<Sadna192Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
+                Assert.ThrowsException<Exception>(() => { userServiceLayer1.Login("login_user2", "9876"); }, "user cannot perform login when he is already logedin");
         }
 
         [TestCleanup]

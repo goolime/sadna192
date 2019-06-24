@@ -1,20 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace sadna192
 {
     public class Owner
     {
-        public int id { get; set; }
-        public int storeRef { get; set; }
-        [ForeignKey("storeRef")]
-        public Store store { get; set; }
-        public int userRef { get; set; }
-        [ForeignKey("userRef")]
-        public Member user { get; set; }
+        private Store store;
+        private Member user;
+        private List<Owner> has_Apointed;
+        internal List<Owner> waiting_to_aprove;
 
         public Owner(Member u, Store s){
+            this.store = s;
+            this.user = u;
             this.waiting_to_aprove = new List<Owner>();
             
             foreach (Owner o in s.GetOwners())
@@ -24,9 +22,8 @@ namespace sadna192
                     this.waiting_to_aprove.Add(o);
                 }
             }
-            this.storeRef = s.storeID;           
-            this.userRef = u.id;         
             s.addOwner(this);
+            this.has_Apointed = new List<Owner>(); 
         }
 
         internal Store getStore()
@@ -68,8 +65,6 @@ namespace sadna192
                 Manager nm = new Manager(new_manager, this.store, permision_add, permission_remove, permission_update);
                 new_manager.owner.Add(nm);
                 this.has_Apointed.Add(nm);
-                if (!DBAccess.SaveToDB(nm))
-                    DBAccess.DBerror("could not save manager to DB");
                 return true;
             }
         }
@@ -78,13 +73,6 @@ namespace sadna192
         {
             this.are_assigned();
             Owner nm = new Owner(new_owner, this.store);
-            if (new_owner.owner == null)
-                new_owner.owner = new List<Owner>();
-            new_owner.owner.Add(nm);       
-            if (!DBAccess.SaveToDB(nm))
-                DBAccess.DBerror("could not save owner to DB");
-            if (this.has_Apointed == null)
-                this.has_Apointed = new List<Owner>();
             nm.waiting_to_aprove.Remove(this);
             foreach (Owner o in nm.waiting_to_aprove)
             {
@@ -103,10 +91,11 @@ namespace sadna192
 
         private  bool removeMe()
         {
-      
+            this.are_assigned();
+            this.store.removeApointed(this);
             this.user.owner.Remove(this);
-            this.store.owners.Remove(this);
-            return DBAccess.removeOwnerFromDB(this.id);
+            foreach (Owner apointed in this.has_Apointed) apointed.removeMe();
+            return true;
         }
 
         internal virtual bool removeApointed(Member other_Owner)
@@ -119,8 +108,8 @@ namespace sadna192
         private Owner findOwner(Member other)
         {
             this.are_assigned();
-            if (this.user.isMe(other) && this.isManger()) return this;
-            foreach(Owner apointed in this.store.GetOwners())
+            if (this.user.isMe(other)) return this;
+            foreach(Owner apointed in this.has_Apointed)
             {
                 try
                 {
@@ -166,17 +155,12 @@ namespace sadna192
         public List<string> waiting_for_owner_approval()
         {
             List<string> ans = new List<string>();
-            foreach(Owner o in this.waiting_to_aprove)
-            { 
-                ans.Add(o.user.name);
+            foreach(Owner o in this.store.GetOwners())
+            {
+                if (o.waiting_to_aprove.IndexOf(this) != -1)
+                    ans.Add(o.user.name);
             }
             return ans;
-        }
-
-        internal virtual bool addShopdiscount(Discount dis)
-        {
-            this.are_assigned();
-            return this.store.setDiscount(dis);
         }
 
         public bool approveAssignmet(string name, bool ans)
@@ -209,12 +193,6 @@ namespace sadna192
                 toapprove.removeMe();
             }
             return true;
-        }
-
-        internal bool addShopPolicy(Policy dis)
-        {
-            this.are_assigned();
-            return this.store.setPolicy(dis);
         }
     }
 }

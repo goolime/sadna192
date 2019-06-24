@@ -685,7 +685,7 @@ namespace WebApplication1.Controllers
         {
             Policy policy = ConstructPolicy(vm.APolicy);
             I_User_ServiceLayer SL = validateConnection();
-            if (SL.Update_Product_Store(vm.S.StoreName, vm.O.Name, null, null, -1, -1, null, policy)) ;
+            if (SL.Update_Product_Store(vm.S.StoreName, vm.APolicy.Name, null, null, -1, -1, null, policy)) ;
             {
                 return RedirectToAction("MyStores", new { storename = vm.S.StoreName });
             }

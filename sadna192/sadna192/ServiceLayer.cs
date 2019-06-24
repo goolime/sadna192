@@ -500,17 +500,45 @@ namespace sadna192
             {
                 if (Tools.check_storeName(Store_name) &&
                     Tools.check_productNames(product_name) &&
-                    (Tools.check_productNames(product_new_name) || product_new_name==null) &&
-                    (Tools.check_productCategory(product_new_category) || product_new_category==null) &&
-                    (Tools.check_price(product_new_price) || product_new_price==-1) &&
-                    (Tools.check_amount(product_new_amount) || product_new_amount==-1)
+                    (product_new_name == null || Tools.check_productNames(product_new_name)) &&
+                    (product_new_category == null || Tools.check_productCategory(product_new_category)) &&
+                    (product_new_price == -1 || Tools.check_price(product_new_price)) &&
+                    (product_new_amount == -1) || Tools.check_amount(product_new_amount)
                     )
                 {
                     bool ans = false;
-                    if (product_new_amount > 0)
+                    if (product_new_amount > 0 || product_new_amount==-1)
                     {
                         ans = this.userState.Update_Product_Store(Store_name, product_name, product_new_name, product_new_category, product_new_price, product_new_amount, product_new_discount, product_new_policy);
-                        if (ans) this.Add_Log("in store '" + Store_name + "' updated '" + product_name + "' - new name:'" + product_new_name + "',new category:'" + product_new_category + "' ,new price:" + product_new_price + " ,new amount:" + product_new_amount + " , new discount:" + product_new_discount.ToString() + " ,new policy:" + product_new_policy.ToString());
+                        if (ans)
+                        {
+                            string toLog = "in store '" + Store_name + "' updated '" + product_name;
+                            if (product_new_name != null)
+                            {
+                                toLog += "' - new name:'" + product_new_name;
+                            }
+                            if (product_new_category != null)
+                            {
+                                toLog += "',new category:'" + product_new_category;
+                            }
+                            if (product_new_price!=-1)
+                            {
+                                toLog += "' ,new price:" + product_new_price;
+                            }
+                            if (product_new_amount!=-1)
+                            {
+                                toLog +=" ,new amount:" + product_new_amount ;
+                            }
+                            if (product_new_discount != null)
+                            {
+                                toLog += " , new discount:" + product_new_discount.ToString();
+                            }
+                            if (product_new_policy != null)
+                            {
+                                toLog += " ,new policy:" + product_new_policy.ToString();
+                            }
+                            this.Add_Log(toLog);
+                        }
                     }
                     else
                         ans = this.Remove_Product_Store(Store_name, product_name);

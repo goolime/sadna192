@@ -8,7 +8,7 @@ namespace WebApplication1
 {
     public class UsersInfo
     {
-        public static readonly ConcurrentDictionary<string, string> ConIDToName = new ConcurrentDictionary<string, string>();
+        public static readonly ConcurrentDictionary<string, string> IPToConnectionID = new ConcurrentDictionary<string, string>();
 
 
 

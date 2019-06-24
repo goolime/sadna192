@@ -1,0 +1,11 @@
+<<<<<<< HEAD
+﻿
+@{
+=======
+﻿@{
+>>>>>>> origin/domain_changes
+    ViewData["Title"] = "Logout";
+}
+
+<h2>Logout</h2>
+

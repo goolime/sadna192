@@ -28,7 +28,7 @@ namespace WebApplication1
 
         public static void init(I_ServiceLayer SL)
         {
-            I_User_ServiceLayer UL = SL.Connect();
+            I_User_ServiceLayer UL = SL.Connect(null);
             UL.Register("initUser", "1234Abcd");
             UL.Login("initUser", "1234Abcd");
             UL.Open_Store("testStore");
